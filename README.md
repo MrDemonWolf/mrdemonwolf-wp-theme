@@ -1,5 +1,7 @@
 # MrDemonWolf - Custom Divi Child Theme
 
+![MrDemonWolf](theme/screenshot.jpg)
+
 A custom WordPress child theme built on the Divi Theme
 Builder by MrDemonWolf, Inc. It includes pre-built page
 layouts, a "Service" custom post type, breadcrumbs,
