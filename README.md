@@ -96,10 +96,10 @@ database first.**
 
 ```bash
 # Preview changes without applying them
-wp eval-file migrate.php --dry-run
+./migrate.sh --dry-run
 
 # Apply the migration
-wp eval-file migrate.php
+./migrate.sh
 ```
 
 **WARNING:** This will overwrite existing Nexus theme
@@ -107,15 +107,16 @@ data. Run at your own risk. Back up your database first.
 
 The script migrates:
 
-- Shortcodes in post content
+- Shortcodes in post content (`Nexus_breadcrumbs` to
+  `mrdemonwolf_breadcrumbs`, etc.)
 - CSS classes (`nexus-` to `mdw-`)
 - Post meta keys (`_nexus_service_image` to
   `_mrdemonwolf_service_image`)
-- HTML IDs in Divi builder data
 - `wp_options` entries with the `nexus_` prefix
 
 The migration is idempotent and safe to run multiple
-times.
+times. Requires [WP-CLI](https://wp-cli.org/) to be
+installed.
 
 ## Tech Stack
 
@@ -192,7 +193,7 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
 │   └── MrDemonWolfThemeBuilder.json
-├── migrate.php                # WP-CLI migration script
+├── migrate.sh                 # WP-CLI migration script
 └── mrdemonwolf.zip            # Installable theme zip
 ```
 
