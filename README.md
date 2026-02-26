@@ -39,8 +39,9 @@ Your WordPress site, your brand.
 1. Install and activate the
    [Divi Theme](https://www.elegantthemes.com/gallery/divi/)
    on your WordPress site.
-2. Download `mrdemonwolf.zip` from the latest release (or
-   build it from source — see Development below).
+2. Download `mrdemonwolf.zip` from the
+   [latest release](https://github.com/mrdemonwolf/mrdemonwolf-wp-theme/releases/latest)
+   (or build it from source — see Development below).
 3. Go to **Appearance > Themes > Add New > Upload Theme**
    and upload `mrdemonwolf.zip`.
 4. Activate the **MrDemonWolf** child theme.
@@ -174,6 +175,9 @@ To create an installable zip from the repo:
 cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store" && cd ..
 ```
 
+Tagged releases (`v*`) also build and attach the zip
+automatically — see CI/CD below.
+
 ### Code Quality
 
 - All PHP functions are prefixed with `mrdemonwolf_`
@@ -185,10 +189,20 @@ cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store" && cd ..
 - Translatable strings use the `mrdemonwolf` text
   domain.
 
+## CI/CD
+
+| Workflow | Trigger | What it does |
+| -------- | ------- | ------------ |
+| **CI** (`ci.yml`) | Push / PR to `main` or `dev` | PHP syntax check, Nexus reference check, zip build |
+| **Release** (`release.yml`) | Push of a `v*` tag | Builds `mrdemonwolf.zip` and creates a GitHub Release with the artifact |
+
 ## Project Structure
 
 ```
 mrdemonwolf-wp-theme/
+├── .github/workflows/         # CI/CD pipelines
+│   ├── ci.yml                 # Lint, validate, and build
+│   └── release.yml            # Tagged release publisher
 ├── theme/                     # WordPress child theme
 │   ├── assets/                # Bundled third-party assets
 │   │   ├── icon_portfolio.svg
@@ -205,8 +219,7 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
 │   └── MrDemonWolfThemeBuilder.json
-├── migrate.sh                 # WP-CLI migration script
-└── mrdemonwolf.zip            # Installable theme zip
+└── migrate.sh                 # WP-CLI migration script
 ```
 
 ## License
