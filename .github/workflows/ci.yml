@@ -1,0 +1,28 @@
+name: CI
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  lint:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP syntax check
+        run: php -l theme/functions.php
+
+      - name: Check for leftover Nexus references
+        run: |
+          ! grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --include="*.js" --include="*.json" --include="*.xml"
+
+      - name: Build theme zip
+        run: cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store"
