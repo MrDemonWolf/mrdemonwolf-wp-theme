@@ -39,12 +39,13 @@ Your WordPress site, your brand.
 1. Install and activate the
    [Divi Theme](https://www.elegantthemes.com/gallery/divi/)
    on your WordPress site.
-2. Download or clone this repository.
-3. Upload the theme folder to
-   `wp-content/themes/mrdemonwolf-wp-theme`.
-4. Activate the **MrDemonWolf** child theme from
-   **Appearance > Themes** in wp-admin.
-5. Import the supplementary files (see Usage below).
+2. Download `mrdemonwolf.zip` from the latest release (or
+   build it from source — see Development below).
+3. Go to **Appearance > Themes > Add New > Upload Theme**
+   and upload `mrdemonwolf.zip`.
+4. Activate the **MrDemonWolf** child theme.
+5. Follow the import steps below to load the pre-built
+   content and layouts.
 
 ## Usage
 
@@ -56,25 +57,36 @@ Your WordPress site, your brand.
 | `[mrdemonwolf_tags]`          | Displays current post/project tags |
 | `[mrdemonwolf_social_share]`  | Renders social share links       |
 
-### Importing Supplementary Files
+### Importing Supplementary Files (Follow This Order)
 
 The `supplementary/` directory contains pre-built Divi
-configuration exports:
+configuration exports. **Import them in this exact order**
+to avoid broken references:
 
-1. **Theme Builder** - Go to **Divi > Theme Builder >
-   Portability > Import** and upload
-   `MrDemonWolfThemeBuilder.json`.
-2. **Divi Library** - Go to **Divi > Divi Library >
+1. **All Content** - Go to **Tools > Import > WordPress**
+   and upload `All Content.xml`. This creates posts,
+   pages, media, and custom post types that the layouts
+   reference. When prompted, check "Download and import
+   file attachments."
+2. **Theme Options** - Go to **Divi > Theme Options >
    Import & Export > Import** and upload
-   `MrDemonWolf Divi Library.json`.
-3. **Theme Options** - Go to **Divi > Theme Options >
-   Import & Export > Import** and upload
-   `MrDemonWolf Divi Theme Options.json`.
-4. **Customizer Settings** - Go to **Divi > Theme
+   `MrDemonWolf Divi Theme Options.json`. This sets
+   global colors, fonts, button styles, and header/footer
+   defaults.
+3. **Customizer Settings** - Go to **Divi > Theme
    Customizer > Export & Import > Import** and upload
-   `MrDemonWolf Divi Customizer Settings.json`.
-5. **All Content** - Go to **Tools > Import > WordPress**
-   and upload `All Content.xml`.
+   `MrDemonWolf Divi Customizer Settings.json`. This
+   applies color palette, typography, and spacing
+   overrides.
+4. **Divi Library** - Go to **Divi > Divi Library >
+   Import & Export > Import** and upload
+   `MrDemonWolf Divi Library.json`. This loads reusable
+   layout modules and sections.
+5. **Theme Builder** - Go to **Divi > Theme Builder >
+   Portability > Import** and upload
+   `MrDemonWolfThemeBuilder.json`. This assigns header,
+   footer, and page templates that reference the Library
+   items from step 4.
 
 ### Migrating from Nexus
 
@@ -132,13 +144,22 @@ times.
 git clone https://github.com/mrdemonwolf/mrdemonwolf-wp-theme.git
 ```
 
-2. Symlink or copy into your WordPress themes directory:
+2. Symlink or copy the `theme/` directory into your
+   WordPress themes directory:
 
 ```bash
-ln -s /path/to/mrdemonwolf-wp-theme /path/to/wordpress/wp-content/themes/mrdemonwolf-wp-theme
+ln -s /path/to/mrdemonwolf-wp-theme/theme /path/to/wordpress/wp-content/themes/mrdemonwolf
 ```
 
 3. Activate the theme in wp-admin.
+
+### Building the Zip
+
+To create an installable zip from the repo:
+
+```bash
+cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store" && cd ..
+```
 
 ### Code Quality
 
@@ -155,22 +176,24 @@ ln -s /path/to/mrdemonwolf-wp-theme /path/to/wordpress/wp-content/themes/mrdemon
 
 ```
 mrdemonwolf-wp-theme/
-├── assets/                    # Bundled third-party assets
-│   ├── icon_portfolio.svg
-│   ├── jquery.magnific-popup.min.js
-│   └── magnific-popup.min.css
+├── theme/                     # WordPress child theme
+│   ├── assets/                # Bundled third-party assets
+│   │   ├── icon_portfolio.svg
+│   │   ├── jquery.magnific-popup.min.js
+│   │   └── magnific-popup.min.css
+│   ├── functions.php          # Theme functions and shortcodes
+│   ├── license.txt            # GPL v2 license
+│   ├── screenshot.jpg         # Theme screenshot
+│   ├── script.js              # Frontend JavaScript
+│   └── style.css              # Theme stylesheet
 ├── supplementary/             # Divi Builder import files
 │   ├── All Content.xml
 │   ├── MrDemonWolf Divi Customizer Settings.json
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
 │   └── MrDemonWolfThemeBuilder.json
-├── functions.php              # Theme functions and shortcodes
-├── license.txt                # GPL v2 license
 ├── migrate.php                # WP-CLI migration script
-├── screenshot.jpg             # Theme screenshot
-├── script.js                  # Frontend JavaScript
-└── style.css                  # Theme stylesheet
+└── mrdemonwolf.zip            # Installable theme zip
 ```
 
 ## License
