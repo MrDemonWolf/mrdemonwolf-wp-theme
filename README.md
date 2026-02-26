@@ -91,32 +91,44 @@ to avoid broken references:
 ### Migrating from Nexus
 
 If you are switching from the Nexus Divi Child Theme,
-a WP-CLI migration script is included. **Back up your
-database first.**
+run the included migration script or execute the
+commands manually. Requires
+[WP-CLI](https://wp-cli.org/).
+
+> **WARNING:** This will overwrite existing Nexus theme
+> data in your database. **Back up your database before
+> running any of these commands.** Run at your own risk.
+
+#### Option A: Run the script
 
 ```bash
-# Preview changes without applying them
+# Preview changes (no writes)
 ./migrate.sh --dry-run
 
 # Apply the migration
 ./migrate.sh
 ```
 
-**WARNING:** This will overwrite existing Nexus theme
-data. Run at your own risk. Back up your database first.
+#### Option B: Run the commands manually
 
-The script migrates:
+```bash
+# 1. Shortcodes
+wp search-replace "[Nexus_breadcrumbs" "[mrdemonwolf_breadcrumbs" --precise
+wp search-replace "[nexus_tags" "[mrdemonwolf_tags" --precise
+wp search-replace "[nexus_social_share" "[mrdemonwolf_social_share" --precise
 
-- Shortcodes in post content (`Nexus_breadcrumbs` to
-  `mrdemonwolf_breadcrumbs`, etc.)
-- CSS classes (`nexus-` to `mdw-`)
-- Post meta keys (`_nexus_service_image` to
-  `_mrdemonwolf_service_image`)
-- `wp_options` entries with the `nexus_` prefix
+# 2. CSS classes (Divi builder data)
+wp search-replace "nexus-" "mdw-" --precise
 
-The migration is idempotent and safe to run multiple
-times. Requires [WP-CLI](https://wp-cli.org/) to be
-installed.
+# 3. Post meta keys
+wp db query "UPDATE $(wp db prefix)postmeta SET meta_key = '_mrdemonwolf_service_image' WHERE meta_key = '_nexus_service_image';"
+
+# 4. Options table
+wp db query "UPDATE $(wp db prefix)options SET option_name = REPLACE(option_name, 'nexus_', 'mrdemonwolf_') WHERE option_name LIKE 'nexus\_%';"
+```
+
+All commands are idempotent and safe to run multiple
+times.
 
 ## Tech Stack
 
