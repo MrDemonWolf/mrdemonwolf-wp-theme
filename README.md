@@ -83,13 +83,23 @@ to avoid broken references:
    overrides.
 4. **Divi Library** - Go to **Divi > Divi Library >
    Import & Export > Import** and upload
-   `MrDemonWolf Divi Library.json`. This loads reusable
-   layout modules and sections.
+   `MrDemonWolf Divi Library.json`. Check the
+   **"Import Presets"** checkbox before importing.
+   This loads reusable layout modules and sections.
 5. **Theme Builder** - Go to **Divi > Theme Builder >
    Portability > Import** and upload
-   `MrDemonWolfThemeBuilder.json`. This assigns header,
-   footer, and page templates that reference the Library
-   items from step 4.
+   `MrDemonWolf Theme Builder.json`. Check the
+   **"Import Presets"** checkbox before importing.
+   This assigns header, footer, and page templates
+   that reference the Library items from step 4.
+6. **Reading Settings** - Go to **Settings > Reading**.
+   Under "Your homepage displays," select **A static
+   page**, set **Homepage** to "Home" and **Posts page**
+   to "Blog." Click **Save Changes**.
+7. **Menu Assignment** - Go to **Appearance > Menus**.
+   Select the "Main Menu" and assign it to the
+   **Primary Menu** display location. Click
+   **Save Menu**.
 
 ### Migrating from Nexus
 
@@ -220,7 +230,7 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Customizer Settings.json
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
-│   └── MrDemonWolfThemeBuilder.json
+│   └── MrDemonWolf Theme Builder.json
 └── migrate.sh                 # WP-CLI migration script
 ```
 
