@@ -153,12 +153,6 @@ The script updates Divi Customizer options (`et_divi`),
 Global Colors (`et_global_data`), and all Divi Builder
 content via `wp search-replace`.
 
-**Quick one-liner** — paste into SSH with your colors:
-
-```bash
-P="#ff6600" S="#1a1a2e" && wp option patch update et_divi accent_color "$P" && wp option patch update et_divi link_color "$P" && wp option patch update et_divi menu_link_active "$P" && wp option patch update et_divi primary_nav_dropdown_line_color "$P" && wp option patch update et_divi secondary_nav_bg "$P" && wp option patch update et_divi secondary_nav_dropdown_bg "$P" && wp option patch update et_divi slide_nav_bg "$P" && wp option patch update et_divi footer_widget_header_color "$P" && wp option patch update et_divi footer_widget_bullet_color "$P" && wp option patch update et_divi footer_menu_active_link_color "$P" && wp option patch update et_divi secondary_accent_color "$S" && wp option patch update et_divi header_color "$S" && wp search-replace "#1e8a8a" "$P" --precise --quiet && wp search-replace "#0c1e21" "$S" --precise --quiet && wp search-replace "#364e52" "$S" --precise --quiet && wp search-replace "#d8e5e5" "$P" --precise --quiet && wp search-replace "#ecf0f0" "$P" --precise --quiet && wp search-replace "#18292c" "$S" --precise --quiet && wp search-replace "#a9b8b8" "$P" --precise --quiet && wp search-replace "#c9d1d1" "$P" --precise --quiet && wp search-replace "#67787a" "$S" --precise --quiet && wp search-replace "#313d3d" "$S" --precise --quiet && wp search-replace "#e9eded" "$P" --precise --quiet && echo "Done — colors rebranded."
-```
-
 #### Method 3: Pre-Import File Rebrand
 
 To change colors **before** importing into WordPress, run
@@ -171,6 +165,64 @@ To change colors **before** importing into WordPress, run
 This replaces all brand hex values in the four JSON files
 and `All Content.xml`. Import the updated files normally
 using the steps above.
+
+### Color Locations
+
+Reference of every brand color and where it lives in the
+theme. Use this to know what each rebranding method covers
+and what still needs manual work.
+
+#### Palette
+
+| Role | Hex | CSS Variable |
+| --- | --- | --- |
+| Primary (links, buttons, accents) | `#1e8a8a` | `--gcid-primary-color` |
+| Secondary (headings, dark elements) | `#0c1e21` | `--gcid-secondary-color` |
+| Body text | `#364e52` | `--gcid-body-color` |
+| Background | `#d8e5e5` | `--gcid-qn8h12q0c7` |
+| Light BG | `#ecf0f0` | `--gcid-xsweq3oku6` |
+| Dark 2 | `#18292c` | `--gcid-hhvnnvrog9` |
+| Text 2 | `#a9b8b8` | `--gcid-0ny19batqe` |
+| Extra 1 (borders) | `#c9d1d1` | hardcoded |
+| Extra 2 (accents) | `#67787a` | hardcoded |
+| Extra 3 (dark layout) | `#313d3d` | hardcoded |
+| Extra 4 (light accents) | `#e9eded` | hardcoded |
+
+#### Where colors live
+
+1. **Divi Admin UI** — Global Colors in the Design
+   Variable Manager, Customizer accent/link/heading colors,
+   and per-module overrides in the Visual Builder.
+2. **Database (`wp_options`)** — 12 Customizer color keys
+   in `et_divi`, 5 global color definitions in
+   `et_global_data.global_colors`, and 159+ inline color
+   refs in `wp_posts` builder content. Handled by
+   `rebrand-colors.sh`.
+3. **`theme/style.css`** — 30+ usages via `--gcid-*` CSS
+   variables (update automatically when global colors
+   change). Also contains hardcoded hex values and RGBA
+   values that need manual updates (see below).
+4. **Supplementary exports (`supplementary/`)** — Theme
+   Builder JSON, All Content XML, Divi Library JSON, and
+   Customizer Settings JSON. Handled by `rebrand-files.sh`.
+
+#### What the scripts don't cover
+
+The rebrand scripts replace hex values in the database and
+export files but do **not** update these items in
+`theme/style.css`:
+
+- **Hardcoded hex values** — `#ecf0f0` (5 places),
+  `#c9d1d1` (7 places), `#a9b8b8` (1 place),
+  `#67787a` (2 places)
+- **RGBA values using the primary color** —
+  `rgba(30, 138, 138, 0.3)` and
+  `rgba(30, 138, 138, 0.15)`
+- **URL-encoded colors in SVG data URIs** — e.g.
+  `%23ecf0f0` inside `data:image/svg+xml` strings
+
+These must be updated with a manual find-and-replace in
+`theme/style.css` when rebranding.
 
 ### Migrating from Nexus
 
