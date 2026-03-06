@@ -101,6 +101,77 @@ to avoid broken references:
    **Primary Menu** display location. Click
    **Save Menu**.
 
+### Customizing Colors
+
+The theme uses **Divi Global Colors** (CSS custom
+properties) to keep the color palette consistent across all
+layouts and components. Changing these values updates every
+element that references them.
+
+#### Color Reference
+
+| Variable / Key | Role | Default |
+|---|---|---|
+| `--gcid-primary-color` / `accent_color` | Primary accent | `#1e8a8a` |
+| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#0c1e21` |
+| `--gcid-heading-color` / `header_color` | Heading text | `#0c1e21` |
+| `--gcid-body-color` / `font_color` | Body text | `#364e52` |
+| `link_color` | Link color | `#1e8a8a` |
+| `gcid-qn8h12q0c7` | Background | `#d8e5e5` |
+| `gcid-xsweq3oku6` | Light background | `#ecf0f0` |
+| `gcid-hhvnnvrog9` | Dark color 2 | `#18292c` |
+| `gcid-0ny19batqe` | Text 2 | `#a9b8b8` |
+
+#### Method 1: WordPress Admin
+
+Change colors through the Divi UI — no code required:
+
+- **Visual Builder** > Design Variable Manager > Colors
+  tab — edit the Global Color swatches directly.
+- **Appearance > Customize > General Settings > Layout
+  Settings** — update accent, link, and header/footer
+  colors in the Customizer.
+
+#### Method 2: WP-CLI Rebrand Script (post-import)
+
+For bulk changes on a live site after importing the
+supplementary files, use `rebrand-colors.sh`. Requires
+[WP-CLI](https://wp-cli.org/).
+
+> **WARNING:** This modifies your database directly.
+> **Back up before running.**
+
+```bash
+# Preview changes (no writes)
+./rebrand-colors.sh --primary "#ff6600" --secondary "#1a1a2e" --dry-run
+
+# Apply the rebrand
+./rebrand-colors.sh --primary "#ff6600" --secondary "#1a1a2e"
+```
+
+The script updates Divi Customizer options (`et_divi`),
+Global Colors (`et_global_data`), and all Divi Builder
+content via `wp search-replace`.
+
+**Quick one-liner** — paste into SSH with your colors:
+
+```bash
+P="#ff6600" S="#1a1a2e" && wp option patch update et_divi accent_color "$P" && wp option patch update et_divi link_color "$P" && wp option patch update et_divi menu_link_active "$P" && wp option patch update et_divi primary_nav_dropdown_line_color "$P" && wp option patch update et_divi secondary_nav_bg "$P" && wp option patch update et_divi secondary_nav_dropdown_bg "$P" && wp option patch update et_divi slide_nav_bg "$P" && wp option patch update et_divi footer_widget_header_color "$P" && wp option patch update et_divi footer_widget_bullet_color "$P" && wp option patch update et_divi footer_menu_active_link_color "$P" && wp option patch update et_divi secondary_accent_color "$S" && wp option patch update et_divi header_color "$S" && wp search-replace "#1e8a8a" "$P" --precise --quiet && wp search-replace "#0c1e21" "$S" --precise --quiet && wp search-replace "#364e52" "$S" --precise --quiet && wp search-replace "#d8e5e5" "$P" --precise --quiet && wp search-replace "#ecf0f0" "$P" --precise --quiet && wp search-replace "#18292c" "$S" --precise --quiet && wp search-replace "#a9b8b8" "$P" --precise --quiet && wp search-replace "#c9d1d1" "$P" --precise --quiet && wp search-replace "#67787a" "$S" --precise --quiet && wp search-replace "#313d3d" "$S" --precise --quiet && wp search-replace "#e9eded" "$P" --precise --quiet && echo "Done — colors rebranded."
+```
+
+#### Method 3: Pre-Import File Rebrand
+
+To change colors **before** importing into WordPress, run
+`rebrand-files.sh` on the supplementary export files:
+
+```bash
+./rebrand-files.sh --primary "#ff6600" --secondary "#1a1a2e"
+```
+
+This replaces all brand hex values in the four JSON files
+and `All Content.xml`. Import the updated files normally
+using the steps above.
+
 ### Migrating from Nexus
 
 If you are switching from the Nexus Divi Child Theme,
@@ -231,7 +302,9 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
 │   └── MrDemonWolf Theme Builder.json
-└── migrate.sh                 # WP-CLI migration script
+├── migrate.sh                 # WP-CLI migration script
+├── rebrand-colors.sh          # WP-CLI color rebrand script
+└── rebrand-files.sh           # File-based color rebrand script
 ```
 
 ## License
