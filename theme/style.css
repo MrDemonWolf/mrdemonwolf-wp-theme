@@ -1323,6 +1323,20 @@ blockquote p {
 }
 
 /** FOOTER **/
+.mdw-footer-row .et_pb_text_inner,
+.mdw-footer-row .et_pb_text_inner p,
+.mdw-footer-row .et_pb_text_inner a,
+.mdw-footer-row .et_pb_text_inner li {
+    color: var(--gcid-body-color) !important;
+}
+.mdw-footer-row h1,
+.mdw-footer-row h2,
+.mdw-footer-row h3,
+.mdw-footer-row h4,
+.mdw-footer-row h5,
+.mdw-footer-row h6 {
+    color: var(--gcid-heading-color) !important;
+}
 .mdw-footer-row .et_pb_text{
 	transition: all 0.2s ease-in-out;
 }

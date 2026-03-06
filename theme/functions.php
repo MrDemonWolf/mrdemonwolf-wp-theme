@@ -53,6 +53,86 @@ function mrdemonwolf_disable_year_month_uploads() {
 add_action( 'after_switch_theme', 'mrdemonwolf_disable_year_month_uploads' );
 
 // ===============================
+// Theme Cleanup on Switch
+// ===============================
+function mrdemonwolf_on_theme_switch() {
+	$mu_dir  = defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : ( ABSPATH . 'wp-content/mu-plugins' );
+	$mu_file = $mu_dir . '/mdw-cleanup-notice.php';
+
+	if ( ! is_dir( $mu_dir ) ) {
+		wp_mkdir_p( $mu_dir );
+	}
+
+	$mu_code = <<<'PHP'
+<?php
+/**
+ * Plugin Name: MrDemonWolf Cleanup Notice
+ * Description: One-time admin notice to clean up MrDemonWolf theme data after deactivation.
+ */
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+add_action( 'admin_notices', 'mdw_cleanup_admin_notice' );
+function mdw_cleanup_admin_notice() {
+	$nonce = wp_create_nonce( 'mdw_cleanup_action' );
+	?>
+	<div class="notice notice-warning is-dismissible" id="mdw-cleanup-notice">
+		<p><strong><?php echo esc_html__( 'MrDemonWolf theme was deactivated.', 'mrdemonwolf' ); ?></strong>
+		<?php echo esc_html__( 'Clean up theme data?', 'mrdemonwolf' ); ?></p>
+		<p>
+			<button class="button button-primary" id="mdw-cleanup-btn"><?php echo esc_html__( 'Clean Up', 'mrdemonwolf' ); ?></button>
+			<button class="button" id="mdw-dismiss-btn"><?php echo esc_html__( 'Dismiss', 'mrdemonwolf' ); ?></button>
+		</p>
+	</div>
+	<script>
+	(function(){
+		function mdwCleanupAjax(action) {
+			var data = new FormData();
+			data.append('action', 'mdw_cleanup_theme_data');
+			data.append('cleanup', action);
+			data.append('nonce', '<?php echo esc_js( $nonce ); ?>');
+			fetch(ajaxurl, { method: 'POST', credentials: 'same-origin', body: data })
+				.then(function(r){ return r.json(); })
+				.then(function(){ document.getElementById('mdw-cleanup-notice').remove(); });
+		}
+		document.getElementById('mdw-cleanup-btn').addEventListener('click', function(){ mdwCleanupAjax('clean'); });
+		document.getElementById('mdw-dismiss-btn').addEventListener('click', function(){ mdwCleanupAjax('dismiss'); });
+	})();
+	</script>
+	<?php
+}
+
+add_action( 'wp_ajax_mdw_cleanup_theme_data', 'mdw_cleanup_theme_data_handler' );
+function mdw_cleanup_theme_data_handler() {
+	check_ajax_referer( 'mdw_cleanup_action', 'nonce' );
+
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( 'Insufficient permissions.' );
+	}
+
+	$cleanup = isset( $_POST['cleanup'] ) ? sanitize_text_field( wp_unslash( $_POST['cleanup'] ) ) : '';
+
+	if ( 'clean' === $cleanup ) {
+		update_option( 'uploads_use_yearmonth_folders', 1 );
+		delete_post_meta_by_key( '_mrdemonwolf_service_image' );
+		flush_rewrite_rules();
+	}
+
+	// Delete this mu-plugin file regardless of clean/dismiss
+	$self = defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : ( ABSPATH . 'wp-content/mu-plugins' );
+	$self .= '/mdw-cleanup-notice.php';
+	if ( file_exists( $self ) ) {
+		unlink( $self );
+	}
+
+	wp_send_json_success();
+}
+PHP;
+
+	file_put_contents( $mu_file, $mu_code );
+}
+add_action( 'switch_theme', 'mrdemonwolf_on_theme_switch' );
+
+// ===============================
 // Register "Service" Custom Post Type
 // ===============================
 function mrdemonwolf_register_service_cpt() {
@@ -194,7 +274,7 @@ function mrdemonwolf_breadcrumbs_shortcode($atts) {
 			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html(get_the_title()) . '</span>';
 
 		} elseif (is_tax('product_cat')) {
-			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . single_term_title('', false) . '</span>';
+			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html( single_term_title('', false) ) . '</span>';
 		} elseif (is_shop()) {
 			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html(get_the_title(wc_get_page_id('shop'))) . '</span>';
 		}
@@ -217,9 +297,9 @@ function mrdemonwolf_breadcrumbs_shortcode($atts) {
 		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html(get_the_title()) . '</span>';
 
 	} elseif (is_category()) {
-		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . single_cat_title('', false) . '</span>';
+		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html( single_cat_title('', false) ) . '</span>';
 	} else {
-		$breadcrumb .= ' <span class="mdw-separator"></span><span>' .  preg_replace('/^.*?:\s*/', '', get_the_archive_title()) . '</span>';
+		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html( preg_replace('/^.*?:\s*/', '', get_the_archive_title()) ) . '</span>';
 	}
 
 	return $breadcrumb . '</nav>';

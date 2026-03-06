@@ -17,8 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: PHP syntax check
+      - name: PHP syntax check (theme)
         run: php -l theme/functions.php
+
+      - name: PHP syntax check (plugin)
+        run: php -l plugin/mrdemonwolf-color-preview/mrdemonwolf-color-preview.php
 
       - name: Check for leftover Nexus references
         run: |
@@ -26,3 +29,6 @@ jobs:
 
       - name: Build theme zip
         run: cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store"
+
+      - name: Build plugin zip
+        run: cd plugin && zip -r ../mrdemonwolf-color-preview.zip mrdemonwolf-color-preview/ -x "*.DS_Store"

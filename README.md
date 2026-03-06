@@ -302,16 +302,39 @@ ln -s /path/to/mrdemonwolf-wp-theme/theme /path/to/wordpress/wp-content/themes/m
 
 3. Activate the theme in wp-admin.
 
-### Building the Zip
+### Building the Zips
 
-To create an installable zip from the repo:
+Use the build script to create installable zips for both
+the theme and the color preview plugin:
 
 ```bash
-cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store" && cd ..
+./build.sh
 ```
 
-Tagged releases (`v*`) also build and attach the zip
+This produces:
+- `mrdemonwolf.zip` — the child theme
+- `mrdemonwolf-color-preview.zip` — the color preview plugin
+
+Tagged releases (`v*`) also build and attach both zips
 automatically — see CI/CD below.
+
+### Color Preview Plugin
+
+The `plugin/mrdemonwolf-color-preview/` directory contains a
+WordPress plugin that adds an admin-only color preview panel
+to the frontend. It lets you:
+
+- Live-preview all 11 brand colors in real time
+- Auto-derive related colors (HSL delta) when a base color
+  changes
+- Override individual derived colors manually
+- Apply color changes permanently to `theme/style.css`
+  (hardcoded hex, RGBA, and SVG data URI values)
+- Export colors as JSON with shell commands for the rebrand
+  scripts
+
+**Install:** Plugins > Add New > Upload Plugin, then upload
+`mrdemonwolf-color-preview.zip`.
 
 ### Code Quality
 
@@ -329,7 +352,7 @@ automatically — see CI/CD below.
 | Workflow | Trigger | What it does |
 | -------- | ------- | ------------ |
 | **CI** (`ci.yml`) | Push / PR to `main` or `dev` | PHP syntax check, Nexus reference check, zip build |
-| **Release** (`release.yml`) | Push of a `v*` tag | Builds `mrdemonwolf.zip` and creates a GitHub Release with the artifact |
+| **Release** (`release.yml`) | Push of a `v*` tag | Builds `mrdemonwolf.zip` and `mrdemonwolf-color-preview.zip`, creates a GitHub Release with both artifacts |
 
 ## Project Structure
 
@@ -338,6 +361,15 @@ mrdemonwolf-wp-theme/
 ├── .github/workflows/         # CI/CD pipelines
 │   ├── ci.yml                 # Lint, validate, and build
 │   └── release.yml            # Tagged release publisher
+├── plugin/                    # WordPress plugins
+│   └── mrdemonwolf-color-preview/
+│       ├── assets/
+│       │   ├── color-preview.css
+│       │   └── color-preview.js
+│       ├── mrdemonwolf-color-preview.php
+│       ├── LICENSE
+│       ├── readme.txt
+│       └── uninstall.php
 ├── theme/                     # WordPress child theme
 │   ├── assets/                # Bundled third-party assets
 │   │   ├── icon_portfolio.svg
@@ -354,6 +386,7 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
 │   └── MrDemonWolf Theme Builder.json
+├── build.sh                   # Build theme + plugin zips
 ├── migrate.sh                 # WP-CLI migration script
 ├── rebrand-colors.sh          # WP-CLI color rebrand script
 └── rebrand-files.sh           # File-based color rebrand script

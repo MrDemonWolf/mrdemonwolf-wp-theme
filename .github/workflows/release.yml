@@ -17,8 +17,13 @@ jobs:
       - name: Build theme zip
         run: cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store"
 
+      - name: Build plugin zip
+        run: cd plugin/mrdemonwolf-color-preview && zip -r ../../mrdemonwolf-color-preview.zip . -x "*.DS_Store"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: mrdemonwolf.zip
+          files: |
+            mrdemonwolf.zip
+            mrdemonwolf-color-preview.zip
           generate_release_notes: true
