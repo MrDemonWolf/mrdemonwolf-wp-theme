@@ -132,40 +132,6 @@ Change colors through the Divi UI — no code required:
   Settings** — update accent, link, and header/footer
   colors in the Customizer.
 
-#### Method 2: WP-CLI Rebrand Script (post-import)
-
-For bulk changes on a live site after importing the
-supplementary files, use `rebrand-colors.sh`. Requires
-[WP-CLI](https://wp-cli.org/).
-
-> **WARNING:** This modifies your database directly.
-> **Back up before running.**
-
-```bash
-# Preview changes (no writes)
-./rebrand-colors.sh --primary "#ff6600" --secondary "#1a1a2e" --dry-run
-
-# Apply the rebrand
-./rebrand-colors.sh --primary "#ff6600" --secondary "#1a1a2e"
-```
-
-The script updates Divi Customizer options (`et_divi`),
-Global Colors (`et_global_data`), and all Divi Builder
-content via `wp search-replace`.
-
-#### Method 3: Pre-Import File Rebrand
-
-To change colors **before** importing into WordPress, run
-`rebrand-files.sh` on the supplementary export files:
-
-```bash
-./rebrand-files.sh --primary "#ff6600" --secondary "#1a1a2e"
-```
-
-This replaces all brand hex values in the four JSON files
-and `All Content.xml`. Import the updated files normally
-using the steps above.
-
 ### Color Locations
 
 Reference of every brand color and where it lives in the
@@ -196,21 +162,21 @@ and what still needs manual work.
 2. **Database (`wp_options`)** — 12 Customizer color keys
    in `et_divi`, 5 global color definitions in
    `et_global_data.global_colors`, and 159+ inline color
-   refs in `wp_posts` builder content. Handled by
-   `rebrand-colors.sh`.
+   refs in `wp_posts` builder content. Use WP-CLI
+   `wp search-replace` to update.
 3. **`theme/style.css`** — 30+ usages via `--gcid-*` CSS
    variables (update automatically when global colors
    change). Also contains hardcoded hex values and RGBA
    values that need manual updates (see below).
 4. **Supplementary exports (`supplementary/`)** — Theme
    Builder JSON, All Content XML, Divi Library JSON, and
-   Customizer Settings JSON. Handled by `rebrand-files.sh`.
+   Customizer Settings JSON. Use find-and-replace to
+   update.
 
-#### What the scripts don't cover
+#### Manual style.css updates
 
-The rebrand scripts replace hex values in the database and
-export files but do **not** update these items in
-`theme/style.css`:
+The following items in `theme/style.css` require manual
+find-and-replace when rebranding:
 
 - **Hardcoded hex values** — `#ecf0f0` (5 places),
   `#c9d1d1` (7 places), `#a9b8b8` (1 place),
@@ -220,9 +186,6 @@ export files but do **not** update these items in
   `rgba(30, 138, 138, 0.15)`
 - **URL-encoded colors in SVG data URIs** — e.g.
   `%23ecf0f0` inside `data:image/svg+xml` strings
-
-These must be updated with a manual find-and-replace in
-`theme/style.css` when rebranding.
 
 ### Migrating from Nexus
 
@@ -354,9 +317,7 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
 │   └── MrDemonWolf Theme Builder.json
-├── migrate.sh                 # WP-CLI migration script
-├── rebrand-colors.sh          # WP-CLI color rebrand script
-└── rebrand-files.sh           # File-based color rebrand script
+└── migrate.sh                 # WP-CLI migration script
 ```
 
 ## License

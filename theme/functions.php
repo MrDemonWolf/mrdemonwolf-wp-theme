@@ -1,4 +1,6 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 //Activation of the child theme
 function mrdemonwolf_enqueue_styles() {
 	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
@@ -11,6 +13,12 @@ function mrdemonwolf_enqueue_styles() {
 	wp_enqueue_script('mrdemonwolf-script', get_stylesheet_directory_uri() . '/script.js', ['jquery', 'magnific-popup-js'], '1.0.0', true);
 }
 add_action( 'wp_enqueue_scripts', 'mrdemonwolf_enqueue_styles' );
+
+// Theme setup — load text domain
+function mrdemonwolf_setup() {
+    load_child_theme_textdomain( 'mrdemonwolf', get_stylesheet_directory() . '/languages' );
+}
+add_action( 'after_setup_theme', 'mrdemonwolf_setup' );
 
 //Deleting the Wordpress version number
 function mrdemonwolf_delete_version() {
@@ -102,7 +110,7 @@ function mrdemonwolf_service_custom_image_callback($post) {
     <div>
         <img id="mdw-service-image-preview"
              src="<?php echo esc_url($image_url); ?>"
-             style="max-width:100%;<?php echo $image_url ? '' : 'display:none;'; ?>" />
+             style="max-width:100%;<?php echo esc_attr( $image_url ? '' : 'display:none;' ); ?>" />
 
         <input type="hidden" id="mdw-service-image" name="mrdemonwolf_service_image" value="<?php echo esc_attr($image_url); ?>">
 
@@ -160,7 +168,7 @@ function mrdemonwolf_service_save_image($post_id) {
     if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
     if(isset($_POST['mrdemonwolf_service_image'])){
-        update_post_meta($post_id, '_mrdemonwolf_service_image', esc_url_raw($_POST['mrdemonwolf_service_image']));
+        update_post_meta($post_id, '_mrdemonwolf_service_image', esc_url_raw( wp_unslash( $_POST['mrdemonwolf_service_image'] ) ));
     }
 }
 add_action('save_post_service', 'mrdemonwolf_service_save_image');
@@ -180,6 +188,7 @@ function mrdemonwolf_breadcrumbs_shortcode($atts) {
 	}
 
 	$atts = shortcode_atts(['home' => 'Home'], $atts, 'mrdemonwolf_breadcrumbs');
+	$atts['home'] = sanitize_text_field( $atts['home'] );
 	$breadcrumb = '<nav class="mdw-breadcrumbs" aria-label="Breadcrumb">';
 	$breadcrumb .= '<a href="' . esc_url(home_url('/')) . '">' . esc_html($atts['home']) . '</a>';
 
@@ -194,7 +203,7 @@ function mrdemonwolf_breadcrumbs_shortcode($atts) {
 			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html(get_the_title()) . '</span>';
 
 		} elseif (is_tax('product_cat')) {
-			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . single_term_title('', false) . '</span>';
+			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html( single_term_title('', false) ) . '</span>';
 		} elseif (is_shop()) {
 			$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html(get_the_title(wc_get_page_id('shop'))) . '</span>';
 		}
@@ -217,9 +226,9 @@ function mrdemonwolf_breadcrumbs_shortcode($atts) {
 		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html(get_the_title()) . '</span>';
 
 	} elseif (is_category()) {
-		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . single_cat_title('', false) . '</span>';
+		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html( single_cat_title('', false) ) . '</span>';
 	} else {
-		$breadcrumb .= ' <span class="mdw-separator"></span><span>' .  preg_replace('/^.*?:\s*/', '', get_the_archive_title()) . '</span>';
+		$breadcrumb .= ' <span class="mdw-separator"></span><span>' . esc_html( preg_replace('/^.*?:\s*/', '', get_the_archive_title()) ) . '</span>';
 	}
 
 	return $breadcrumb . '</nav>';
@@ -267,11 +276,88 @@ add_shortcode('mrdemonwolf_social_share', function() {
 	$buttons = "";
 
     // Facebook
-    $buttons .= '<a href="https://www.facebook.com/sharer/sharer.php?u=' . $url . '" target="_blank" rel="noopener">&#xe093;</a>';
+    $buttons .= '<a href="' . esc_url( 'https://www.facebook.com/sharer/sharer.php?u=' . $url ) . '" target="_blank" rel="noopener">&#xe093;</a>';
     // Twitter / X
-    $buttons .= '<a href="https://twitter.com/intent/tweet?url=' . $url . '&text=' . $title . '" target="_blank" rel="noopener">&#xe094;</a>';
+    $buttons .= '<a href="' . esc_url( 'https://twitter.com/intent/tweet?url=' . $url . '&text=' . $title ) . '" target="_blank" rel="noopener">&#xe094;</a>';
     // LinkedIn
-    $buttons .= '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' . $url . '" target="_blank" rel="noopener">&#xe09d;</a>';
+    $buttons .= '<a href="' . esc_url( 'https://www.linkedin.com/sharing/share-offsite/?url=' . $url ) . '" target="_blank" rel="noopener">&#xe09d;</a>';
 
     return $buttons;
 });
+
+// ===============================
+// Theme Switch Cleanup
+// ===============================
+function mrdemonwolf_on_switch_theme() {
+    // Restore WordPress default year/month upload folders
+    update_option( 'uploads_use_yearmonth_folders', 1 );
+
+    // Write mu-plugin that offers one-click data cleanup
+    $mu_dir  = ABSPATH . 'wp-content/mu-plugins';
+    $mu_file = $mu_dir . '/mdw-cleanup-notice.php';
+
+    if ( ! is_dir( $mu_dir ) ) {
+        wp_mkdir_p( $mu_dir );
+    }
+
+    $mu_code = <<<'PHP'
+<?php
+/**
+ * MrDemonWolf Cleanup Notice
+ *
+ * Written automatically when the MrDemonWolf theme is deactivated.
+ * Shows an admin notice offering one-click removal of all theme data.
+ */
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+add_action( 'admin_notices', function() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+    $nonce_url = wp_nonce_url( admin_url( 'admin-post.php?action=mdw_cleanup' ), 'mdw_cleanup_nonce' );
+    echo '<div class="notice notice-warning"><p>';
+    echo '<strong>MrDemonWolf:</strong> Theme data still exists (Service posts, post meta). ';
+    echo '<a href="' . esc_url( $nonce_url ) . '">Click here to remove all MrDemonWolf data</a>.';
+    echo '</p></div>';
+});
+
+add_action( 'admin_post_mdw_cleanup', function() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( 'Unauthorized' );
+    }
+    check_admin_referer( 'mdw_cleanup_nonce' );
+
+    // Delete all "service" CPT posts
+    $services = get_posts( array(
+        'post_type'   => 'service',
+        'numberposts' => -1,
+        'post_status' => 'any',
+        'fields'      => 'ids',
+    ) );
+    foreach ( $services as $id ) {
+        wp_delete_post( $id, true );
+    }
+
+    // Remove _mrdemonwolf_ post meta from all posts
+    global $wpdb;
+    $wpdb->query(
+        "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE '\_mrdemonwolf\_%'"
+    );
+
+    // Remove this mu-plugin
+    @unlink( __FILE__ );
+
+    wp_safe_redirect( admin_url( '?mdw_cleaned=1' ) );
+    exit;
+});
+
+add_action( 'admin_notices', function() {
+    if ( ! empty( $_GET['mdw_cleaned'] ) ) {
+        echo '<div class="notice notice-success is-dismissible"><p>MrDemonWolf data has been removed.</p></div>';
+    }
+});
+PHP;
+
+    file_put_contents( $mu_file, $mu_code );
+}
+add_action( 'switch_theme', 'mrdemonwolf_on_switch_theme' );
