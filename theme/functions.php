@@ -377,3 +377,12 @@ PHP;
     file_put_contents( $mu_file, $mu_code );
 }
 add_action( 'switch_theme', 'mrdemonwolf_on_switch_theme' );
+
+// If MrDemonWolf is re-activated, suppress the cleanup notice
+function mrdemonwolf_on_reactivate() {
+    $mu_file = ABSPATH . 'wp-content/mu-plugins/mdw-cleanup-notice.php';
+    if ( file_exists( $mu_file ) ) {
+        @unlink( $mu_file );
+    }
+}
+add_action( 'after_switch_theme', 'mrdemonwolf_on_reactivate' );
