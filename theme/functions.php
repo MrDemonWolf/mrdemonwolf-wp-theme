@@ -314,10 +314,13 @@ add_action( 'admin_notices', function() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
-    $nonce_url = wp_nonce_url( admin_url( 'admin-post.php?action=mdw_cleanup' ), 'mdw_cleanup_nonce' );
-    echo '<div class="notice notice-warning"><p>';
+    $cleanup_url = wp_nonce_url( admin_url( 'admin-post.php?action=mdw_cleanup' ), 'mdw_cleanup_nonce' );
+    $dismiss_url = wp_nonce_url( admin_url( 'admin-post.php?action=mdw_dismiss' ), 'mdw_dismiss_nonce' );
+    echo '<div class="notice notice-warning is-dismissible"><p>';
     echo '<strong>MrDemonWolf:</strong> Theme data still exists (Service posts, post meta). ';
-    echo '<a href="' . esc_url( $nonce_url ) . '">Click here to remove all MrDemonWolf data</a>.';
+    echo '</p><p>';
+    echo '<a href="' . esc_url( $cleanup_url ) . '" class="button button-primary">Remove all MrDemonWolf data</a> ';
+    echo '<a href="' . esc_url( $dismiss_url ) . '" class="button">Dismiss</a>';
     echo '</p></div>';
 });
 
@@ -348,6 +351,19 @@ add_action( 'admin_post_mdw_cleanup', function() {
     @unlink( __FILE__ );
 
     wp_safe_redirect( admin_url( '?mdw_cleaned=1' ) );
+    exit;
+});
+
+add_action( 'admin_post_mdw_dismiss', function() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( 'Unauthorized' );
+    }
+    check_admin_referer( 'mdw_dismiss_nonce' );
+
+    // Remove this mu-plugin without touching any data
+    @unlink( __FILE__ );
+
+    wp_safe_redirect( admin_url() );
     exit;
 });
 
