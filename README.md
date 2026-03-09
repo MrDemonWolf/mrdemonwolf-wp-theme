@@ -101,6 +101,25 @@ to avoid broken references:
    **Primary Menu** display location. Click
    **Save Menu**.
 
+### Troubleshooting Import
+
+**Service posts show "Invalid post type service":**
+
+The `service` custom post type must be registered before the
+importer runs. If you see this error:
+
+1. Confirm **MrDemonWolf** is the active theme
+   (Appearance > Themes).
+2. Go to **Settings > Permalinks** and click **Save Changes**.
+3. Re-run the import — service posts will succeed.
+
+**Media files fail to download:**
+
+The importer fetches attachments over HTTP from the source
+site. If files fail, re-run the import with
+"Download and import file attachments" checked — it skips
+already-imported items and retries only the failures.
+
 ### Customizing Colors
 
 The theme uses **Divi Global Colors** (CSS custom
