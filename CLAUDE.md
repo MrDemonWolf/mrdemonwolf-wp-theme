@@ -2,63 +2,70 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## What This Repo Is
 
-MrDemonWolf is a WordPress child theme for Divi (Elegant Themes). There is no Node.js toolchain, no Composer, no bundler. The entire build is zipping directories.
+A WordPress **Divi child theme** for MrDemonWolf, Inc. The repo contains only the theme source — no WordPress core, no Divi parent theme. It is deployed by symlinking or copying `theme/` into a live WordPress install's `wp-content/themes/mrdemonwolf/`.
 
-- **WordPress** 6.0+, **PHP** 7.4+, **Divi** parent theme required
-- Theme JS uses jQuery (from WordPress/Divi)
-
-## Build & Lint Commands
+## Commands
 
 ```bash
-# Build distributable zip (outputs to build/)
-./build.sh
-
-# PHP syntax check (what CI runs)
+# Validate PHP syntax
 php -l theme/functions.php
 
-# Check for leftover Nexus references (CI rejects any matches)
+# Check for leftover Nexus references (must return 0 matches for CI to pass)
 grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --include="*.js" --include="*.json" --include="*.xml"
+
+# Build installable zip
+cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store" && cd ..
+
+# Migrate from Nexus (WP-CLI required, run from WordPress root)
+./migrate.sh --dry-run   # preview
+./migrate.sh             # apply
 ```
 
-No test suite exists. CI only lints PHP syntax and checks for forbidden "nexus" strings.
-
-## CI/CD
-
-- **ci.yml**: Push/PR to `main` or `dev` — PHP lint, Nexus check, zip smoke test
-- **release.yml**: Push of `v*` tag — builds theme zip, creates GitHub Release via `softprops/action-gh-release@v2`
-
-## Naming Conventions
-
-| Context | Prefix | Example |
-|---------|--------|---------|
-| PHP functions, shortcodes, options | `mrdemonwolf_` | `mrdemonwolf_enqueue_styles()` |
-| CSS classes | `mdw-` | `.mdw-breadcrumbs` |
-| Post meta keys | `_mrdemonwolf_` | `_mrdemonwolf_service_image` |
-| Theme text domain | `mrdemonwolf` | `__('...', 'mrdemonwolf')` |
-
-CI actively rejects any file under `theme/` or `supplementary/` containing "nexus" (case-insensitive).
+CI runs on push/PR to `main` or `dev`: PHP lint → Nexus check → zip build. Tagged `v*` pushes trigger a release that attaches the zip.
 
 ## Architecture
 
-### Theme (`theme/`)
+### Theme Layer Split
 
-Single `functions.php` with all PHP — hooks, shortcodes, a `service` CPT with metabox, enqueues. No class hierarchy, no includes, no autoloading. `style.css` is plain CSS (no preprocessor). `script.js` is a jQuery IIFE. Third-party libs (Magnific Popup) are committed in `theme/assets/`.
+The visual layout lives almost entirely in **Divi's database** (builder JSON stored in `wp_posts`, global colors in `wp_options`). The files in this repo handle only what Divi can't:
 
-On `switch_theme`, a mu-plugin (`mdw-cleanup-notice.php`) is written to offer one-click data cleanup.
+- **`theme/style.css`** — All custom CSS. Uses `--gcid-*` CSS custom properties for brand colors (these are set in Divi's UI, not in code). Also contains hardcoded hex/rgba values and relative `url(assets/...)` paths for SVG icons.
+- **`theme/functions.php`** — Enqueues styles/scripts, registers the `service` CPT, defines three shortcodes, and installs a mu-plugin cleanup notice on theme deactivation.
+- **`theme/script.js`** — jQuery: accordion close behavior, Magnific Popup init for `.mdw-video-popup`, and blog loop no-image detection.
+- **`theme/assets/`** — Bundled local assets (SVG icons + Magnific Popup 1.1.0). SVG `url()` references in `style.css` are relative to the stylesheet, resolving to `wp-content/themes/mrdemonwolf/assets/`.
 
-### Color System
+### Supplementary Exports
 
-11 brand colors: 2 base (primary `#1e8a8a`, secondary `#0c1e21`) + 9 derived. Some use Divi CSS custom properties (`--gcid-*`), others are hardcoded hex in `style.css`.
+`supplementary/` contains Divi Builder JSON/XML exports that must be imported into WP Admin in a specific order (Theme Options → Theme Builder → Customizer Settings → Divi Library → All Content XML). These are the source of truth for page layouts, global colors, and typography — not the theme files.
 
-### Migration
+### CSS Class & PHP Naming Conventions
 
-`migrate.sh` handles Nexus → MrDemonWolf migration via WP-CLI.
+- CSS utility classes: `mdw-` prefix (e.g. `mdw-card-1`, `mdw-btn-2`, `mdw-service-icon`)
+- PHP functions/hooks: `mrdemonwolf_` prefix
+- Post meta keys: `_mrdemonwolf_*`
+- Shortcodes: `[mrdemonwolf_breadcrumbs]`, `[mrdemonwolf_tags]`, `[mrdemonwolf_social_share]`
 
-## Key Constraints
+### Brand Colors
 
-1. **No build toolchain** — no npm, composer, webpack, Vite
-2. **PHP 7.4 compat** — no named arguments, match expressions, readonly properties, fibers
-3. **Security required** — every AJAX handler needs `check_ajax_referer()` + `current_user_can()`, all output escaped
-4. **`style.css` header is sacred** — `Theme Name: MrDemonWolf`, `Template: Divi` must stay in the header comment
+Divi CSS variables drive most colors — change them in Divi's UI (Design Variable Manager or Customizer), not in code:
+
+| Variable | Role | Current value |
+|----------|------|---------------|
+| `--gcid-primary-color` | Primary accent | `#0FACED` |
+| `--gcid-secondary-color` | Dark/headings | `#091533` |
+| `--gcid-heading-color` | Heading text | `#091533` |
+| `--gcid-body-color` | Body text | `#3B4F66` |
+| `--gcid-hhvnnvrog9` | Overlay tint | `#091533` |
+| `--gcid-qn8h12q0c7` | Subtle fill/bg | `#EEF2F7` |
+
+Hardcoded values that live only in `style.css` (not in Divi variables): `#EEF2F7`, `#C8D3E0`, `#8FA0B8`, `#5B6E8A`, and rgba variants of the primary color.
+
+### Service CPT
+
+Registered as post type `service` (slug: `services`). Has a custom "Icon" metabox in the admin sidebar that stores an image URL in `_mrdemonwolf_service_image`. No taxonomy — icon display is handled by Divi module layout.
+
+### Cleanup mu-plugin
+
+On theme deactivation, `functions.php` writes a temporary mu-plugin (`mdw-cleanup-notice.php`) to `wp-content/mu-plugins/`. This shows a one-time admin notice offering to clean up theme data. It deletes itself after the user clicks "Clean Up" or "Dismiss."

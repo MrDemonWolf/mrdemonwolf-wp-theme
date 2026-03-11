@@ -54,52 +54,24 @@ Your WordPress site, your brand.
 
 ### Shortcodes
 
-| Shortcode                     | Description                      |
-| ----------------------------- | -------------------------------- |
-| `[mrdemonwolf_breadcrumbs]`   | Renders breadcrumb navigation    |
-| `[mrdemonwolf_tags]`          | Displays current post/project tags |
-| `[mrdemonwolf_social_share]`  | Renders social share links       |
+| Shortcode                    | Description                        |
+| ---------------------------- | ---------------------------------- |
+| `[mrdemonwolf_breadcrumbs]`  | Renders breadcrumb navigation      |
+| `[mrdemonwolf_tags]`         | Displays current post/project tags |
+| `[mrdemonwolf_social_share]` | Renders social share links         |
 
 ### Importing Supplementary Files (Follow This Order)
 
-The `supplementary/` directory contains pre-built Divi
-configuration exports. **Import them in this exact order**
-to avoid broken references:
+The `supplementary/` directory contains pre-built Divi configuration exports. **Import them in this exact order** to avoid broken references:
 
-1. **All Content** - Go to **Tools > Import > WordPress**
-   and upload `All Content.xml`. This creates posts,
-   pages, media, and custom post types that the layouts
-   reference. When prompted, check "Download and import
-   file attachments."
-2. **Theme Options** - Go to **Divi > Theme Options >
-   Import & Export > Import** and upload
-   `MrDemonWolf Divi Theme Options.json`. This sets
-   global colors, fonts, button styles, and header/footer
-   defaults.
-3. **Customizer Settings** - Go to **Divi > Theme
-   Customizer > Export & Import > Import** and upload
-   `MrDemonWolf Divi Customizer Settings.json`. This
-   applies color palette, typography, and spacing
-   overrides.
-4. **Divi Library** - Go to **Divi > Divi Library >
-   Import & Export > Import** and upload
-   `MrDemonWolf Divi Library.json`. Check the
-   **"Import Presets"** checkbox before importing.
-   This loads reusable layout modules and sections.
-5. **Theme Builder** - Go to **Divi > Theme Builder >
-   Portability > Import** and upload
-   `MrDemonWolf Theme Builder.json`. Check the
-   **"Import Presets"** checkbox before importing.
-   This assigns header, footer, and page templates
-   that reference the Library items from step 4.
-6. **Reading Settings** - Go to **Settings > Reading**.
-   Under "Your homepage displays," select **A static
-   page**, set **Homepage** to "Home" and **Posts page**
-   to "Blog." Click **Save Changes**.
-7. **Menu Assignment** - Go to **Appearance > Menus**.
-   Select the "Main Menu" and assign it to the
-   **Primary Menu** display location. Click
-   **Save Menu**.
+1. **Theme Options** - Go to **Divi > Theme Options > Import & Export > Import** and upload `MrDemonWolf Divi Theme Options.json`. This sets global colors, fonts, button styles, and header/footer defaults.
+2. **Theme Builder** - Go to **Divi > Theme Builder > Portability > Import** and upload `MrDemonWolf Theme Builder.json`. Check the **"Import Presets"** checkbox before importing. This assigns header, footer, and page templates.
+3. **Customizer Settings** - Go to **Appearance > Customize > Export & Import > Import** and upload `MrDemonWolf Divi Customizer Settings.json`. This applies color palette, typography, and spacing overrides.
+4. **Divi Library** - Go to **Divi > Divi Library > Import & Export > Import** and upload `MrDemonWolf Divi Library.json`. Check the **"Import Presets"** checkbox before importing. This loads reusable layout modules and sections.
+5. **All Content** - Go to **Tools > Import > WordPress** and upload `All Content.xml`. This creates posts, pages, media, and custom post types that the layouts reference. When prompted, check "Download and import file attachments."
+6. **Reading Settings** - Go to **Settings > Reading**. Under "Your homepage displays," select **A static page**, set **Homepage** to "Home" and **Posts page** to "Blog." Click **Save Changes**.
+7. **Menu Assignment** - Go to **Appearance > Menus**. Select the "Main Menu" and assign it to the **Primary Menu** display location. Click **Save Menu**.
+8. **WP PageNavi Plugin (Optional)** - Go to **Plugins > Add New** and search for `pagenavi`. Install and activate the **WP-PageNavi** plugin if you want cleaner pagination on your blog and archives.
 
 ### Troubleshooting Import
 
@@ -129,17 +101,15 @@ element that references them.
 
 #### Color Reference
 
-| Variable / Key | Role | Default |
-|---|---|---|
-| `--gcid-primary-color` / `accent_color` | Primary accent | `#1e8a8a` |
-| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#0c1e21` |
-| `--gcid-heading-color` / `header_color` | Heading text | `#0c1e21` |
-| `--gcid-body-color` / `font_color` | Body text | `#364e52` |
-| `link_color` | Link color | `#1e8a8a` |
-| `gcid-qn8h12q0c7` | Background | `#d8e5e5` |
-| `gcid-xsweq3oku6` | Light background | `#ecf0f0` |
-| `gcid-hhvnnvrog9` | Dark color 2 | `#18292c` |
-| `gcid-0ny19batqe` | Text 2 | `#a9b8b8` |
+| Variable / Key                                      | Role             | Default   |
+| --------------------------------------------------- | ---------------- | --------- |
+| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#0FACED` |
+| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#091533` |
+| `--gcid-heading-color` / `header_color`             | Heading text     | `#091533` |
+| `--gcid-body-color` / `font_color`                  | Body text        | `#3B4F66` |
+| `link_color`                                        | Link color       | `#0FACED` |
+| `gcid-qn8h12q0c7`                                   | Background       | `#EEF2F7` |
+| `gcid-hhvnnvrog9`                                   | Overlay tint     | `#091533` |
 
 #### Method 1: WordPress Admin
 
@@ -159,19 +129,16 @@ and what still needs manual work.
 
 #### Palette
 
-| Role | Hex | CSS Variable |
-| --- | --- | --- |
-| Primary (links, buttons, accents) | `#1e8a8a` | `--gcid-primary-color` |
-| Secondary (headings, dark elements) | `#0c1e21` | `--gcid-secondary-color` |
-| Body text | `#364e52` | `--gcid-body-color` |
-| Background | `#d8e5e5` | `--gcid-qn8h12q0c7` |
-| Light BG | `#ecf0f0` | `--gcid-xsweq3oku6` |
-| Dark 2 | `#18292c` | `--gcid-hhvnnvrog9` |
-| Text 2 | `#a9b8b8` | `--gcid-0ny19batqe` |
-| Extra 1 (borders) | `#c9d1d1` | hardcoded |
-| Extra 2 (accents) | `#67787a` | hardcoded |
-| Extra 3 (dark layout) | `#313d3d` | hardcoded |
-| Extra 4 (light accents) | `#e9eded` | hardcoded |
+| Role                                | Hex       | CSS Variable             |
+| ----------------------------------- | --------- | ------------------------ |
+| Primary (Electric Blue)             | `#0FACED` | `--gcid-primary-color`   |
+| Secondary (Deep Navy)               | `#091533` | `--gcid-secondary-color` |
+| Body text                           | `#3B4F66` | `--gcid-body-color`      |
+| Page background                     | `#EEF2F7` | `--gcid-qn8h12q0c7`      |
+| Overlay tint                        | `#091533` | `--gcid-hhvnnvrog9`      |
+| Borders / muted                     | `#C8D3E0` | hardcoded                |
+| Timeline / icon gray                | `#5B6E8A` | hardcoded                |
+| Person card bg                      | `#8FA0B8` | hardcoded                |
 
 #### Where colors live
 
@@ -194,17 +161,13 @@ and what still needs manual work.
 
 #### Manual style.css updates
 
-The following items in `theme/style.css` require manual
-find-and-replace when rebranding:
+When rebranding, update the hardcoded values in `theme/style.css`:
 
-- **Hardcoded hex values** — `#ecf0f0` (5 places),
-  `#c9d1d1` (7 places), `#a9b8b8` (1 place),
-  `#67787a` (2 places)
+- **Hardcoded hex values** — `#EEF2F7`, `#C8D3E0`, `#8FA0B8`, `#5B6E8A`
 - **RGBA values using the primary color** —
-  `rgba(30, 138, 138, 0.3)` and
-  `rgba(30, 138, 138, 0.15)`
+  `rgba(15, 172, 237, 0.3)` and `rgba(15, 172, 237, 0.15)`
 - **URL-encoded colors in SVG data URIs** — e.g.
-  `%23ecf0f0` inside `data:image/svg+xml` strings
+  `%23EEF2F7` inside `data:image/svg+xml` strings
 
 ### Migrating from Nexus
 
@@ -250,13 +213,13 @@ times.
 
 ## Tech Stack
 
-| Layer       | Technology                        |
-| ----------- | --------------------------------- |
-| CMS         | WordPress                         |
-| Theme       | Divi (parent) + MrDemonWolf (child) |
-| Language    | PHP, CSS, JavaScript (jQuery)     |
-| Lightbox    | Magnific Popup 1.1.0 (bundled)    |
-| Migration   | WP-CLI                            |
+| Layer     | Technology                          |
+| --------- | ----------------------------------- |
+| CMS       | WordPress                           |
+| Theme     | Divi (parent) + MrDemonWolf (child) |
+| Language  | PHP, CSS, JavaScript (jQuery)       |
+| Lightbox  | Magnific Popup 1.1.0 (bundled)      |
+| Migration | WP-CLI                              |
 
 ## Development
 
@@ -308,10 +271,10 @@ automatically — see CI/CD below.
 
 ## CI/CD
 
-| Workflow | Trigger | What it does |
-| -------- | ------- | ------------ |
-| **CI** (`ci.yml`) | Push / PR to `main` or `dev` | PHP syntax check, Nexus reference check, zip build |
-| **Release** (`release.yml`) | Push of a `v*` tag | Builds `mrdemonwolf.zip` and creates a GitHub Release with the artifact |
+| Workflow                    | Trigger                      | What it does                                                            |
+| --------------------------- | ---------------------------- | ----------------------------------------------------------------------- |
+| **CI** (`ci.yml`)           | Push / PR to `main` or `dev` | PHP syntax check, Nexus reference check, zip build                      |
+| **Release** (`release.yml`) | Push of a `v*` tag           | Builds `mrdemonwolf.zip` and creates a GitHub Release with the artifact |
 
 ## Project Structure
 
@@ -321,8 +284,15 @@ mrdemonwolf-wp-theme/
 │   ├── ci.yml                 # Lint, validate, and build
 │   └── release.yml            # Tagged release publisher
 ├── theme/                     # WordPress child theme
-│   ├── assets/                # Bundled third-party assets
+│   ├── assets/                # Bundled assets (icons + lightbox)
+│   │   ├── icon_arrow_btn.svg
+│   │   ├── icon_arrow_btn_2.svg
+│   │   ├── icon_arrow_header.svg
+│   │   ├── icon_circles.svg
+│   │   ├── icon_home.svg
 │   │   ├── icon_portfolio.svg
+│   │   ├── icon_square.svg
+│   │   ├── separator.svg
 │   │   ├── jquery.magnific-popup.min.js
 │   │   └── magnific-popup.min.css
 │   ├── functions.php          # Theme functions and shortcodes
@@ -336,6 +306,8 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Library.json
 │   ├── MrDemonWolf Divi Theme Options.json
 │   └── MrDemonWolf Theme Builder.json
+├── CLAUDE.md                  # Claude Code repository guidance
+├── DESIGN.md                  # Brand and WP Admin reference
 └── migrate.sh                 # WP-CLI migration script
 ```
 

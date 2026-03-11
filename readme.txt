@@ -4,7 +4,7 @@ Tags: divi, child-theme, custom-post-type, breadcrumbs, portfolio
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,11 +38,17 @@ Magnific Popup video lightbox, and a suite of security hardening measures.
 
 == Installation ==
 
-1. Install and activate the **Divi** parent theme.
-2. Upload `mrdemonwolf.zip` via **Appearance → Themes → Add New → Upload Theme**.
-3. Activate **MrDemonWolf**.
-4. Import the bundled Divi Theme Builder templates and global presets via
-   **Divi → Theme Builder** and **Divi → Theme Customizer → Presets**.
+1. Install and activate the **Divi** parent theme. 
+2. Upload `mrdemonwolf.zip` via **Appearance → Themes → Add New → Upload Theme**. [cite: 11]
+3. Activate the **MrDemonWolf** child theme. [cite: 11]
+4. Go to **Divi → Theme Options** and import the Theme Options JSON.
+5. Go to **Divi → Theme Builder** and import the Theme Builder JSON (ensure "Import Presets" is checked).
+6. Go to **Appearance → Customize** and import the Customizer Settings JSON.
+7. Go to **Divi → Divi Library** and import the Divi Library JSON (ensure "Import Presets" is checked).
+8. Go to **Tools → Import → WordPress** and import the `All Content.xml` file.
+9. Go to **Settings → Reading** and set your Homepage and Posts page.
+10. Go to **Appearance → Menus** and assign the Primary Menu.
+11. (Optional) Go to **Plugins → Add New**, then search for and install **WP-PageNavi** for cleaner pagination.
 
 == Frequently Asked Questions ==
 
@@ -70,6 +76,17 @@ data.
 
 == Changelog ==
 
+= 1.1.0 =
+* Rebranded color palette: Electric Blue (#0FACED) primary, Deep Navy (#091533) secondary.
+* Replaced all hardcoded teal/old-brand hex and rgba values in style.css.
+* Bundled 7 SVG icon assets locally in theme/assets/ (no WP Media upload required).
+* Updated all SVG CSS references from /wp-content/uploads/ to url(assets/...) paths.
+* Conditional Magnific Popup loading — assets now only enqueue on pages with video popups.
+* Dynamic script version using theme version for automatic cache busting.
+* Added CLAUDE.md repository guidance file.
+* Added DESIGN.md brand and WP Admin reference guide.
+* Removed preview/cleanup-notice.html (not included in distributable zip).
+
 = 1.0.0 =
 * Initial public release.
 * Service custom post type with icon metabox.
@@ -81,6 +98,11 @@ data.
 * Release pipeline: GitHub Release on `v*` tag push.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Brand rebrand from teal to Electric Blue/Deep Navy palette. SVG icons are now
+bundled in the theme — no WP Media upload required. Update Divi Global Colors
+in WP Admin to match the new palette (see DESIGN.md).
 
 = 1.0.0 =
 Initial release — no upgrade steps required.
