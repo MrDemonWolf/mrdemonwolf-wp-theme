@@ -4,7 +4,7 @@ Tags: divi, child-theme, custom-post-type, breadcrumbs, portfolio
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,17 +76,6 @@ data.
 
 == Changelog ==
 
-= 1.1.0 =
-* Rebranded color palette: Electric Blue (#0FACED) primary, Deep Navy (#091533) secondary.
-* Replaced all hardcoded teal/old-brand hex and rgba values in style.css.
-* Bundled 7 SVG icon assets locally in theme/assets/ (no WP Media upload required).
-* Updated all SVG CSS references from /wp-content/uploads/ to url(assets/...) paths.
-* Conditional Magnific Popup loading — assets now only enqueue on pages with video popups.
-* Dynamic script version using theme version for automatic cache busting.
-* Added CLAUDE.md repository guidance file.
-* Added DESIGN.md brand and WP Admin reference guide.
-* Removed preview/cleanup-notice.html (not included in distributable zip).
-
 = 1.0.0 =
 * Initial public release.
 * Service custom post type with icon metabox.
@@ -94,15 +83,13 @@ data.
 * Magnific Popup video lightbox (bundled locally).
 * Security hardening: SVG restriction, login error obscuring, version hiding.
 * Cleanup notice mu-plugin with Remove and Dismiss actions.
+* Brand palette: Electric Blue (#0FACED) primary, Deep Navy (#091533) secondary.
+* 7 SVG icons bundled in theme/assets/ — no WP Media upload required.
+* Conditional Magnific Popup loading and dynamic script versioning.
 * CI: PHP lint, Nexus-string guard, zip smoke test.
 * Release pipeline: GitHub Release on `v*` tag push.
 
 == Upgrade Notice ==
-
-= 1.1.0 =
-Brand rebrand from teal to Electric Blue/Deep Navy palette. SVG icons are now
-bundled in the theme — no WP Media upload required. Update Divi Global Colors
-in WP Admin to match the new palette (see DESIGN.md).
 
 = 1.0.0 =
 Initial release — no upgrade steps required.
