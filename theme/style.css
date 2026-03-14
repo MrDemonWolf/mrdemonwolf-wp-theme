@@ -1,8 +1,8 @@
 /*
 Theme Name: MrDemonWolf
-Description: A custom Divi child theme by MrDemonWolf, Inc.
+Description: Custom Divi Child Theme for MrDemonWolf, Inc.
 Author: MrDemonWolf, Inc.
-Author URI: https://www.mrdemonwolf.com/
+Author URI: https://mrdemonwolf.com/
 Template: Divi
 Version: 1.0.0
 */
@@ -10,10 +10,10 @@ Version: 1.0.0
 
 /** GENERAL **/
 body{
-	background: #EEF2F7;
+	background: #ecf0f0;
 }
 #main-content{
-	overflow-x:hidden;
+	overflow-x:hidden;	
 }
 *::selection {
   background: #000;
@@ -41,7 +41,7 @@ h1, h2, h3, h4, h5, h6 {
 .mdw-box-border:after,
 .mdw-box-border-right:before,
 .mdw-box-border-right:after{
-	background: url("data:image/svg+xml,<svg viewBox=\"0 0 11 11\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" class=\"w-11 h-11\"><path d=\"M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z\" fill=\"%23EEF2F7\"></path></svg>");
+	background: url("data:image/svg+xml,<svg viewBox=\"0 0 11 11\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" class=\"w-11 h-11\"><path d=\"M11 1.54972e-06L0 0L2.38419e-07 11C1.65973e-07 4.92487 4.92487 1.62217e-06 11 1.54972e-06Z\" fill=\"%23ecf0f0\"></path></svg>");
 }
 .mdw-box-border-right:before{
 	right: 0px;
@@ -107,7 +107,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .et_pb_text_inner li:before,
 .et_pb_pricing li:before{
-	content: url(assets/icon_circles.svg);
+	content: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_circles.svg);
 	width: 13px;
 	display: inline-block;
 	margin-right: 9px;
@@ -160,7 +160,7 @@ body #page-container #et-boc .et_pb_button.mdw-btn-2:after,
 body #page-container #et-boc .mdw-btn-2 .et_pb_button:after,
 body #page-container #et-boc .mdw-btn-2.et_pb_button:after{
 	content: "" !important;
-	background-image: url(assets/icon_arrow_btn.svg);
+	background-image: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_arrow_btn.svg);
 	background-size: 14px !important;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -175,7 +175,7 @@ body #page-container #et-boc .mdw-btn-2.et_pb_button:after{
 body #page-container #et-boc .mdw-btn-3.et_pb_button:after{
 	background:white !important;
 	color: var(--gcid-secondary-color) !important;
-	background-image: url(assets/icon_arrow_btn_2.svg) !important;
+	background-image: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_arrow_btn_2.svg) !important;
 	background-size: 14px !important;
 	background-repeat: no-repeat !important;
 	background-position: center !important;
@@ -207,7 +207,7 @@ body #page-container #et-boc  .mdw-btn-2 .et_pb_button:after{
 }
 body #page-container #et-boc .mdw-btn-fw.et_pb_button:after{
 	content: "";
-	background-image: url(assets/icon_arrow_btn.svg);
+	background-image: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_arrow_btn.svg);
 	background-size: 14px !important;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -282,7 +282,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 }
 /* person */
 .mdw-person .et_pb_team_member_image{
-    background: #8FA0B8;
+    background: #a9b8b8;
 	overflow: visible !important;
 	border-radius: 10px;
 }
@@ -356,7 +356,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	    width: 54px;
     background: #ffffff00 !important;
     font-size: 0px !important;
-    border-left: 1px solid #C8D3E0 !important;
+    border-left: 1px solid #c9d1d1 !important;
 }
 /* video */
 .et_pb_video .et_pb_video_overlay .et_pb_video_play:before {
@@ -384,7 +384,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	padding: 31px 30px !important
 }
 .mdw-accordion .et_pb_toggle_content{
-	border-top: 1px dashed #C8D3E0;
+	border-top: 1px dashed #c9d1d1;
 	padding-top: 15px;
     margin-top: 27px;
 }
@@ -407,7 +407,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 }
 .mdw-breadcrumbs-txt .mdw-breadcrumbs:before{
     content: "";
-    background-image: url(assets/icon_home.svg);
+    background-image: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_home.svg);
     display: inline-block;
     width: 18px;
     height: 22px;
@@ -417,7 +417,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 }
 .mdw-separator:before{
 	content: "";
-    background-image: url(assets/icon_arrow_header.svg);
+    background-image: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_arrow_header.svg);
     display: inline-block;
     width: 12px;
     height: 14px;
@@ -459,10 +459,10 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	width: 80px !important;
 	height: 80px !important;
 	display: inline-flex;
-	background: linear-gradient(-45deg, rgba(15, 172, 237, 0.3) 0%, rgba(15, 172, 237, 0) 50%, rgba(15, 172, 237, 0.3) 100%);
+	background: linear-gradient(-45deg, rgba(30, 138, 138, 0.3) 0%, rgba(30, 138, 138, 0) 50%, rgba(30, 138, 138, 0.3) 100%);
 	border-width: 1px;
 	border-style: solid;
-	border-color: rgba(15, 172, 237, 0.15);
+	border-color: rgba(30, 138, 138, 0.15);
 	border-radius: 100%;
     transition: all .4s ease-in-out;
 }
@@ -556,7 +556,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 @media (min-width:980px){
 	.mdw-numbers .et_pb_column:not(.et-last-child):after{
 		content: "";
-        background-image: url(assets/separator.svg);
+        background-image: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/separator.svg);
         width: 10px;
         height: 90px;
         opacity: .15;
@@ -691,7 +691,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	position: absolute;
     right: 0;
     margin: 0;
-    background: #EEF2F7;
+    background: #ecf0f0;
     width: 48px;
     height: 48px;
     border-radius: 100%;
@@ -751,14 +751,14 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	transition: all 0.3s ease-in-out !important;
 }
 .mdw-service-icon {
-    background: linear-gradient(-45deg, rgba(15, 172, 237, 0.3) 0%, rgba(15, 172, 237, 0) 50%, rgba(15, 172, 237, 0.3) 100%);
+    background: linear-gradient(-45deg, rgba(30, 138, 138, 0.3) 0%, rgba(30, 138, 138, 0) 50%, rgba(30, 138, 138, 0.3) 100%);
     width: 100px !important;
     height: 100px !important;
     border-radius: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(15, 172, 237, 0.15);
+    border: 1px solid rgba(30, 138, 138, 0.15);
 	transition: all 0.3s ease-in-out;
 }
 html body #page-container #et-boc .mdw-service:hover *{
@@ -772,7 +772,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 	content: "";
     width: 40px;
     height: 50px;
-    background: url(assets/icon_portfolio.svg);
+    background: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_portfolio.svg);
     display: block;
     filter: brightness(0);
     background-size: 40px;
@@ -789,7 +789,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 	opacity:1!important;
 }
 .mdw-portfolio .post-meta a{
-	border: 1px solid #C8D3E0;
+	border: 1px solid #c9d1d1;
     border-radius: 4px;
     padding: 2px 7px 4px;
 }
@@ -842,12 +842,12 @@ html body #page-container #et-boc .mdw-service:hover *{
     position: absolute;
     height: 100%;
 	left: -90px;
-    border-left: 1px dashed #C8D3E0;
+    border-left: 1px dashed #c9d1d1;
 }
 .mdw-timeline-column-date:after{
 	content: "";
 	top: 50%;
-	border: 4px solid #5B6E8A;
+	border: 4px solid #67787a;
 	z-index: 1;
 	background: #fff;
 	border-radius: 16px;
@@ -876,12 +876,12 @@ html body #page-container #et-boc .mdw-service:hover *{
 		position: absolute;
 		height: 100%;
 		left: 0px;
-		border-left: 1px dashed #C8D3E0;
+		border-left: 1px dashed #c9d1d1;
 	}
 	.mdw-timeline-row:after{
 		content: "";
         top: 0;
-        border: 4px solid #5B6E8A;
+        border: 4px solid #67787a;
         z-index: 1;
         background: #fff;
         border-radius: 16px;
@@ -935,7 +935,7 @@ html body #page-container #et-boc .mdw-service:hover *{
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     background-color: rgba(255, 255, 255, .15);
-    border: 1px solid #C8D3E0;
+    border: 1px solid #c9d1d1;
     padding: 2px 7px 4px;
     margin-right: 8px;
 	transition: all 0.3s ease-in-out;
@@ -956,7 +956,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 body #main-content .wp-pagenavi a,
 body #main-content .wp-pagenavi span.current {
 	padding: 5px 10px;
-	border: 1px solid #C8D3E0 !important;
+	border: 1px solid #c9d1d1 !important;
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
@@ -1162,7 +1162,7 @@ body #main-content .mdw-comments a.comment-reply-link:hover{
 /* pagination */
 .mdw-pagination:before{
 	content: "";
-    background: url(assets/icon_square.svg);
+    background: url(https://lightyellow-mole-660888.hostingersite.com/wp-content/uploads/icon_square.svg);
     width: 30px;
     background-repeat: no-repeat;
     height: 30px;
@@ -1192,7 +1192,7 @@ body #et-boc #main-content  .mdw-pagination .meta-nav{
 	width: 52px;
 	height: 52px;
 	display: inline-flex;
-	border: 1px solid #C8D3E0;
+	border: 1px solid #c9d1d1;
 	border-radius: 100%;
 	justify-content: center;
 	align-items: center;
@@ -1323,20 +1323,6 @@ blockquote p {
 }
 
 /** FOOTER **/
-.mdw-footer-row .et_pb_text_inner,
-.mdw-footer-row .et_pb_text_inner p,
-.mdw-footer-row .et_pb_text_inner a,
-.mdw-footer-row .et_pb_text_inner li {
-    color: var(--gcid-body-color) !important;
-}
-.mdw-footer-row h1,
-.mdw-footer-row h2,
-.mdw-footer-row h3,
-.mdw-footer-row h4,
-.mdw-footer-row h5,
-.mdw-footer-row h6 {
-    color: var(--gcid-heading-color) !important;
-}
 .mdw-footer-row .et_pb_text{
 	transition: all 0.2s ease-in-out;
 }

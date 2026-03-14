@@ -65,9 +65,11 @@ Your WordPress site, your brand.
 The `supplementary/` directory contains pre-built Divi configuration exports. **Import them in this exact order** to avoid broken references:
 
 1. **Theme Options** - Go to **Divi > Theme Options > Import & Export > Import** and upload `MrDemonWolf Divi Theme Options.json`. This sets global colors, fonts, button styles, and header/footer defaults.
-2. **Theme Builder** - Go to **Divi > Theme Builder > Portability > Import** and upload `MrDemonWolf Theme Builder.json`. Check the **"Import Presets"** checkbox before importing. This assigns header, footer, and page templates.
-3. **Customizer Settings** - Go to **Appearance > Customize > Export & Import > Import** and upload `MrDemonWolf Divi Customizer Settings.json`. This applies color palette, typography, and spacing overrides.
-4. **Divi Library** - Go to **Divi > Divi Library > Import & Export > Import** and upload `MrDemonWolf Divi Library.json`. Check the **"Import Presets"** checkbox before importing. This loads reusable layout modules and sections.
+2. **Theme Builder** - Import in two parts:
+   - Go to **Divi > Theme Builder > Portability > Import** and upload `MrDemonWolf Divi Theme Builder Layouts.json`. Check **"Override Default Website Template"** and **"Import Presets"** before importing.
+   - Then import `MrDemonWolf Divi Theme Builder Templates.json` the same way. This assigns header, footer, and page templates.
+3. **Customizer Settings** - Go to **Appearance > Customize > Export & Import > Import** and upload `MrDemonWolf Divi Theme Customizer Settings.json`. This applies color palette, typography, and spacing overrides.
+4. **Divi Library** - *This file is not included in the current release. Skip this step.*
 5. **All Content** - Go to **Tools > Import > WordPress** and upload `All Content.xml`. This creates posts, pages, media, and custom post types that the layouts reference. When prompted, check "Download and import file attachments."
 6. **Reading Settings** - Go to **Settings > Reading**. Under "Your homepage displays," select **A static page**, set **Homepage** to "Home" and **Posts page** to "Blog." Click **Save Changes**.
 7. **Menu Assignment** - Go to **Appearance > Menus**. Select the "Main Menu" and assign it to the **Primary Menu** display location. Click **Save Menu**.
@@ -103,11 +105,11 @@ element that references them.
 
 | Variable / Key                                      | Role             | Default   |
 | --------------------------------------------------- | ---------------- | --------- |
-| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#0FACED` |
+| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#0074A5` |
 | `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#091533` |
 | `--gcid-heading-color` / `header_color`             | Heading text     | `#091533` |
 | `--gcid-body-color` / `font_color`                  | Body text        | `#3B4F66` |
-| `link_color`                                        | Link color       | `#0FACED` |
+| `link_color`                                        | Link color       | `#0074A5` |
 | `gcid-qn8h12q0c7`                                   | Background       | `#EEF2F7` |
 | `gcid-hhvnnvrog9`                                   | Overlay tint     | `#091533` |
 
@@ -131,7 +133,7 @@ and what still needs manual work.
 
 | Role                                | Hex       | CSS Variable             |
 | ----------------------------------- | --------- | ------------------------ |
-| Primary (Electric Blue)             | `#0FACED` | `--gcid-primary-color`   |
+| Primary (Electric Blue)             | `#0074A5` | `--gcid-primary-color`   |
 | Secondary (Deep Navy)               | `#091533` | `--gcid-secondary-color` |
 | Body text                           | `#3B4F66` | `--gcid-body-color`      |
 | Page background                     | `#EEF2F7` | `--gcid-qn8h12q0c7`      |
@@ -168,6 +170,45 @@ When rebranding, update the hardcoded values in `theme/style.css`:
   `rgba(15, 172, 237, 0.3)` and `rgba(15, 172, 237, 0.15)`
 - **URL-encoded colors in SVG data URIs** — e.g.
   `%23EEF2F7` inside `data:image/svg+xml` strings
+
+#### Replacing Legacy Nexus Colors
+
+If you imported from the original Nexus Divi child theme
+exports, those files embed old teal/dark colors that must
+be replaced. The supplementary exports included in this
+release have already been updated, but if you imported
+older versions, use the mapping below.
+
+| Legacy Color (Nexus) | Role              | Replace With | Notes                                          |
+| -------------------- | ----------------- | ------------ | ---------------------------------------------- |
+| `#1e8a8a`            | Nexus teal accent | `#0074A5`    | AA-safe shade of brand `#00ACED`               |
+| `#0c1e21`            | Nexus dark        | `#091533`    | -                                              |
+| `#18292c`            | Nexus dark 2      | `#091533`    | -                                              |
+| `#2ea3f2`            | Nexus blue accent | `#0074A5`    | -                                              |
+| `#ecf0f0`            | Nexus light bg    | `#EEF2F7`    | Also `%23ecf0f0` in SVG data URIs -> `%23EEF2F7` |
+| `#c9d1d1`            | Nexus muted border| `#C8D3E0`    | -                                              |
+| `#d8e5e5`            | Nexus light bg 2  | `#EEF2F7`    | -                                              |
+
+**WP-CLI commands** to replace in the database:
+
+```bash
+# Replace old Nexus colors in wp_options and wp_posts
+wp search-replace "#1e8a8a" "#0074A5" --precise
+wp search-replace "#0c1e21" "#091533" --precise
+wp search-replace "#18292c" "#091533" --precise
+wp search-replace "#2ea3f2" "#0074A5" --precise
+wp search-replace "#ecf0f0" "#EEF2F7" --precise
+wp search-replace "#c9d1d1" "#C8D3E0" --precise
+wp search-replace "#d8e5e5" "#EEF2F7" --precise
+```
+
+After running these commands:
+
+- Update any remaining global color swatches in **Divi >
+  Design Variable Manager**.
+- In `theme/style.css`, update hardcoded values like
+  `#ecf0f0`, `rgba(30, 138, 138, ...)` etc. manually in
+  code (these are not stored in the database).
 
 ### Migrating from Nexus
 
@@ -302,10 +343,10 @@ mrdemonwolf-wp-theme/
 │   └── style.css              # Theme stylesheet
 ├── supplementary/             # Divi Builder import files
 │   ├── All Content.xml
-│   ├── MrDemonWolf Divi Customizer Settings.json
-│   ├── MrDemonWolf Divi Library.json
-│   ├── MrDemonWolf Divi Theme Options.json
-│   └── MrDemonWolf Theme Builder.json
+│   ├── MrDemonWolf Divi Theme Builder Layouts.json
+│   ├── MrDemonWolf Divi Theme Builder Templates.json
+│   ├── MrDemonWolf Divi Theme Customizer Settings.json
+│   └── MrDemonWolf Divi Theme Options.json
 ├── CLAUDE.md                  # Claude Code repository guidance
 ├── DESIGN.md                  # Brand and WP Admin reference
 └── migrate.sh                 # WP-CLI migration script

@@ -1,7 +1,7 @@
 Main Product License
 ====================
 
-MrDemonWolf
+MrDemonWolf - Custom Divi Child Theme
 ------------
 - Copyright: 2025 MrDemonWolf, Inc.
 - License: GPL
