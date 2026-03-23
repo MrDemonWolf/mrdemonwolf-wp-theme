@@ -64,9 +64,13 @@ mrdemonwolf-wp-theme/
 The visual layout lives almost entirely in **Divi's database** (builder JSON stored in `wp_posts`, global colors in `wp_options`). The files in this repo handle only what Divi can't:
 
 - **`theme/style.css`** — All custom CSS. Uses `--gcid-*` CSS custom properties for brand colors (these are set in Divi's UI, not in code). Also contains hardcoded hex/rgba values.
-- **`theme/functions.php`** — Enqueues styles/scripts, registers the `service` CPT, defines three shortcodes, allows SVG uploads, disables year/month upload folders, and installs a mu-plugin cleanup notice on theme deactivation.
+- **`theme/functions.php`** — Enqueues styles/scripts, registers the `service` CPT, defines three shortcodes, disables year/month upload folders, and installs a mu-plugin cleanup notice on theme deactivation.
 - **`theme/script.js`** — jQuery: accordion close behavior, Magnific Popup init for `.mdw-video-popup`, and blog loop no-image detection.
-- **`theme/assets/`** — Bundled Magnific Popup 1.1.0 (CSS + JS). No SVG icons — all icons are handled via Divi modules or inline styles.
+- **`theme/assets/`** — Bundled Magnific Popup 1.1.0 (CSS + JS) and SVG icons used by CSS pseudo-elements.
+
+### Required Plugins
+
+- **[SVG Support](https://wordpress.org/plugins/svg-support/)** — Required for SVG upload and rendering in the Media Library. The theme does not include its own SVG upload handling; this plugin must be installed and activated.
 
 ### Supplementary Exports
 

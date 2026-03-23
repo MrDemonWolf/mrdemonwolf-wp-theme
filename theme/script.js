@@ -12,17 +12,17 @@
 				var $accordion = $toggle.closest('.et_pb_accordion');
 				if ($toggle.hasClass('et_pb_toggle_open')) {
 					$accordion.addClass('et_pb_accordion_toggling');
-					$toggle.find('.et_pb_toggle_content').slideToggle(700, function() { 
-						$toggle.removeClass('et_pb_toggle_open').addClass('et_pb_toggle_close'); 
+					$toggle.find('.et_pb_toggle_content').slideToggle(700, function() {
+						$toggle.removeClass('et_pb_toggle_open').addClass('et_pb_toggle_close');
 					});
 				}
-				setTimeout(function(){ 
-					$accordion.removeClass('et_pb_accordion_toggling'); 
+				setTimeout(function(){
+					$accordion.removeClass('et_pb_accordion_toggling');
 				}, 750);
 			}
 		});
-		
-		
+
+
 		/* -------------------------------
 		 * Video Popup
 		 * ------------------------------- */
@@ -36,8 +36,8 @@
 				fixedContentPos: false
 			});
 		}
-		
-		
+
+
 		/* -------------------------------
 		 * Blog Loop
 		 * ------------------------------- */
@@ -47,6 +47,6 @@
 				$(this).addClass('no-featured-image');
 			}
 		});
-		
+
 	});
 })(jQuery);

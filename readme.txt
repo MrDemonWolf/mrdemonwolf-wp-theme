@@ -30,25 +30,26 @@ Magnific Popup video lightbox, and a suite of security hardening measures.
 * **Social Share Shortcode** — `[mrdemonwolf_social_share]` for Facebook,
   X (Twitter), and LinkedIn.
 * **Video Popup** — Magnific Popup lightbox bundled locally; no CDN dependency.
-* **Security Hardening** — SVG uploads restricted to admins, login error
-  messages obscured, WordPress version hidden from the front end.
+* **Security Hardening** — login error messages obscured, WordPress
+  version hidden from the front end.
 * **Cleanup Notice** — after theme deactivation a mu-plugin surfaces an
   admin notice offering one-click removal of all theme data or a safe
   dismiss that leaves data intact.
 
 == Installation ==
 
-1. Install and activate the **Divi** parent theme. 
-2. Upload `mrdemonwolf.zip` via **Appearance → Themes → Add New → Upload Theme**. [cite: 11]
-3. Activate the **MrDemonWolf** child theme. [cite: 11]
-4. Go to **Divi → Theme Options** and import the Theme Options JSON.
-5. Go to **Divi → Theme Builder** and import the Theme Builder JSON (ensure "Import Presets" is checked).
-6. Go to **Appearance → Customize** and import the Customizer Settings JSON.
-7. Go to **Divi → Divi Library** and import the Divi Library JSON (ensure "Import Presets" is checked).
-8. Go to **Tools → Import → WordPress** and import the `All Content.xml` file.
-9. Go to **Settings → Reading** and set your Homepage and Posts page.
-10. Go to **Appearance → Menus** and assign the Primary Menu.
-11. (Optional) Go to **Plugins → Add New**, then search for and install **WP-PageNavi** for cleaner pagination.
+1. Install and activate the **Divi** parent theme.
+2. Install and activate the **SVG Support** plugin (https://wordpress.org/plugins/svg-support/) for SVG upload and rendering.
+3. Upload `mrdemonwolf.zip` via **Appearance → Themes → Add New → Upload Theme**.
+4. Activate the **MrDemonWolf** child theme.
+5. Go to **Divi → Theme Options** and import the Theme Options JSON.
+6. Go to **Divi → Theme Builder** and import the Theme Builder JSON (ensure "Import Presets" is checked).
+7. Go to **Appearance → Customize** and import the Customizer Settings JSON.
+8. Go to **Divi → Divi Library** and import the Divi Library JSON (ensure "Import Presets" is checked).
+9. Go to **Tools → Import → WordPress** and import the `All Content.xml` file.
+10. Go to **Settings → Reading** and set your Homepage and Posts page.
+11. Go to **Appearance → Menus** and assign the Primary Menu.
+12. (Optional) Go to **Plugins → Add New**, then search for and install **WP-PageNavi** for cleaner pagination.
 
 == Frequently Asked Questions ==
 
@@ -81,7 +82,7 @@ data.
 * Service custom post type with icon metabox.
 * Breadcrumbs, tags, and social share shortcodes.
 * Magnific Popup video lightbox (bundled locally).
-* Security hardening: SVG restriction, login error obscuring, version hiding.
+* Security hardening: login error obscuring, version hiding.
 * Cleanup notice mu-plugin with Remove and Dismiss actions.
 * Brand palette: Electric Blue (#0FACED) primary, Deep Navy (#091533) secondary.
 * 7 SVG icons bundled in theme/assets/ — no WP Media upload required.

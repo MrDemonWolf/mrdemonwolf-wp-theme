@@ -26,9 +26,9 @@ Your WordPress site, your brand.
   `[mrdemonwolf_social_share]`.
 - **Video Popup** - Magnific Popup integration for
   lightbox video embeds (bundled locally).
-- **Security Hardened** - SVG uploads restricted to
-  admins, login error messages obscured, WordPress
-  version number hidden, capability checks on all saves.
+- **Security Hardened** - Login error messages obscured,
+  WordPress version number hidden, capability checks on
+  all saves.
 - **Pre-built Layouts** - Supplementary Divi Builder JSON
   and XML exports for Theme Builder, Library, Theme
   Options, and Customizer settings.
@@ -41,13 +41,16 @@ Your WordPress site, your brand.
 1. Install and activate the
    [Divi Theme](https://www.elegantthemes.com/gallery/divi/)
    on your WordPress site.
-2. Download `mrdemonwolf.zip` from the
+2. Install and activate the
+   [SVG Support](https://wordpress.org/plugins/svg-support/)
+   plugin for SVG upload and rendering.
+3. Download `mrdemonwolf.zip` from the
    [latest release](https://github.com/mrdemonwolf/mrdemonwolf-wp-theme/releases/latest)
    (or build it from source — see Development below).
-3. Go to **Appearance > Themes > Add New > Upload Theme**
+4. Go to **Appearance > Themes > Add New > Upload Theme**
    and upload `mrdemonwolf.zip`.
-4. Activate the **MrDemonWolf** child theme.
-5. Follow the import steps below to load the pre-built
+5. Activate the **MrDemonWolf** child theme.
+6. Follow the import steps below to load the pre-built
    content and layouts.
 
 ## Usage
@@ -269,6 +272,7 @@ times.
 - WordPress 6.0+
 - Divi Theme (latest version)
 - PHP 7.4+
+- [SVG Support](https://wordpress.org/plugins/svg-support/) plugin
 - WP-CLI (for migration script only)
 
 ### Setup
@@ -306,7 +310,7 @@ automatically — see CI/CD below.
 - CSS classes use the `mdw-` prefix.
 - Nonce verification and capability checks on all
   form handlers.
-- SVG uploads restricted to administrators only.
+- SVG uploads handled by the [SVG Support](https://wordpress.org/plugins/svg-support/) plugin.
 - Translatable strings use the `mrdemonwolf` text
   domain.
 
