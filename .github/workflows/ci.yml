@@ -20,6 +20,13 @@ jobs:
       - name: PHP syntax check
         run: php -l theme/functions.php
 
+      - name: PHP Code Sniffer (WordPress standards)
+        uses: 10up/wpcs-action@stable
+        with:
+          paths: theme/
+          extensions: php
+          standard: WordPress
+
       - name: Check for leftover Nexus references
         run: |
           ! grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --include="*.js" --include="*.json" --include="*.xml"

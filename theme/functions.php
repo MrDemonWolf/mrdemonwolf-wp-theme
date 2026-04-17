@@ -35,11 +35,16 @@ function mrdemonwolf_disable_year_month_uploads() {
 }
 add_action( 'after_switch_theme', 'mrdemonwolf_disable_year_month_uploads' );
 
+// Resolve the mu-plugins directory with a sensible fallback.
+function mrdemonwolf_mu_dir() {
+	return defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : ( ABSPATH . 'wp-content/mu-plugins' );
+}
+
 // ===============================
 // Theme Cleanup on Switch
 // ===============================
 function mrdemonwolf_on_theme_switch() {
-	$mu_dir  = defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : ( ABSPATH . 'wp-content/mu-plugins' );
+	$mu_dir  = mrdemonwolf_mu_dir();
 	$mu_file = $mu_dir . '/mdw-cleanup-notice.php';
 
 	if ( ! is_dir( $mu_dir ) ) {
@@ -111,7 +116,9 @@ function mdw_cleanup_theme_data_handler() {
 }
 PHP;
 
-	file_put_contents( $mu_file, $mu_code );
+	if ( false === file_put_contents( $mu_file, $mu_code ) ) {
+		error_log( 'MrDemonWolf: failed to write cleanup mu-plugin to ' . $mu_file );
+	}
 }
 add_action( 'switch_theme', 'mrdemonwolf_on_theme_switch' );
 
@@ -155,6 +162,28 @@ function mrdemonwolf_service_add_metabox() {
 }
 add_action('add_meta_boxes', 'mrdemonwolf_service_add_metabox');
 
+// Enqueue media picker script on the service edit screen only.
+function mrdemonwolf_service_admin_assets( $hook ) {
+	if ( 'post.php' !== $hook && 'post-new.php' !== $hook ) return;
+
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen || 'service' !== $screen->post_type ) return;
+
+	wp_enqueue_media();
+	wp_enqueue_script(
+		'mrdemonwolf-service-metabox',
+		get_stylesheet_directory_uri() . '/assets/admin-service-metabox.js',
+		[ 'jquery' ],
+		'1.0.0',
+		true
+	);
+	wp_localize_script( 'mrdemonwolf-service-metabox', 'mdwServiceMetabox', [
+		'title'      => __( 'Select Image', 'mrdemonwolf' ),
+		'buttonText' => __( 'Use this image', 'mrdemonwolf' ),
+	] );
+}
+add_action( 'admin_enqueue_scripts', 'mrdemonwolf_service_admin_assets' );
+
 function mrdemonwolf_service_custom_image_callback($post) {
 
     wp_nonce_field('mrdemonwolf_service_image_nonce', 'mrdemonwolf_service_image_nonce_field');
@@ -172,39 +201,6 @@ function mrdemonwolf_service_custom_image_callback($post) {
         <button type="button" class="button" id="mdw-service-upload-btn"><?php esc_html_e('Select Image', 'mrdemonwolf'); ?></button>
         <button type="button" class="button" id="mdw-service-remove-btn" style="<?php echo $image_url ? '' : 'display:none;'; ?>"><?php esc_html_e('Remove', 'mrdemonwolf'); ?></button>
     </div>
-
-    <script>
-    jQuery(function($){
-        var frame;
-
-        $('#mdw-service-upload-btn').on('click', function(e){
-            e.preventDefault();
-
-            if(frame){ frame.open(); return; }
-
-            frame = wp.media({
-                title: 'Select Image',
-                button: { text: 'Use this image' },
-                multiple: false
-            });
-
-            frame.on('select', function(){
-                var attachment = frame.state().get('selection').first().toJSON();
-                $('#mdw-service-image').val(attachment.url);
-                $('#mdw-service-image-preview').attr('src', attachment.url).show();
-                $('#mdw-service-remove-btn').show();
-            });
-
-            frame.open();
-        });
-
-        $('#mdw-service-remove-btn').on('click', function(){
-            $('#mdw-service-image').val('');
-            $('#mdw-service-image-preview').hide();
-            $(this).hide();
-        });
-    });
-    </script>
     <?php
 }
 
@@ -237,6 +233,27 @@ function mrdemonwolf_breadcrumb_sep() {
 	return ' <span class="mdw-separator"></span>';
 }
 
+// Render a breadcrumb link segment (separator + anchor).
+function mrdemonwolf_breadcrumb_link( $url, $label ) {
+	return mrdemonwolf_breadcrumb_sep()
+		. '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
+}
+
+// Render a breadcrumb current-page segment (separator + span).
+function mrdemonwolf_breadcrumb_current( $label ) {
+	return mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html( $label ) . '</span>';
+}
+
+// Return a breadcrumb link for the first term of $taxonomy on $post_id, or ''.
+function mrdemonwolf_primary_term_link( $post_id, $taxonomy ) {
+	$terms = get_the_terms( $post_id, $taxonomy );
+	if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		return '';
+	}
+	$term = reset( $terms );
+	return mrdemonwolf_breadcrumb_link( get_term_link( $term->term_id, $taxonomy ), $term->name );
+}
+
 function mrdemonwolf_breadcrumbs_shortcode($atts) {
 	if (is_admin() && !wp_doing_ajax()) {
 		return '';
@@ -254,41 +271,30 @@ function mrdemonwolf_breadcrumbs_shortcode($atts) {
 
 	if (function_exists('is_woocommerce') && is_woocommerce()) {
 		if (is_singular('product')) {
-			$terms = get_the_terms($post->ID, 'product_cat');
-			if (!empty($terms) && !is_wp_error($terms)) {
-				$term = reset($terms);
-				$breadcrumb .= mrdemonwolf_breadcrumb_sep();
-				$breadcrumb .= '<a href="' . esc_url(get_term_link($term)) . '">' . esc_html($term->name) . '</a>';
-			}
-			$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html(get_the_title()) . '</span>';
-
+			$breadcrumb .= mrdemonwolf_primary_term_link($post->ID, 'product_cat');
+			$breadcrumb .= mrdemonwolf_breadcrumb_current(get_the_title());
 		} elseif (is_tax('product_cat')) {
-			$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html( single_term_title('', false) ) . '</span>';
+			$breadcrumb .= mrdemonwolf_breadcrumb_current(single_term_title('', false));
 		} elseif (is_shop()) {
-			$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html(get_the_title(wc_get_page_id('shop'))) . '</span>';
+			$breadcrumb .= mrdemonwolf_breadcrumb_current(get_the_title(wc_get_page_id('shop')));
 		}
 	} elseif (is_single() && 'post' === get_post_type()) {
 		$categories = get_the_category($post->ID);
 		if (!empty($categories)) {
-			$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<a href="' . esc_url(get_category_link($categories[0]->term_id)) . '">' . esc_html($categories[0]->name) . '</a>';
+			$breadcrumb .= mrdemonwolf_breadcrumb_link(get_category_link($categories[0]->term_id), $categories[0]->name);
 		}
-		$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html(get_the_title()) . '</span>';
+		$breadcrumb .= mrdemonwolf_breadcrumb_current(get_the_title());
 
 	} elseif (is_single() && 'project' === get_post_type()) {
-		$terms = get_the_terms($post->ID, 'project_category');
-		if (!empty($terms) && !is_wp_error($terms)) {
-			$term = reset($terms);
-			$breadcrumb .= mrdemonwolf_breadcrumb_sep();
-			$breadcrumb .= '<a href="' . esc_url(get_term_link($term->term_id, 'project_category')) . '">' . esc_html($term->name) . '</a>';
-		}
-		$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html(get_the_title()) . '</span>';
+		$breadcrumb .= mrdemonwolf_primary_term_link($post->ID, 'project_category');
+		$breadcrumb .= mrdemonwolf_breadcrumb_current(get_the_title());
 	} elseif (is_page()) {
-		$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html(get_the_title()) . '</span>';
+		$breadcrumb .= mrdemonwolf_breadcrumb_current(get_the_title());
 
 	} elseif (is_category()) {
-		$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html( single_cat_title('', false) ) . '</span>';
+		$breadcrumb .= mrdemonwolf_breadcrumb_current(single_cat_title('', false));
 	} else {
-		$breadcrumb .= mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html( preg_replace('/^.*?:\s*/', '', get_the_archive_title()) ) . '</span>';
+		$breadcrumb .= mrdemonwolf_breadcrumb_current(preg_replace('/^.*?:\s*/', '', get_the_archive_title()));
 	}
 
 	return $breadcrumb . '</nav>';
@@ -331,8 +337,8 @@ add_shortcode('mrdemonwolf_tags', 'mrdemonwolf_tags_shortcode');
 // Social Share Shortcode
 // ===============================
 add_shortcode('mrdemonwolf_social_share', function() {
-	$url   = urlencode( get_permalink() );
-	$title = urlencode( get_the_title() );
+	$url   = rawurlencode( get_permalink() );
+	$title = rawurlencode( get_the_title() );
 
 	$platforms = [
 		[ 'href' => 'https://www.facebook.com/sharer/sharer.php?u=' . $url, 'icon' => '&#xe093;' ],
