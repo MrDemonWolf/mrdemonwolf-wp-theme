@@ -21,11 +21,10 @@ jobs:
         run: php -l theme/functions.php
 
       - name: PHP Code Sniffer (WordPress standards)
-        uses: 10up/wpcs-action@stable
-        with:
-          paths: theme/
-          extensions: php
-          standard: WordPress
+        run: |
+          composer global require wp-coding-standards/wpcs:"^3" --no-progress --no-interaction -q
+          composer global require dealerdirect/phpcodesniffer-composer-installer --no-progress --no-interaction -q
+          ~/.composer/vendor/bin/phpcs --standard=WordPress --extensions=php theme/functions.php
 
       - name: Check for leftover Nexus references
         run: |
