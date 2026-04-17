@@ -8,9 +8,14 @@ Version: 1.0.0
 */
 
 
+:root {
+	--mdw-bg: #EEF2F7;
+	--mdw-border: #C8D3E0;
+}
+
 /** GENERAL **/
 body{
-	background: #EEF2F7;
+	background: var(--mdw-bg);
 }
 #main-content{
 	overflow-x:hidden;
@@ -356,7 +361,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	    width: 54px;
     background: #ffffff00 !important;
     font-size: 0px !important;
-    border-left: 1px solid #C8D3E0 !important;
+    border-left: 1px solid var(--mdw-border) !important;
 }
 /* video */
 .et_pb_video .et_pb_video_overlay .et_pb_video_play:before {
@@ -384,7 +389,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	padding: 31px 30px !important
 }
 .mdw-accordion .et_pb_toggle_content{
-	border-top: 1px dashed #C8D3E0;
+	border-top: 1px dashed var(--mdw-border);
 	padding-top: 15px;
     margin-top: 27px;
 }
@@ -691,7 +696,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	position: absolute;
     right: 0;
     margin: 0;
-    background: #EEF2F7;
+    background: var(--mdw-bg);
     width: 48px;
     height: 48px;
     border-radius: 100%;
@@ -789,7 +794,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 	opacity:1!important;
 }
 .mdw-portfolio .post-meta a{
-	border: 1px solid #C8D3E0;
+	border: 1px solid var(--mdw-border);
     border-radius: 4px;
     padding: 2px 7px 4px;
 }
@@ -842,7 +847,7 @@ html body #page-container #et-boc .mdw-service:hover *{
     position: absolute;
     height: 100%;
 	left: -90px;
-    border-left: 1px dashed #C8D3E0;
+    border-left: 1px dashed var(--mdw-border);
 }
 .mdw-timeline-column-date:after{
 	content: "";
@@ -876,7 +881,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 		position: absolute;
 		height: 100%;
 		left: 0px;
-		border-left: 1px dashed #C8D3E0;
+		border-left: 1px dashed var(--mdw-border);
 	}
 	.mdw-timeline-row:after{
 		content: "";
@@ -935,7 +940,7 @@ html body #page-container #et-boc .mdw-service:hover *{
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     background-color: rgba(255, 255, 255, .15);
-    border: 1px solid #C8D3E0;
+    border: 1px solid var(--mdw-border);
     padding: 2px 7px 4px;
     margin-right: 8px;
 	transition: all 0.3s ease-in-out;
@@ -956,7 +961,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 body #main-content .wp-pagenavi a,
 body #main-content .wp-pagenavi span.current {
 	padding: 5px 10px;
-	border: 1px solid #C8D3E0 !important;
+	border: 1px solid var(--mdw-border) !important;
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
@@ -1192,7 +1197,7 @@ body #et-boc #main-content  .mdw-pagination .meta-nav{
 	width: 52px;
 	height: 52px;
 	display: inline-flex;
-	border: 1px solid #C8D3E0;
+	border: 1px solid var(--mdw-border);
 	border-radius: 100%;
 	justify-content: center;
 	align-items: center;

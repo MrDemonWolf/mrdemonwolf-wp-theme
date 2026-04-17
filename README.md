@@ -265,6 +265,8 @@ times.
 | Lightbox  | Magnific Popup 1.1.0 (bundled)      |
 | Migration | WP-CLI                              |
 
+> Magnific Popup is pinned to [v1.1.0](https://github.com/dimsemenov/Magnific-Popup/releases/tag/1.1.0) and bundled under `theme/assets/`. To upgrade, replace `jquery.magnific-popup.min.js` and `magnific-popup.min.css` from the upstream release and bump the version string in `theme/functions.php`.
+
 ## Development
 
 ### Prerequisites

@@ -20,6 +20,12 @@ jobs:
       - name: PHP syntax check
         run: php -l theme/functions.php
 
+      - name: PHP Code Sniffer (WordPress-Core, errors only)
+        run: |
+          composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer global require wp-coding-standards/wpcs:"^3" --no-progress --no-interaction -q
+          ~/.composer/vendor/bin/phpcs --standard=WordPress-Core -n --extensions=php theme/functions.php
+
       - name: Check for leftover Nexus references
         run: |
           ! grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --include="*.js" --include="*.json" --include="*.xml"
