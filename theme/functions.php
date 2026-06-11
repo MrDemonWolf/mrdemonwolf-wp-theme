@@ -3,16 +3,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Load translations
+function mrdemonwolf_load_textdomain() {
+	load_child_theme_textdomain( 'mrdemonwolf', get_stylesheet_directory() . '/languages' );
+}
+add_action( 'after_setup_theme', 'mrdemonwolf_load_textdomain' );
+
 // Activation of the child theme
 function mrdemonwolf_enqueue_styles() {
-	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
+	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css', array(), wp_get_theme( get_template() )->get( 'Version' ) );
 
 	// Magnific Popup (loaded locally)
 	wp_enqueue_style( 'magnific-popup-css', get_stylesheet_directory_uri() . '/assets/magnific-popup.min.css', array(), '1.1.0', 'all' );
 	wp_enqueue_script( 'magnific-popup-js', get_stylesheet_directory_uri() . '/assets/jquery.magnific-popup.min.js', array( 'jquery' ), '1.1.0', true );
 
 	// Main script
-	wp_enqueue_script( 'mrdemonwolf-script', get_stylesheet_directory_uri() . '/script.js', array( 'jquery', 'magnific-popup-js' ), '1.0.0', true );
+	wp_enqueue_script( 'mrdemonwolf-script', get_stylesheet_directory_uri() . '/script.js', array( 'jquery', 'magnific-popup-js' ), (string) filemtime( get_stylesheet_directory() . '/script.js' ), true );
 }
 add_action( 'wp_enqueue_scripts', 'mrdemonwolf_enqueue_styles' );
 
@@ -279,7 +285,7 @@ function mrdemonwolf_breadcrumbs_shortcode( $atts ) {
 		return '';
 	}
 
-	$atts = shortcode_atts( array( 'home' => 'Home' ), $atts, 'mrdemonwolf_breadcrumbs' );
+	$atts = shortcode_atts( array( 'home' => __( 'Home', 'mrdemonwolf' ) ), $atts, 'mrdemonwolf_breadcrumbs' );
 	$breadcrumb = '<nav class="mdw-breadcrumbs" aria-label="Breadcrumb">';
 	$breadcrumb .= '<a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html( $atts['home'] ) . '</a>';
 
@@ -357,6 +363,10 @@ add_shortcode( 'mrdemonwolf_tags', 'mrdemonwolf_tags_shortcode' );
 add_shortcode(
 	'mrdemonwolf_social_share',
 	function () {
+		if ( ! get_the_ID() ) {
+			return '';
+		}
+
 		$url   = rawurlencode( get_permalink() );
 		$title = rawurlencode( get_the_title() );
 

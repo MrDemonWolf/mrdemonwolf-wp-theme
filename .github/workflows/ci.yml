@@ -31,4 +31,4 @@ jobs:
           ! grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --include="*.js" --include="*.json" --include="*.xml"
 
       - name: Build theme zip
-        run: cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store"
+        run: ./build.sh
