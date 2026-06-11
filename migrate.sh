@@ -74,7 +74,8 @@ fi
 echo ""
 echo "--- Post meta migration ---"
 
-meta_count=$(wp db query "SELECT COUNT(*) FROM $(wp db prefix)postmeta WHERE meta_key = '_nexus_service_image';" --skip-column-names 2>/dev/null | tr -d '[:space:]')
+meta_count=$(wp db query "SELECT COUNT(*) FROM $(wp db prefix)postmeta WHERE meta_key = '_nexus_service_image';" --skip-column-names 2>/dev/null | tr -d '[:space:]' || true)
+meta_count=${meta_count:-0}
 echo "  _nexus_service_image -> _mrdemonwolf_service_image: ${meta_count} row(s)"
 TOTAL=$((TOTAL + meta_count))
 
@@ -89,7 +90,9 @@ echo ""
 echo "--- Options migration ---"
 
 options=$(wp db query "SELECT option_name FROM $(wp db prefix)options WHERE option_name LIKE 'nexus\_%';" --skip-column-names 2>/dev/null || true)
-opt_count=$(echo "$options" | grep -c . 2>/dev/null || echo "0")
+# grep -c prints "0" AND exits 1 on no match, so `|| echo 0` would yield "0\n0"
+opt_count=$(printf '%s' "$options" | grep -c . || true)
+opt_count=${opt_count:-0}
 echo "  nexus_* options found: $opt_count"
 TOTAL=$((TOTAL + opt_count))
 
@@ -97,7 +100,10 @@ if ! $DRY_RUN && [[ "$opt_count" -gt 0 ]]; then
   while IFS= read -r opt; do
     [[ -z "$opt" ]] && continue
     new_opt="${opt/nexus_/mrdemonwolf_}"
-    wp db query "UPDATE $(wp db prefix)options SET option_name = '$new_opt' WHERE option_name = '$opt';"
+    # Escape backslashes and single quotes for the SQL string literals
+    opt_sql=${opt//\\/\\\\};         opt_sql=${opt_sql//\'/\'\'}
+    new_opt_sql=${new_opt//\\/\\\\}; new_opt_sql=${new_opt_sql//\'/\'\'}
+    wp db query "UPDATE $(wp db prefix)options SET option_name = '$new_opt_sql' WHERE option_name = '$opt_sql';"
     echo "    Renamed: $opt -> $new_opt"
   done <<< "$options"
 fi
