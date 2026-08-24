@@ -106,23 +106,22 @@ element that references them.
 
 #### Color Reference
 
-Brand is **Brand Blues v6**; the full palette, Divi mapping, and the
-dark-mode reference table live in [BRAND.md](BRAND.md).
+These are the **Nexus vendor defaults**. Every color location and the
+rebranding procedure: [COLORS.md](COLORS.md).
 
-| Variable / Key                                      | Role             | Brand Blues |
+| Variable / Key                                      | Role             | Value     |
 | --------------------------------------------------- | ---------------- | --------- |
-| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#3AAEE3` |
-| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#0A1633` |
-| `--gcid-heading-color` / `header_color`             | Heading text     | `#0A1633` |
-| `--gcid-body-color` / `font_color`                  | Body text        | `#1F2A40` |
-| `link_color`                                        | Link color       | `#0D4D8C` |
-| `gcid-qn8h12q0c7`                                   | Background       | `#E6EAF1` |
-| `gcid-hhvnnvrog9`                                   | Overlay tint     | `#0D2A56` |
+| `accent_color` / `link_color`                       | Accent           | `#1e8a8a` |
+| `secondary_accent_color` / `header_color`           | Dark, headings   | `#0c1e21` |
+| `font_color`                                        | Body text        | `#364e52` |
+| `gcid-xsweq3oku6`                                   | Light background | `#ecf0f0` |
+| `gcid-qn8h12q0c7`                                   | Background       | `#d8e5e5` |
+| `gcid-hhvnnvrog9`                                   | Dark color 2     | `#18292c` |
+| `gcid-0ny19batqe`                                   | Text 2           | `#a9b8b8` |
 
-Each of these is also the hex fallback baked into `theme/style.css`
-(`var(--gcid-primary-color, #3aaee3)`), so a missing Divi variable renders
-on-brand. The `supplementary/` exports still ship the older teal values;
-reset them in the Divi UI after importing Theme Options.
+`theme/style.css` uses `var(--gcid-*)` with **no fallback**, matching the
+vendor, so Divi is the single runtime source. The `supplementary/` exports
+carry the identical values, verified against the original vendor files.
 
 #### Method 1: WordPress Admin
 
@@ -142,18 +141,19 @@ and what still needs manual work.
 
 #### Palette
 
-Values below are Brand Blues v6; [BRAND.md](BRAND.md) is the single source.
+Vendor defaults; [COLORS.md](COLORS.md) is the single source.
 
-| Role                                | Hex       | CSS Variable             |
-| ----------------------------------- | --------- | ------------------------ |
-| Primary (brand accent)              | `#3AAEE3` | `--gcid-primary-color`   |
-| Secondary (navy)                    | `#0A1633` | `--gcid-secondary-color` |
-| Body text                           | `#1F2A40` | `--gcid-body-color`      |
-| Page background                     | `#E6EAF1` | `--gcid-qn8h12q0c7`      |
-| Overlay tint                        | `#0D2A56` | `--gcid-hhvnnvrog9`      |
-| Borders / muted                     | `#C8D3E0` | hardcoded                |
-| Timeline / icon gray                | `#5B6E8A` | hardcoded                |
-| Person card bg                      | `#8FA0B8` | hardcoded                |
+| Role                                | Hex       | Set in                        |
+| ----------------------------------- | --------- | ----------------------------- |
+| Accent                              | `#1e8a8a` | `accent_color`, SVG, `rgba()` |
+| Dark / headings                     | `#0c1e21` | `secondary_accent_color`, SVG |
+| Body text                           | `#364e52` | `font_color`                  |
+| Light background                    | `#ecf0f0` | `--mdw-bg`, `gcid-xsweq3oku6` |
+| Background 2                        | `#d8e5e5` | `gcid-qn8h12q0c7`             |
+| Dark color 2                        | `#18292c` | `gcid-hhvnnvrog9`             |
+| Borders / muted                     | `#c9d1d1` | `--mdw-border`                |
+| Muted text / icons                  | `#67787a` | hardcoded + SVG fills         |
+| Text 2 / card bg                    | `#a9b8b8` | hardcoded, `gcid-0ny19batqe`  |
 
 #### Where colors live
 
@@ -178,42 +178,45 @@ Values below are Brand Blues v6; [BRAND.md](BRAND.md) is the single source.
 
 When rebranding, update the hardcoded values in `theme/style.css`:
 
-- **Hardcoded hex values** — `#EEF2F7`, `#C8D3E0`, `#8FA0B8`, `#5B6E8A`
-- **RGBA values using the primary color** —
-  `rgba(15, 172, 237, 0.3)` and `rgba(15, 172, 237, 0.15)`
-- **URL-encoded colors in SVG data URIs** — e.g.
-  `%23EEF2F7` inside `data:image/svg+xml` strings
+- **`:root` variables** — `--mdw-bg: #ecf0f0`, `--mdw-border: #c9d1d1`
+- **Hardcoded hex values** — `#67787a`, `#a9b8b8`, `#ffffff`
+- **RGBA values using the accent** — `rgba(30, 138, 138, 0.3)`,
+  `rgba(30, 138, 138, 0.15)`, `rgba(30, 138, 138, 0)`
+- **URL-encoded colors in SVG data URIs** —
+  `%23ecf0f0` inside `data:image/svg+xml` strings
+- **`theme/assets/*.svg` fills** — `#1e8a8a`, `#67787a`, `#0c1e21`
 
-#### Replacing Legacy Nexus Colors
+#### Rebranding to Your Own Palette
 
-The `supplementary/` exports in this repo still carry the
-Nexus demo palette (`#1e8a8a`, `#ecf0f0`, `#c9d1d1`,
-`#67787a`); class names were renamed, colors were not. So
-after importing Theme Options, reset the global colors in
-the Divi UI, and use the mapping below for anything already
-in the database.
+The theme and the `supplementary/` exports ship the vendor
+palette, verified color-for-color against the original
+files. Only class names were renamed (`nexus-` to `mdw-`).
+Use the table below when rebranding: replace the right
+column with your values, then work every location listed in
+[COLORS.md](COLORS.md).
 
-| Legacy Color (Nexus) | Role              | Replace With | Notes                                          |
-| -------------------- | ----------------- | ------------ | ---------------------------------------------- |
-| `#1e8a8a`            | Nexus teal accent | `#3AAEE3`    | Brand Blues accent                             |
-| `#0c1e21`            | Nexus dark        | `#0A1633`    | -                                              |
-| `#18292c`            | Nexus dark 2      | `#0D2A56`    | -                                              |
-| `#2ea3f2`            | Nexus blue accent | `#3AAEE3`    | -                                              |
-| `#ecf0f0`            | Nexus light bg    | `#E6EAF1`    | Also `%23ecf0f0` in SVG data URIs -> `%23E6EAF1` |
-| `#c9d1d1`            | Nexus muted border| `#C8D3E0`    | -                                              |
-| `#d8e5e5`            | Nexus light bg 2  | `#E6EAF1`    | -                                              |
+| Current (vendor) | Role             | Replace With  | Notes                                            |
+| ---------------- | ---------------- | ------------- | ------------------------------------------------ |
+| `#1e8a8a`        | Accent           | *your accent* | Also SVG fills and `rgba(30, 138, 138, …)`       |
+| `#0c1e21`        | Dark / headings  | *your dark*   | Also an SVG fill                                 |
+| `#18292c`        | Dark color 2     | *your dark 2* | `gcid-hhvnnvrog9`                                |
+| `#364e52`        | Body text        | *your body*   | `font_color`                                     |
+| `#2ea3f2`        | Fixed-nav accent | *your accent* | Divi stock blue; the vendor never changed it     |
+| `#ecf0f0`        | Light background | *your light*  | Also `%23ecf0f0` in an SVG data URI              |
+| `#c9d1d1`        | Muted border     | *your border* | -                                                |
+| `#d8e5e5`        | Background 2     | *your bg 2*   | `gcid-qn8h12q0c7`                                |
 
 **WP-CLI commands** to replace in the database:
 
 ```bash
 # Replace old Nexus colors in wp_options and wp_posts
-wp search-replace "#1e8a8a" "#3AAEE3" --precise
-wp search-replace "#0c1e21" "#0A1633" --precise
-wp search-replace "#18292c" "#0D2A56" --precise
-wp search-replace "#2ea3f2" "#3AAEE3" --precise
-wp search-replace "#ecf0f0" "#E6EAF1" --precise
-wp search-replace "#c9d1d1" "#C8D3E0" --precise
-wp search-replace "#d8e5e5" "#E6EAF1" --precise
+wp search-replace "#1e8a8a" "#youraccent" --precise
+wp search-replace "#0c1e21" "#yourdark" --precise
+wp search-replace "#18292c" "#yourdark2" --precise
+wp search-replace "#364e52" "#yourbody" --precise
+wp search-replace "#ecf0f0" "#yourlight" --precise
+wp search-replace "#c9d1d1" "#yourborder" --precise
+wp search-replace "#d8e5e5" "#yourbg2" --precise
 ```
 
 After running these commands:
@@ -282,9 +285,9 @@ times.
 
 ### Prerequisites
 
-- WordPress 6.0+
-- Divi Theme (latest version)
-- PHP 7.4+
+- WordPress 6.5+
+- Divi Theme (Divi 5)
+- PHP 8.1+
 - [SVG Support](https://wordpress.org/plugins/svg-support/) plugin
 - WP-CLI (for migration script only)
 
