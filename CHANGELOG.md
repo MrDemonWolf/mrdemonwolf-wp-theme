@@ -5,6 +5,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-08-24
+
+### Fixed
+
+- Button icons were invisible until hover, on 21 of the 23 buttons on the home
+  page. Divi 4 emitted a per-module `opacity: 1` for every button with "Show
+  Button Icon" enabled; that setting does not survive the Divi 4 to Divi 5 block
+  conversion and is absent from the `supplementary/` exports, so reimporting
+  cannot restore it. `.mdw-btn-2` still reserved 55px of right padding for an
+  arrow that never painted, leaving a dead gap beside the label. The stylesheet
+  now sets `opacity: 1` on `.et_pb_button:after` inside the builder, matching how
+  the vendor design renders.
+
 ## [1.1.1] - 2026-08-24
 
 ### Fixed

@@ -4,7 +4,7 @@ Tags: divi, child-theme, custom-post-type, breadcrumbs, portfolio
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 8.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,6 +76,9 @@ data.
 1. Theme preview — MrDemonWolf branding on a Divi-powered site.
 
 == Changelog ==
+
+= 1.1.2 =
+* Button icons are visible again instead of only on hover (Divi 5 dropped the per-module setting).
 
 = 1.1.1 =
 * Child stylesheet now cache-busts on theme updates (was pinned to Divi's version).

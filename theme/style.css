@@ -5,7 +5,7 @@ Description: A custom Divi child theme by MrDemonWolf, Inc.
 Author: MrDemonWolf, Inc.
 Author URI: https://www.mrdemonwolf.com/
 Template: Divi
-Version: 1.1.1
+Version: 1.1.2
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 8.1
@@ -235,6 +235,14 @@ body #page-container #et-boc .mdw-btn-fw.et_pb_button:after{
 }
 body #page-container #et-boc .mdw-btn-fw.et_pb_button:hover:after{
 	transform: translatey(0%) rotate(0deg);
+}
+/* Divi 4 emitted a per-module `opacity: 1` for every button with "Show Button Icon" on.
+   The setting does not survive the Divi 4 -> Divi 5 block conversion and is absent from
+   supplementary/, so a reimport cannot restore it: every arrow went hover-only, and
+   .mdw-btn-2 still reserves 55px of padding for an icon that never paints. Force it. */
+body #page-container #et-boc .et_pb_section .et_pb_button:after,
+body #page-container #et-boc .et-l .et_pb_button:after{
+	opacity: 1;
 }
 /* caroussel */
 button.et_pb_group_carousel_dot {
