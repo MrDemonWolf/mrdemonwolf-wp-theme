@@ -142,13 +142,15 @@ and what still needs manual work.
 
 #### Palette
 
+Values below are Brand Blues v6; [BRAND.md](BRAND.md) is the single source.
+
 | Role                                | Hex       | CSS Variable             |
 | ----------------------------------- | --------- | ------------------------ |
-| Primary (Electric Blue)             | `#0074A5` | `--gcid-primary-color`   |
-| Secondary (Deep Navy)               | `#091533` | `--gcid-secondary-color` |
-| Body text                           | `#3B4F66` | `--gcid-body-color`      |
-| Page background                     | `#EEF2F7` | `--gcid-qn8h12q0c7`      |
-| Overlay tint                        | `#091533` | `--gcid-hhvnnvrog9`      |
+| Primary (brand accent)              | `#3AAEE3` | `--gcid-primary-color`   |
+| Secondary (navy)                    | `#0A1633` | `--gcid-secondary-color` |
+| Body text                           | `#1F2A40` | `--gcid-body-color`      |
+| Page background                     | `#E6EAF1` | `--gcid-qn8h12q0c7`      |
+| Overlay tint                        | `#0D2A56` | `--gcid-hhvnnvrog9`      |
 | Borders / muted                     | `#C8D3E0` | hardcoded                |
 | Timeline / icon gray                | `#5B6E8A` | hardcoded                |
 | Person card bg                      | `#8FA0B8` | hardcoded                |
@@ -184,33 +186,34 @@ When rebranding, update the hardcoded values in `theme/style.css`:
 
 #### Replacing Legacy Nexus Colors
 
-If you imported from the original Nexus Divi child theme
-exports, those files embed old teal/dark colors that must
-be replaced. The supplementary exports included in this
-release have already been updated, but if you imported
-older versions, use the mapping below.
+The `supplementary/` exports in this repo still carry the
+Nexus demo palette (`#1e8a8a`, `#ecf0f0`, `#c9d1d1`,
+`#67787a`); class names were renamed, colors were not. So
+after importing Theme Options, reset the global colors in
+the Divi UI, and use the mapping below for anything already
+in the database.
 
 | Legacy Color (Nexus) | Role              | Replace With | Notes                                          |
 | -------------------- | ----------------- | ------------ | ---------------------------------------------- |
-| `#1e8a8a`            | Nexus teal accent | `#0074A5`    | AA-safe shade of brand `#00ACED`               |
-| `#0c1e21`            | Nexus dark        | `#091533`    | -                                              |
-| `#18292c`            | Nexus dark 2      | `#091533`    | -                                              |
-| `#2ea3f2`            | Nexus blue accent | `#0074A5`    | -                                              |
-| `#ecf0f0`            | Nexus light bg    | `#EEF2F7`    | Also `%23ecf0f0` in SVG data URIs -> `%23EEF2F7` |
+| `#1e8a8a`            | Nexus teal accent | `#3AAEE3`    | Brand Blues accent                             |
+| `#0c1e21`            | Nexus dark        | `#0A1633`    | -                                              |
+| `#18292c`            | Nexus dark 2      | `#0D2A56`    | -                                              |
+| `#2ea3f2`            | Nexus blue accent | `#3AAEE3`    | -                                              |
+| `#ecf0f0`            | Nexus light bg    | `#E6EAF1`    | Also `%23ecf0f0` in SVG data URIs -> `%23E6EAF1` |
 | `#c9d1d1`            | Nexus muted border| `#C8D3E0`    | -                                              |
-| `#d8e5e5`            | Nexus light bg 2  | `#EEF2F7`    | -                                              |
+| `#d8e5e5`            | Nexus light bg 2  | `#E6EAF1`    | -                                              |
 
 **WP-CLI commands** to replace in the database:
 
 ```bash
 # Replace old Nexus colors in wp_options and wp_posts
-wp search-replace "#1e8a8a" "#0074A5" --precise
-wp search-replace "#0c1e21" "#091533" --precise
-wp search-replace "#18292c" "#091533" --precise
-wp search-replace "#2ea3f2" "#0074A5" --precise
-wp search-replace "#ecf0f0" "#EEF2F7" --precise
+wp search-replace "#1e8a8a" "#3AAEE3" --precise
+wp search-replace "#0c1e21" "#0A1633" --precise
+wp search-replace "#18292c" "#0D2A56" --precise
+wp search-replace "#2ea3f2" "#3AAEE3" --precise
+wp search-replace "#ecf0f0" "#E6EAF1" --precise
 wp search-replace "#c9d1d1" "#C8D3E0" --precise
-wp search-replace "#d8e5e5" "#EEF2F7" --precise
+wp search-replace "#d8e5e5" "#E6EAF1" --precise
 ```
 
 After running these commands:

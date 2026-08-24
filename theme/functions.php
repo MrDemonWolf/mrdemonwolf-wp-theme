@@ -57,6 +57,8 @@ function mrdemonwolf_on_theme_switch() {
 		return;
 	}
 
+	delete_option( 'mdw_cleanup_done' );
+
 	$mu_dir  = mrdemonwolf_mu_dir();
 	$mu_file = $mu_dir . '/mdw-cleanup-notice.php';
 
@@ -74,6 +76,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 add_action( 'admin_notices', 'mdw_cleanup_admin_notice' );
 function mdw_cleanup_admin_notice() {
+	// The file below usually deletes itself; the option covers the case where
+	// PHP cannot unlink it (FTP-owned files), so the notice still goes away.
+	if ( get_option( 'mdw_cleanup_done' ) ) {
+		return;
+	}
+
 	$nonce = wp_create_nonce( 'mdw_cleanup_action' );
 	?>
 	<div class="notice notice-warning is-dismissible" id="mdw-cleanup-notice">
@@ -118,11 +126,21 @@ function mdw_cleanup_theme_data_handler() {
 		flush_rewrite_rules();
 	}
 
-	// Delete this mu-plugin file regardless of clean/dismiss
+	update_option( 'mdw_cleanup_done', 1 );
+
+	// Delete this mu-plugin file regardless of clean/dismiss. Through the
+	// filesystem API, so FTP and SSH installs can remove it too.
 	$mu_dir = defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : ( ABSPATH . 'wp-content/mu-plugins' );
 	$self   = realpath( $mu_dir . '/mdw-cleanup-notice.php' );
-	if ( $self && strpos( $self, realpath( $mu_dir ) ) === 0 && file_exists( $self ) ) {
-		unlink( $self );
+
+	if ( $self && strpos( $self, realpath( $mu_dir ) ) === 0 ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		WP_Filesystem();
+		global $wp_filesystem;
+
+		if ( $wp_filesystem && $wp_filesystem->exists( $self ) ) {
+			$wp_filesystem->delete( $self );
+		}
 	}
 
 	wp_send_json_success();
@@ -543,6 +561,15 @@ function mrdemonwolf_check_for_update( $update, $theme_data, $theme_stylesheet )
 	);
 }
 add_filter( 'update_themes_github.com', 'mrdemonwolf_check_for_update', 10, 3 );
+
+// "Check again" on the Updates screen forces WordPress to re-check, so drop our
+// own cache too, otherwise the answer comes from a transient up to 12 hours old.
+function mrdemonwolf_force_update_check() {
+	if ( isset( $_GET['force-check'] ) ) {
+		delete_site_transient( 'mrdemonwolf_latest_release' );
+	}
+}
+add_action( 'load-update-core.php', 'mrdemonwolf_force_update_check' );
 
 // Drop the cached release when an update finishes, so the screen stops
 // advertising the version that was just installed.

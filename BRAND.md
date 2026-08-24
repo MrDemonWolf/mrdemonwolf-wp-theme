@@ -1,9 +1,9 @@
 # Brand reference: Brand Blues v6
 
-Source of truth for the palette is the Astro reference build in the sibling
-repo, `~/Developer/mrdemonwolf/website`:
-`apps/website/src/styles/global.css` (Tailwind theme) and `site.css` (tokens).
-This file mirrors it so the values are at hand while building in Divi.
+Source of truth for the palette is the Astro reference build in the private
+`MrDemonWolf/website` repo: `apps/website/src/styles/global.css` (Tailwind
+theme) and `site.css` (tokens). This file mirrors it so the values are at hand
+while building in Divi, and so this repo stands on its own.
 
 **Nothing here is implemented as CSS in this theme.** Divi owns the colors:
 set them once in the Divi UI and every module inherits them. The child theme

@@ -18,9 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `mrdemonwolf_breadcrumbs_schema`.
 - `BRAND.md`: Brand Blues v6 palette, the Divi global-color mapping, and the
   dark-mode token table (reference only, no dark CSS ships).
-- CI runs `php -l` on PHP 8.1, 8.3, and 8.4, and asserts the built zip unpacks
-  to a single `mrdemonwolf/` folder. Release CI verifies the `style.css`
-  version matches the tag.
+- CI runs `php -l` on PHP 8.1, 8.3, and 8.4, runs `tests/update-check.php`, and
+  asserts the built zip unpacks to a single `mrdemonwolf/` folder. Release CI
+  verifies the `style.css` version matches the tag.
+- "Check again" on the Updates screen clears the cached release, so a forced
+  check really re-reads GitHub instead of answering from the transient.
 
 ### Fixed
 
@@ -29,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The cleanup mu-plugin is written through `WP_Filesystem` and skipped when
   `DISALLOW_FILE_MODS` is set or `mu-plugins` is not writable, instead of
   calling `file_put_contents()` on a hardened install.
+- The cleanup notice hides itself through an option as well as deleting its
+  own file, and the delete goes through `WP_Filesystem`, so an install whose
+  files are owned by FTP no longer keeps showing the notice forever.
 - The accordion handler is delegated, so it survives Divi re-rendering a
   module, and the blog-loop featured-image check now runs from a
   `MutationObserver` rather than jQuery's `ajaxComplete`, which never fires

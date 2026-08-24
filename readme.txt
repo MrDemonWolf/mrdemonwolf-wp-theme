@@ -77,6 +77,20 @@ data.
 
 == Changelog ==
 
+= 1.1.0 =
+* One-click updates from GitHub Releases (Update URI header, no plugin needed).
+* Build zip now contains a mrdemonwolf/ root folder, required for in-place updates.
+* BreadcrumbList schema from the breadcrumbs shortcode, unless Rank Math emits its own.
+* Cleanup mu-plugin uses WP_Filesystem and is skipped when file modifications are disallowed.
+* Accordion handler delegated and blog-loop check moved to a MutationObserver for Divi 5.
+* Brand Blues v6 palette documented in BRAND.md; every Divi global color now has a fallback.
+* Tested against WordPress 6.9, PHP 8.4, and Divi 5.
+
+= 1.0.1 =
+* Translations load correctly; migrate.sh is idempotent.
+* Parent stylesheet and script.js cache-bust correctly.
+* Delegated video popup binding and post-AJAX blog-loop check.
+
 = 1.0.0 =
 * Initial public release.
 * Service custom post type with icon metabox.
@@ -91,6 +105,12 @@ data.
 * Release pipeline: GitHub Release on `v*` tag push.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Requires PHP 8.1 and WordPress 6.5 or newer. After updating, reset the Divi
+global colors to the Brand Blues values in BRAND.md; the bundled Divi exports
+still carry the older demo palette. Future updates arrive through Appearance >
+Themes.
 
 = 1.0.0 =
 Initial release — no upgrade steps required.

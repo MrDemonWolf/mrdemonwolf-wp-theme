@@ -95,10 +95,10 @@ See `TODO.md` for the full step-by-step import and setup checklist.
 
 Divi CSS variables drive most colors — change them in Divi's UI (Design Variable Manager or Customizer), not in code:
 
-The brand is **Brand Blues v6**, defined in the sibling repo
-`~/Developer/mrdemonwolf/website` (`apps/website/src/styles/site.css`). Full
-palette, the Divi variable mapping, and the dark-mode reference table live in
-[BRAND.md](BRAND.md).
+The brand is **Brand Blues v6**, defined in the private `MrDemonWolf/website`
+repo (`apps/website/src/styles/site.css`). Full palette, the Divi variable
+mapping, and the dark-mode reference table live in [BRAND.md](BRAND.md), which
+is the reference to use from inside this repo.
 
 | Divi variable | Role | Set to |
 |----------|------|---------------|
