@@ -5,7 +5,7 @@ Description: A custom Divi child theme by MrDemonWolf, Inc.
 Author: MrDemonWolf, Inc.
 Author URI: https://www.mrdemonwolf.com/
 Template: Divi
-Version: 1.1.0
+Version: 1.1.1
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 8.1
@@ -944,6 +944,11 @@ html body #page-container #et-boc .mdw-service:hover *{
 	transform: scale(1.1);
 }
 .mdw-blog-loop span.mdw-blog-cat {
+    /* inline-block keeps the border around the whole chip: an inline span with a
+       long category name splits its box across lines mid-phrase. */
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 6px;
     border-radius: 4px;
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);

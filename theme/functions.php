@@ -22,6 +22,24 @@ function mrdemonwolf_enqueue_styles() {
 }
 add_action( 'wp_enqueue_scripts', 'mrdemonwolf_enqueue_styles' );
 
+// Divi enqueues the child stylesheet with the PARENT's version, so its URL never
+// changes when this theme updates and browsers keep serving a stale copy. Version
+// it with the child theme instead, which changes on every release.
+function mrdemonwolf_cache_bust_child_style( $src, $handle ) {
+	$child_css = get_stylesheet_directory_uri() . '/style.css';
+
+	if ( 0 === strpos( $src, $child_css ) ) {
+		$src = add_query_arg(
+			'ver',
+			wp_get_theme( get_stylesheet() )->get( 'Version' ),
+			remove_query_arg( 'ver', $src )
+		);
+	}
+
+	return $src;
+}
+add_filter( 'style_loader_src', 'mrdemonwolf_cache_bust_child_style', 10, 2 );
+
 //Deleting the Wordpress version number
 function mrdemonwolf_delete_version() {
 	return '';
@@ -181,7 +199,13 @@ function mrdemonwolf_register_service_cpt() {
 		'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
 		'menu_icon'          => 'dashicons-image-filter',
 		'has_archive'        => true,
-		'rewrite'            => array( 'slug' => 'services' ),
+		// with_front must stay false: the permalink structure is /blog/%postname%/,
+		// and with_front would push the archive to /blog/services/, letting a page
+		// with the same slug shadow it.
+		'rewrite'            => array(
+			'slug'       => 'services',
+			'with_front' => false,
+		),
 		'show_in_rest'       => true,
 	);
 

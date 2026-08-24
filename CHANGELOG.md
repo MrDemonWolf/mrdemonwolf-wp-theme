@@ -5,6 +5,22 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-08-24
+
+### Fixed
+
+- The child stylesheet was enqueued with the **parent** theme's version, so its
+  URL never changed when this theme updated and browsers kept serving a stale
+  copy. It now carries the child theme version and cache-busts on every release.
+- The `service` archive moved to `/blog/services/` under a
+  `/blog/%postname%/` permalink structure, letting a page with the same slug
+  shadow it. The CPT now registers `with_front => false`, so the archive stays
+  at `/services/` and its Theme Builder template applies.
+- Category chips in the blog loop split their border across lines when a
+  category name wrapped: the chip is an inline element, so "Content &
+  Marketing" rendered as two broken boxes. It is now `inline-block` and does
+  not wrap internally, which holds for any category name length.
+
 ## [1.1.0] - 2026-08-23
 
 ### Added
