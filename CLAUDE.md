@@ -95,14 +95,29 @@ See `TODO.md` for the full step-by-step import and setup checklist.
 
 Divi CSS variables drive most colors — change them in Divi's UI (Design Variable Manager or Customizer), not in code:
 
-| Variable | Role | Current value |
-|----------|------|---------------|
-| `accent_color` | Primary accent (teal) | `#1e8a8a` |
-| `secondary_accent_color` | Dark/headings | `#091533` |
-| `header_color` | Heading text | `#091533` |
-| `font_color` | Body text | `#3B4F66` |
+The brand is **Brand Blues v6**, defined in the private `MrDemonWolf/website`
+repo (`apps/website/src/styles/site.css`). Full palette, the Divi variable
+mapping, and the dark-mode reference table live in [BRAND.md](BRAND.md), which
+is the reference to use from inside this repo.
 
-Hardcoded values in `theme/style.css`: `#ecf0f0` (background), `#c9d1d1` (borders/muted). These will need updating when customizing the palette.
+| Divi variable | Role | Set to |
+|----------|------|---------------|
+| `--gcid-primary-color` | Primary accent | `#3AAEE3` |
+| `--gcid-secondary-color` | Dark / surfaces | `#0A1633` |
+| `--gcid-heading-color` | Heading text | `#0A1633` |
+| `--gcid-body-color` | Body text | `#1F2A40` |
+
+Every `var(--gcid-*)` in `theme/style.css` carries a Brand Blues hex fallback.
+The `supplementary/` exports still carry the old teal demo palette (`#1e8a8a`,
+`#ecf0f0`, `#c9d1d1`), so reset the global colors in the Divi UI after
+importing Theme Options. Dark mode exists in the Astro reference only; the
+child theme ships no dark CSS.
+
+### Post Types
+
+`project` (with `project_category` and `project_tag`) is registered by **Divi**,
+not by this theme. The breadcrumb and tag shortcodes branch on it; nothing here
+registers it and nothing should.
 
 ### Service CPT
 

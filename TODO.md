@@ -38,34 +38,43 @@ Import these in the **exact order** listed. Files are in the `supplementary/` fo
 4. **Check Service CPT** — Confirm service posts appear under the Services menu
 5. **Verify Media** — Check that imported images loaded correctly (re-upload any missing ones)
 
-## 5. Customize Colors (Optional)
+## 5. Set the Brand Colors
 
 Brand colors are controlled by **Divi Global Colors**, not in theme files.
 
-To change colors in the UI:
 1. Go to **Divi > Theme Customizer > General Settings > Design Variable Manager**
-2. Edit the global color variables to your preferred palette
+   (Divi 5: Visual Builder > Variable Manager > Colors).
+2. Set the global colors to Brand Blues v6:
 
-Current theme ships with a neutral teal palette (`#1e8a8a`). Update Divi global colors to your preferred palette.
+| Divi variable | Set to |
+|---------------|--------|
+| `--gcid-primary-color` | `#3AAEE3` |
+| `--gcid-secondary-color` | `#0A1633` |
+| `--gcid-heading-color` | `#0A1633` |
+| `--gcid-body-color` | `#1F2A40` |
+| `--gcid-qn8h12q0c7` (background) | `#E6EAF1` |
+| `--gcid-hhvnnvrog9` (dark 2) | `#0D2A56` |
 
-Hardcoded colors in `style.css` (change manually if rebranding):
-`#ecf0f0` (background), `#c9d1d1` (borders/muted).
+The imported Theme Options still carry the older teal demo palette
+(`#1e8a8a`, `#ecf0f0`, `#c9d1d1`), so this step is required after importing,
+not optional. Full palette, type, and the dark-mode reference table:
+[BRAND.md](BRAND.md).
 
-### Recommended Color Shades
+Hardcoded colors remaining in `style.css`: `#EEF2F7` (background),
+`#C8D3E0` (borders), `#5B6E8A` / `#8FA0B8` (muted text).
 
-Based on `#00ACED` and `#091533` (from the MrDemonWolf logo):
+## 6. Keeping the Theme Updated
 
-**Blue `#00ACED` shades:**
+The theme updates itself from GitHub Releases (`Update URI:` header +
+`update_themes_github.com` filter). After the first install, updates arrive as
+a normal theme update under **Appearance > Themes**.
 
-| Shade | Hex | Use case |
-|-------|-----|----------|
-| Light | `#6BC8F6` | Highlights, light backgrounds, tags |
-| Base | `#00ACED` | Primary buttons, links, accents |
-| Hover | `#008ABD` | Button hover (darker), active states |
+1. Bump `Version:` in `theme/style.css`, add the `CHANGELOG.md` entry.
+2. `git tag vX.Y.Z && git push --tags` — CI builds and publishes the zip.
+3. On the site: **Dashboard > Updates > Check again**, then update the theme.
 
-**Dark navy `#091533` shades:**
+If `DISALLOW_FILE_MODS` is set (some security plugins do), WordPress hides all
+one-click updates; upload the release zip by hand instead.
 
-| Shade | Hex | Use case |
-|-------|-----|----------|
-| Base | `#091533` | Headings, dark backgrounds, overlays |
-| Hover | `#0F2147` | Hover-lighten on dark elements |
+Note: the `project` post type and its taxonomies are provided by Divi, not by
+this theme, so no extra step is needed for the portfolio import.

@@ -6,7 +6,8 @@
 		/* -------------------------------
 		 * Close accordion
 		 * ------------------------------- */
-		$('.et_pb_toggle_title').click(function(){
+		// Delegated: Divi re-renders modules without reloading the page.
+		$(document.body).on('click', '.et_pb_toggle_title', function(){
 			var $toggle = $(this).closest('.et_pb_toggle');
 			if (!$toggle.hasClass('et_pb_accordion_toggling')) {
 				var $accordion = $toggle.closest('.et_pb_accordion');
@@ -51,8 +52,15 @@
 			});
 		}
 		markMissingFeaturedImages();
-		// Re-run after Divi AJAX pagination replaces blog loop content
-		$(document).ajaxComplete(markMissingFeaturedImages);
+
+		// Re-run whenever Divi swaps loop content in. A MutationObserver catches
+		// both jQuery AJAX pagination and the Divi 5 module scripts that render
+		// without one; ajaxComplete only ever saw the former.
+		var main = document.getElementById('main-content');
+		if (main && window.MutationObserver) {
+			new MutationObserver(markMissingFeaturedImages)
+				.observe(main, { childList: true, subtree: true });
+		}
 
 	});
 })(jQuery);

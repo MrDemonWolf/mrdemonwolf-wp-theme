@@ -106,15 +106,23 @@ element that references them.
 
 #### Color Reference
 
-| Variable / Key                                      | Role             | Default   |
+Brand is **Brand Blues v6**; the full palette, Divi mapping, and the
+dark-mode reference table live in [BRAND.md](BRAND.md).
+
+| Variable / Key                                      | Role             | Brand Blues |
 | --------------------------------------------------- | ---------------- | --------- |
-| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#0074A5` |
-| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#091533` |
-| `--gcid-heading-color` / `header_color`             | Heading text     | `#091533` |
-| `--gcid-body-color` / `font_color`                  | Body text        | `#3B4F66` |
-| `link_color`                                        | Link color       | `#0074A5` |
-| `gcid-qn8h12q0c7`                                   | Background       | `#EEF2F7` |
-| `gcid-hhvnnvrog9`                                   | Overlay tint     | `#091533` |
+| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#3AAEE3` |
+| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#0A1633` |
+| `--gcid-heading-color` / `header_color`             | Heading text     | `#0A1633` |
+| `--gcid-body-color` / `font_color`                  | Body text        | `#1F2A40` |
+| `link_color`                                        | Link color       | `#0D4D8C` |
+| `gcid-qn8h12q0c7`                                   | Background       | `#E6EAF1` |
+| `gcid-hhvnnvrog9`                                   | Overlay tint     | `#0D2A56` |
+
+Each of these is also the hex fallback baked into `theme/style.css`
+(`var(--gcid-primary-color, #3aaee3)`), so a missing Divi variable renders
+on-brand. The `supplementary/` exports still ship the older teal values;
+reset them in the Divi UI after importing Theme Options.
 
 #### Method 1: WordPress Admin
 
@@ -134,13 +142,15 @@ and what still needs manual work.
 
 #### Palette
 
+Values below are Brand Blues v6; [BRAND.md](BRAND.md) is the single source.
+
 | Role                                | Hex       | CSS Variable             |
 | ----------------------------------- | --------- | ------------------------ |
-| Primary (Electric Blue)             | `#0074A5` | `--gcid-primary-color`   |
-| Secondary (Deep Navy)               | `#091533` | `--gcid-secondary-color` |
-| Body text                           | `#3B4F66` | `--gcid-body-color`      |
-| Page background                     | `#EEF2F7` | `--gcid-qn8h12q0c7`      |
-| Overlay tint                        | `#091533` | `--gcid-hhvnnvrog9`      |
+| Primary (brand accent)              | `#3AAEE3` | `--gcid-primary-color`   |
+| Secondary (navy)                    | `#0A1633` | `--gcid-secondary-color` |
+| Body text                           | `#1F2A40` | `--gcid-body-color`      |
+| Page background                     | `#E6EAF1` | `--gcid-qn8h12q0c7`      |
+| Overlay tint                        | `#0D2A56` | `--gcid-hhvnnvrog9`      |
 | Borders / muted                     | `#C8D3E0` | hardcoded                |
 | Timeline / icon gray                | `#5B6E8A` | hardcoded                |
 | Person card bg                      | `#8FA0B8` | hardcoded                |
@@ -176,33 +186,34 @@ When rebranding, update the hardcoded values in `theme/style.css`:
 
 #### Replacing Legacy Nexus Colors
 
-If you imported from the original Nexus Divi child theme
-exports, those files embed old teal/dark colors that must
-be replaced. The supplementary exports included in this
-release have already been updated, but if you imported
-older versions, use the mapping below.
+The `supplementary/` exports in this repo still carry the
+Nexus demo palette (`#1e8a8a`, `#ecf0f0`, `#c9d1d1`,
+`#67787a`); class names were renamed, colors were not. So
+after importing Theme Options, reset the global colors in
+the Divi UI, and use the mapping below for anything already
+in the database.
 
 | Legacy Color (Nexus) | Role              | Replace With | Notes                                          |
 | -------------------- | ----------------- | ------------ | ---------------------------------------------- |
-| `#1e8a8a`            | Nexus teal accent | `#0074A5`    | AA-safe shade of brand `#00ACED`               |
-| `#0c1e21`            | Nexus dark        | `#091533`    | -                                              |
-| `#18292c`            | Nexus dark 2      | `#091533`    | -                                              |
-| `#2ea3f2`            | Nexus blue accent | `#0074A5`    | -                                              |
-| `#ecf0f0`            | Nexus light bg    | `#EEF2F7`    | Also `%23ecf0f0` in SVG data URIs -> `%23EEF2F7` |
+| `#1e8a8a`            | Nexus teal accent | `#3AAEE3`    | Brand Blues accent                             |
+| `#0c1e21`            | Nexus dark        | `#0A1633`    | -                                              |
+| `#18292c`            | Nexus dark 2      | `#0D2A56`    | -                                              |
+| `#2ea3f2`            | Nexus blue accent | `#3AAEE3`    | -                                              |
+| `#ecf0f0`            | Nexus light bg    | `#E6EAF1`    | Also `%23ecf0f0` in SVG data URIs -> `%23E6EAF1` |
 | `#c9d1d1`            | Nexus muted border| `#C8D3E0`    | -                                              |
-| `#d8e5e5`            | Nexus light bg 2  | `#EEF2F7`    | -                                              |
+| `#d8e5e5`            | Nexus light bg 2  | `#E6EAF1`    | -                                              |
 
 **WP-CLI commands** to replace in the database:
 
 ```bash
 # Replace old Nexus colors in wp_options and wp_posts
-wp search-replace "#1e8a8a" "#0074A5" --precise
-wp search-replace "#0c1e21" "#091533" --precise
-wp search-replace "#18292c" "#091533" --precise
-wp search-replace "#2ea3f2" "#0074A5" --precise
-wp search-replace "#ecf0f0" "#EEF2F7" --precise
+wp search-replace "#1e8a8a" "#3AAEE3" --precise
+wp search-replace "#0c1e21" "#0A1633" --precise
+wp search-replace "#18292c" "#0D2A56" --precise
+wp search-replace "#2ea3f2" "#3AAEE3" --precise
+wp search-replace "#ecf0f0" "#E6EAF1" --precise
 wp search-replace "#c9d1d1" "#C8D3E0" --precise
-wp search-replace "#d8e5e5" "#EEF2F7" --precise
+wp search-replace "#d8e5e5" "#E6EAF1" --precise
 ```
 
 After running these commands:
@@ -320,8 +331,35 @@ automatically — see CI/CD below.
 
 | Workflow                    | Trigger                      | What it does                                                            |
 | --------------------------- | ---------------------------- | ----------------------------------------------------------------------- |
-| **CI** (`ci.yml`)           | Push / PR to `main` or `dev` | PHP syntax check, Nexus reference check, zip build                      |
-| **Release** (`release.yml`) | Push of a `v*` tag           | Builds `mrdemonwolf.zip` and creates a GitHub Release with the artifact |
+| **CI** (`ci.yml`)           | Push / PR to `main` or `dev` | PHP 8.1/8.3/8.4 syntax check, PHPCS (WordPress-Core), Nexus reference check, zip build + zip-root check |
+| **Release** (`release.yml`) | Push of a `v*` tag           | Verifies `style.css` Version matches the tag, builds `mrdemonwolf.zip`, creates a GitHub Release with the artifact |
+
+### Updating the live site
+
+The theme updates itself from GitHub Releases. `style.css` carries an
+`Update URI:` header, and `functions.php` answers WordPress's
+`update_themes_github.com` filter with the latest release, so the site shows a
+normal theme update in **Appearance > Themes**. No plugin, no deploy keys, no
+SFTP.
+
+To ship an update:
+
+1. Bump `Version:` in `theme/style.css`.
+2. Add the matching `## [x.y.z]` section to `CHANGELOG.md`.
+3. Tag and push:
+
+```bash
+git tag v1.1.0 && git push --tags
+```
+
+Release CI fails loudly if the header and the tag disagree, or if the changelog
+has no entry for that version. On the site, updates appear within 12 hours (the
+release check is cached in a transient) or immediately after **Dashboard >
+Updates > Check again**.
+
+Caveat: if `DISALLOW_FILE_MODS` is set (some security plugins do this),
+WordPress disables all one-click updates. Upload the release zip manually in
+that case.
 
 ## Project Structure
 
