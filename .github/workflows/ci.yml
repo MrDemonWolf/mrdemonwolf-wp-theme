@@ -51,6 +51,13 @@ jobs:
       - name: Build theme zip
         run: ./build.sh
 
+      - name: Zip must ship the changelog and readme
+        run: |
+          for f in mrdemonwolf/CHANGELOG.md mrdemonwolf/readme.txt; do
+            unzip -Z1 build/mrdemonwolf.zip | grep -qx "$f" || {
+              echo "Error: $f missing from the built theme zip." >&2; exit 1; }
+          done
+
       - name: Zip must unpack to a single mrdemonwolf/ folder
         run: |
           ROOTS="$(unzip -Z1 build/mrdemonwolf.zip | cut -d/ -f1 | sort -u)"

@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `/blog/%postname%/` permalink structure, letting a page with the same slug
   shadow it. The CPT now registers `with_front => false`, so the archive stays
   at `/services/` and its Theme Builder template applies.
+- The built theme shipped no version history: `CHANGELOG.md` and `readme.txt`
+  live at the repo root, so anyone with only the installed theme had no way to
+  see what changed. `build.sh` now copies both into the zip, and CI fails if
+  they are missing.
 - Category chips in the blog loop split their border across lines when a
   category name wrapped: the chip is an inline element, so "Content &
   Marketing" rendered as two broken boxes. It is now `inline-block` and does
