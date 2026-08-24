@@ -16,6 +16,13 @@ rm -f "$BUILD_DIR/$SLUG.zip"
 mkdir -p "$STAGE/$SLUG"
 
 cp -R "$THEME_DIR/." "$STAGE/$SLUG/"
+
+# Ship the changelog and the WordPress readme inside the theme. They live at the
+# repo root so there is one source of truth; the zip gets a copy so anyone with
+# only the installed theme can read the version history.
+cp "$REPO_ROOT/CHANGELOG.md" "$STAGE/$SLUG/CHANGELOG.md"
+cp "$REPO_ROOT/readme.txt"   "$STAGE/$SLUG/readme.txt"
+
 find "$STAGE" -name ".DS_Store" -delete
 
 cd "$STAGE"
