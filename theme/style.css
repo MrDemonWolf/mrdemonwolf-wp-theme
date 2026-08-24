@@ -1,10 +1,18 @@
 /*
 Theme Name: MrDemonWolf
+Theme URI: https://github.com/MrDemonWolf/mrdemonwolf-wp-theme
 Description: A custom Divi child theme by MrDemonWolf, Inc.
 Author: MrDemonWolf, Inc.
 Author URI: https://www.mrdemonwolf.com/
 Template: Divi
-Version: 1.0.1
+Version: 1.1.0
+Requires at least: 6.5
+Tested up to: 6.9
+Requires PHP: 8.1
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: mrdemonwolf
+Update URI: https://github.com/MrDemonWolf/mrdemonwolf-wp-theme
 */
 
 
@@ -33,7 +41,7 @@ body{
   color: #ffffff;
 }
 .mdw-color1{
-	color:var(--gcid-primary-color);
+	color:var(--gcid-primary-color, #3aaee3);
 }
 .et_pb_section,
 #main-content{
@@ -172,14 +180,14 @@ body #page-container #et-boc .mdw-btn-2.et_pb_button:after{
 	width: 30px;
 	height: 30px;
 	font-size: 30px !important;
-	background-color: var(--gcid-secondary-color);
+	background-color: var(--gcid-secondary-color, #0a1633);
 	border-radius: 100%;
 	transform: translatey(-50%) rotate(-45deg);
 	transition: all 0.3s ease-in-out;
 }
 body #page-container #et-boc .mdw-btn-3.et_pb_button:after{
 	background:white !important;
-	color: var(--gcid-secondary-color) !important;
+	color: var(--gcid-secondary-color, #0a1633) !important;
 	background-image: url(assets/icon_arrow_btn_2.svg) !important;
 	background-size: 14px !important;
 	background-repeat: no-repeat !important;
@@ -190,7 +198,7 @@ body #page-container #et-boc .mdw-btn-3.et_pb_button:after{
 .mdw-btn-2 .et_pb_button:hover:after,
 .mdw-btn-2.et_pb_button:hover:after{
 	transform: translatey(-50%) rotate(0) !important;
-	background-color: var(--gcid-primary-color);
+	background-color: var(--gcid-primary-color, #3aaee3);
 }
 body #page-container #et-boc  .et_pb_button.mdw-btn-2:after,
 body #page-container #et-boc  .mdw-btn-2 .et_pb_button:after{
@@ -219,7 +227,7 @@ body #page-container #et-boc .mdw-btn-fw.et_pb_button:after{
 	width: 30px;
 	height: 30px;
 	font-size: 30px !important;
-	background-color: var(--gcid-secondary-color);
+	background-color: var(--gcid-secondary-color, #0a1633);
 	border-radius: 100%;
 	transform: translatey(0%) rotate(-45deg);
 	transition: all 0.3s ease-in-out;
@@ -269,7 +277,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	padding-bottom: 3px;
 }
 .mdw-testimonial-slider .et_pb_group_carousel_slide_active .mdw-testimonial-2{
-	border-color: var(--gcid-primary-color) !important;
+	border-color: var(--gcid-primary-color, #3aaee3) !important;
 }
 
 @media(min-width:767px){
@@ -308,7 +316,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	transition: all 0.3s ease-in-out;
 }
 .mdw-person ul.et_pb_member_social_links li:hover{
-	background: var(--gcid-primary-color);
+	background: var(--gcid-primary-color, #3aaee3);
 }
 .mdw-person ul.et_pb_member_social_links li:hover a{
 	color: white !important;
@@ -328,7 +336,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 .mdw-person .et_pb_team_member_image:before{
 	    content: "";
     top: 0;
-    background-color: var(--gcid-primary-color);
+    background-color: var(--gcid-primary-color, #3aaee3);
     opacity: 0;
     z-index: -1;
     border-radius: 10px;
@@ -394,7 +402,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
     margin-top: 27px;
 }
 .mdw-accordion .et_pb_toggle_title:before{
-	border: 2px solid var(--gcid-primary-color);
+	border: 2px solid var(--gcid-primary-color, #3aaee3);
 	border-radius: 100%;
 	padding: 2px;
 	top: 5px;
@@ -442,7 +450,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	max-width: 300px;
 }
 .mdw-card-1 .et_pb_button:after{
-	background-color: var(--gcid-primary-color) !important;
+	background-color: var(--gcid-primary-color, #3aaee3) !important;
 }
 .mdw-card-1 .mdw-card-1-desc{
 	opacity: 0;
@@ -476,7 +484,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 }
 .mdw-card-1:before{
 	content: "";
-	background: var(--gcid-hhvnnvrog9);
+	background: var(--gcid-hhvnnvrog9, #0d2a56);
 	top: 0;
 	pointer-events: none;
 	z-index: 2;
@@ -489,12 +497,12 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
     opacity: .3;
 }
 .mdw-card-1:hover:before {
-	background: var(--gcid-secondary-color);
+	background: var(--gcid-secondary-color, #0a1633);
     opacity: .7;
 }
 .mdw-card-1:after{
 	content: "";
-    background: var(--gcid-primary-color);
+    background: var(--gcid-primary-color, #3aaee3);
     top: -50%;
     left: 0;
     pointer-events: none;
@@ -523,7 +531,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	align-items: center;
 }
 .mdw-card-2 .mdw-card-2-arrow span.et_pb_image_wrap:hover {
-	background: var(--gcid-primary-color);
+	background: var(--gcid-primary-color, #3aaee3);
 }
 .mdw-card-2:hover .mdw-card-2-arrow span.et_pb_image_wrap{
 	opacity: 1;
@@ -532,7 +540,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	height: 100%;
 }
 .mdw-card-2 .mdw-card-2-img-bg .et_pb_image_wrap{
-	background-color: var(--gcid-secondary-color);
+	background-color: var(--gcid-secondary-color, #0a1633);
 }
 .mdw-card-2 .mdw-card-2-img-bg img{
 	object-fit: cover;
@@ -544,7 +552,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 }
 
 .mdw-card-3 .et_pb_icon {
-    background: var(--gcid-qn8h12q0c7);
+    background: var(--gcid-qn8h12q0c7, #e6eaf1);
     border-radius: 100%;
 }
 .mdw-card-3 .et_pb_icon,
@@ -552,7 +560,7 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	transition: all 0.3s ease-in-out;
 }
 .mdw-card-3:hover .et_pb_icon {
-    background: var(--gcid-primary-color);
+    background: var(--gcid-primary-color, #3aaee3);
 }
 .mdw-card-3:hover .et-pb-icon{
 	color: white !important;
@@ -616,10 +624,10 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 }
 /** MENU **/
 .mdw-header .et-menu a{
-	color: var(--gcid-heading-color) !important;
+	color: var(--gcid-heading-color, #0a1633) !important;
 }
 .mdw-header .et-menu a:hover{
-	color: var(--gcid-primary-color) !important;
+	color: var(--gcid-primary-color, #3aaee3) !important;
 }
 .nav li ul{
 	width: auto;
@@ -836,7 +844,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 	transform: scale(1.1);
 }
 .mdw-portfolio .et_pb_portfolio_item:hover .et_pb_module_header{
-	color: var(--gcid-primary-color) !important;
+	color: var(--gcid-primary-color, #3aaee3) !important;
 }
 .mdw-portfolio .wp-pagenavi{
 	text-align: center;
@@ -910,7 +918,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 }
 /** BLOG & ARCHIVES **/
 .mdw-blog-loop.no-featured-image .mdw-blog-date {
-    background: var(--gcid-secondary-color);
+    background: var(--gcid-secondary-color, #0a1633);
     position: relative !important;
     width: fit-content;
     margin-left: 0px !important;
@@ -918,7 +926,7 @@ html body #page-container #et-boc .mdw-service:hover *{
     margin-bottom: 15px !important;
 }
 .mdw-blog-loop h2{
-	background-image: linear-gradient(var(--gcid-heading-color) 0%, var(--gcid-heading-color) 100%);
+	background-image: linear-gradient(var(--gcid-heading-color, #0a1633) 0%, var(--gcid-heading-color, #0a1633) 100%);
 	background-position: 0 85%;
 	background-repeat: no-repeat;
 	background-size: 0 2px;
@@ -946,7 +954,7 @@ html body #page-container #et-boc .mdw-service:hover *{
 	transition: all 0.3s ease-in-out;
 }
 .mdw-blog-loop span.mdw-blog-cat:hover{
-	background: var(--gcid-primary-color);
+	background: var(--gcid-primary-color, #3aaee3);
 }
 /* pagenavi */
 .wp-pagenavi {
@@ -970,7 +978,7 @@ body #main-content .wp-pagenavi span.current {
 	font-size: 16px !important;
 	font-weight: 600 !important;
 	border-radius: 50%;
-	color: var(--gcid-heading-color) !important;
+	color: var(--gcid-heading-color, #0a1633) !important;
 	text-align: center;
 	line-height: 40px;
 	text-decoration: none;
@@ -978,16 +986,16 @@ body #main-content .wp-pagenavi span.current {
 	transition: all 0.3s ease-in-out;
 }
 body #main-content .wp-pagenavi span.current {
-	background-color: var(--gcid-secondary-color);
-	border-color: var(--gcid-secondary-color)!important;
+	background-color: var(--gcid-secondary-color, #0a1633);
+	border-color: var(--gcid-secondary-color, #0a1633)!important;
 	color: white !important;
 }
 body #main-content .wp-pagenavi a:hover,
 body #main-content .wp-pagenavi a:hover.previouspostslink:before,
 body #main-content .wp-pagenavi a:hover.nextpostslink:before{
 	color: white !important;
-	background-color: var(--gcid-primary-color) !important;
-	border-color: var(--gcid-primary-color) !important;
+	background-color: var(--gcid-primary-color, #3aaee3) !important;
+	border-color: var(--gcid-primary-color, #3aaee3) !important;
 }
 body #main-content .wp-pagenavi a.last {
 	border: none!important;
@@ -1006,7 +1014,7 @@ body #main-content a.nextpostslink:before {
     font-family: ETmodules !important;
     font-weight: 600;
     font-size: 20px;
-    color: var(--gcid-heading-color);
+    color: var(--gcid-heading-color, #0a1633);
 }
 body #main-content a.previouspostslink:before {
 	content: "8"
@@ -1052,7 +1060,7 @@ a.mdw-tags {
 }
 a.mdw-tags:hover{
 	color:white !important;
-	background: var(--gcid-primary-color);
+	background: var(--gcid-primary-color, #3aaee3);
 }
 
 .mdw-social-share .icon-fa{
@@ -1063,7 +1071,7 @@ a.mdw-tags:hover{
 	margin: 0 5px;
 }
 .mdw-social-share a:hover{
-	color: var(--gcid-primary-color);
+	color: var(--gcid-primary-color, #3aaee3);
 }
 /* comment */
 .mdw-comments form{
@@ -1091,12 +1099,12 @@ a.mdw-tags:hover{
 }
 body #main-content .mdw-comments a.comment-reply-link {
 	background: none !important;
-	color: var(--gcid-body-color) !important;
+	color: var(--gcid-body-color, #1f2a40) !important;
 	padding-right: 30px !important;
 	transition: all 0.3s ease-in-out;
 }
 body #main-content .mdw-comments a.comment-reply-link:hover{
-	color: var(--gcid-primary-color) !important;
+	color: var(--gcid-primary-color, #3aaee3) !important;
 }
 .mdw-comments a.comment-reply-link:after{
 	display:none !important;
@@ -1201,11 +1209,11 @@ body #et-boc #main-content  .mdw-pagination .meta-nav{
 	border-radius: 100%;
 	justify-content: center;
 	align-items: center;
-	color: var(--gcid-heading-color);
+	color: var(--gcid-heading-color, #0a1633);
 	transition: all 0.3s ease-in-out;
 }
 .mdw-pagination .meta-nav:hover:before{
-	background: var(--gcid-primary-color);
+	background: var(--gcid-primary-color, #3aaee3);
 	color:white;
 }
 .mdw-pagination .nav-next .meta-nav:before{
@@ -1213,9 +1221,9 @@ body #et-boc #main-content  .mdw-pagination .meta-nav{
 }
 /* blockquote */
 blockquote {
-    background: var(--gcid-qn8h12q0c7);
-    border: 2px solid var(--gcid-primary-color);
-	border-left: 2px solid var(--gcid-primary-color) !important;
+    background: var(--gcid-qn8h12q0c7, #e6eaf1);
+    border: 2px solid var(--gcid-primary-color, #3aaee3);
+	border-left: 2px solid var(--gcid-primary-color, #3aaee3) !important;
     z-index: 2;
     border-radius: 12px;
     margin-top: 55px;
@@ -1224,7 +1232,7 @@ blockquote {
     position: relative
 }
 blockquote:before {
-    color: var(--gcid-primary-color);
+    color: var(--gcid-primary-color, #3aaee3);
     margin-bottom: 0px;
     margin-top: -30px;
     margin-left: -10px;
@@ -1235,7 +1243,7 @@ blockquote:before {
     font-family: ETmodules !important;
 }
 blockquote p {
-    color: var(--gcid-heading-color);
+    color: var(--gcid-heading-color, #0a1633);
     font-weight: 600;
     letter-spacing: -.6px;
     border-radius: 12px;
@@ -1285,7 +1293,7 @@ blockquote p {
 .mdw-blog-text ul li:before{
 	content: "\4e";
 	font-family: ETmodules !important;
-	background: var(--gcid-primary-color);
+	background: var(--gcid-primary-color, #3aaee3);
 	color: white;
 	border-radius: 100%;
 	width: 20px;
@@ -1307,7 +1315,7 @@ blockquote p {
 .mdw-blog-text ul li {
     -webkit-column-gap: 10px;
     -moz-column-gap: 10px;
-    color: var(--gcid-heading-color);
+    color: var(--gcid-heading-color, #0a1633);
     font-weight: 500;
     align-items: start;
     column-gap: 10px;
@@ -1332,7 +1340,7 @@ blockquote p {
 .mdw-footer-row .et_pb_text_inner p,
 .mdw-footer-row .et_pb_text_inner a,
 .mdw-footer-row .et_pb_text_inner li {
-    color: var(--gcid-body-color) !important;
+    color: var(--gcid-body-color, #1f2a40) !important;
 }
 .mdw-footer-row h1,
 .mdw-footer-row h2,
@@ -1340,7 +1348,7 @@ blockquote p {
 .mdw-footer-row h4,
 .mdw-footer-row h5,
 .mdw-footer-row h6 {
-    color: var(--gcid-heading-color) !important;
+    color: var(--gcid-heading-color, #0a1633) !important;
 }
 .mdw-footer-row .et_pb_text{
 	transition: all 0.2s ease-in-out;

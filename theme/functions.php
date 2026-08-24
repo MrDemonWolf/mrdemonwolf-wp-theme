@@ -52,6 +52,11 @@ function mrdemonwolf_mu_dir() {
 // Theme Cleanup on Switch
 // ===============================
 function mrdemonwolf_on_theme_switch() {
+	// Hardened hosts and security plugins block runtime file writes.
+	if ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) {
+		return;
+	}
+
 	$mu_dir  = mrdemonwolf_mu_dir();
 	$mu_file = $mu_dir . '/mdw-cleanup-notice.php';
 
@@ -124,7 +129,16 @@ function mdw_cleanup_theme_data_handler() {
 }
 PHP;
 
-	if ( false === file_put_contents( $mu_file, $mu_code ) ) {
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	WP_Filesystem();
+	global $wp_filesystem;
+
+	if ( ! $wp_filesystem || ! $wp_filesystem->is_writable( $mu_dir ) ) {
+		error_log( 'MrDemonWolf: mu-plugins is not writable, skipped the cleanup notice.' );
+		return;
+	}
+
+	if ( ! $wp_filesystem->put_contents( $mu_file, $mu_code, FS_CHMOD_FILE ) ) {
 		error_log( 'MrDemonWolf: failed to write cleanup mu-plugin to ' . $mu_file );
 	}
 }
@@ -253,25 +267,103 @@ function mrdemonwolf_breadcrumb_sep() {
 	return ' <span class="mdw-separator"></span>';
 }
 
-// Render a breadcrumb link segment (separator + anchor).
-function mrdemonwolf_breadcrumb_link( $url, $label ) {
-	return mrdemonwolf_breadcrumb_sep()
-		. '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>';
-}
-
-// Render a breadcrumb current-page segment (separator + span).
-function mrdemonwolf_breadcrumb_current( $label ) {
-	return mrdemonwolf_breadcrumb_sep() . '<span>' . esc_html( $label ) . '</span>';
-}
-
-// Return a breadcrumb link for the first term of $taxonomy on $post_id, or ''.
-function mrdemonwolf_primary_term_link( $post_id, $taxonomy ) {
+// Return a crumb for the first term of $taxonomy on $post_id, or null.
+function mrdemonwolf_primary_term_crumb( $post_id, $taxonomy ) {
 	$terms = get_the_terms( $post_id, $taxonomy );
 	if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		return null;
+	}
+
+	$term = reset( $terms );
+	$link = get_term_link( $term->term_id, $taxonomy );
+	if ( is_wp_error( $link ) ) {
+		return null;
+	}
+
+	return array(
+		'label' => $term->name,
+		'url'   => $link,
+	);
+}
+
+// Collect the trail as data once; the markup and the schema both render from it.
+function mrdemonwolf_breadcrumb_trail( $home_label ) {
+	global $post;
+
+	$crumbs = array(
+		array(
+			'label' => $home_label,
+			'url'   => home_url( '/' ),
+		),
+	);
+
+	if ( function_exists( 'is_woocommerce' ) && is_woocommerce() ) {
+		if ( is_singular( 'product' ) ) {
+			$crumbs[] = mrdemonwolf_primary_term_crumb( $post->ID, 'product_cat' );
+			$crumbs[] = array( 'label' => get_the_title() );
+		} elseif ( is_tax( 'product_cat' ) ) {
+			$crumbs[] = array( 'label' => single_term_title( '', false ) );
+		} elseif ( is_shop() ) {
+			$crumbs[] = array( 'label' => get_the_title( wc_get_page_id( 'shop' ) ) );
+		}
+	} elseif ( is_single() && 'post' === get_post_type() ) {
+		$categories = get_the_category( $post->ID );
+		if ( ! empty( $categories ) ) {
+			$crumbs[] = array(
+				'label' => $categories[0]->name,
+				'url'   => get_category_link( $categories[0]->term_id ),
+			);
+		}
+		$crumbs[] = array( 'label' => get_the_title() );
+
+	} elseif ( is_single() && 'project' === get_post_type() ) {
+		// The project CPT and its taxonomies come from Divi, not this theme.
+		$crumbs[] = mrdemonwolf_primary_term_crumb( $post->ID, 'project_category' );
+		$crumbs[] = array( 'label' => get_the_title() );
+
+	} elseif ( is_page() ) {
+		$crumbs[] = array( 'label' => get_the_title() );
+
+	} elseif ( is_category() ) {
+		$crumbs[] = array( 'label' => single_cat_title( '', false ) );
+	} else {
+		$crumbs[] = array( 'label' => preg_replace( '/^.*?:\s*/', '', get_the_archive_title() ) );
+	}
+
+	return array_filter( $crumbs );
+}
+
+// BreadcrumbList JSON-LD, unless an SEO plugin already emits one.
+function mrdemonwolf_breadcrumbs_schema( $crumbs ) {
+	$emit = ! ( class_exists( '\RankMath\Helper' ) && \RankMath\Helper::get_settings( 'general.breadcrumbs' ) );
+
+	/**
+	 * Filter whether the breadcrumbs shortcode emits BreadcrumbList schema.
+	 */
+	if ( ! apply_filters( 'mrdemonwolf_breadcrumbs_schema', $emit ) ) {
 		return '';
 	}
-	$term = reset( $terms );
-	return mrdemonwolf_breadcrumb_link( get_term_link( $term->term_id, $taxonomy ), $term->name );
+
+	$items = array();
+	foreach ( $crumbs as $i => $crumb ) {
+		$item = array(
+			'@type'    => 'ListItem',
+			'position' => $i + 1,
+			'name'     => $crumb['label'],
+		);
+		if ( ! empty( $crumb['url'] ) ) {
+			$item['item'] = $crumb['url'];
+		}
+		$items[] = $item;
+	}
+
+	$schema = array(
+		'@context'        => 'https://schema.org',
+		'@type'           => 'BreadcrumbList',
+		'itemListElement' => $items,
+	);
+
+	return '<script type="application/ld+json">' . wp_json_encode( $schema ) . '</script>';
 }
 
 function mrdemonwolf_breadcrumbs_shortcode( $atts ) {
@@ -285,39 +377,23 @@ function mrdemonwolf_breadcrumbs_shortcode( $atts ) {
 		return '';
 	}
 
-	$atts = shortcode_atts( array( 'home' => __( 'Home', 'mrdemonwolf' ) ), $atts, 'mrdemonwolf_breadcrumbs' );
-	$breadcrumb = '<nav class="mdw-breadcrumbs" aria-label="Breadcrumb">';
-	$breadcrumb .= '<a href="' . esc_url( home_url( '/' ) ) . '">' . esc_html( $atts['home'] ) . '</a>';
+	$atts   = shortcode_atts( array( 'home' => __( 'Home', 'mrdemonwolf' ) ), $atts, 'mrdemonwolf_breadcrumbs' );
+	$crumbs = array_values( mrdemonwolf_breadcrumb_trail( $atts['home'] ) );
 
-	if ( function_exists( 'is_woocommerce' ) && is_woocommerce() ) {
-		if ( is_singular( 'product' ) ) {
-			$breadcrumb .= mrdemonwolf_primary_term_link( $post->ID, 'product_cat' );
-			$breadcrumb .= mrdemonwolf_breadcrumb_current( get_the_title() );
-		} elseif ( is_tax( 'product_cat' ) ) {
-			$breadcrumb .= mrdemonwolf_breadcrumb_current( single_term_title( '', false ) );
-		} elseif ( is_shop() ) {
-			$breadcrumb .= mrdemonwolf_breadcrumb_current( get_the_title( wc_get_page_id( 'shop' ) ) );
+	$html = '<nav class="mdw-breadcrumbs" aria-label="Breadcrumb">';
+	foreach ( $crumbs as $i => $crumb ) {
+		if ( $i > 0 ) {
+			$html .= mrdemonwolf_breadcrumb_sep();
 		}
-	} elseif ( is_single() && 'post' === get_post_type() ) {
-		$categories = get_the_category( $post->ID );
-		if ( ! empty( $categories ) ) {
-			$breadcrumb .= mrdemonwolf_breadcrumb_link( get_category_link( $categories[0]->term_id ), $categories[0]->name );
+		if ( empty( $crumb['url'] ) ) {
+			$html .= '<span>' . esc_html( $crumb['label'] ) . '</span>';
+		} else {
+			$html .= '<a href="' . esc_url( $crumb['url'] ) . '">' . esc_html( $crumb['label'] ) . '</a>';
 		}
-		$breadcrumb .= mrdemonwolf_breadcrumb_current( get_the_title() );
-
-	} elseif ( is_single() && 'project' === get_post_type() ) {
-		$breadcrumb .= mrdemonwolf_primary_term_link( $post->ID, 'project_category' );
-		$breadcrumb .= mrdemonwolf_breadcrumb_current( get_the_title() );
-	} elseif ( is_page() ) {
-		$breadcrumb .= mrdemonwolf_breadcrumb_current( get_the_title() );
-
-	} elseif ( is_category() ) {
-		$breadcrumb .= mrdemonwolf_breadcrumb_current( single_cat_title( '', false ) );
-	} else {
-		$breadcrumb .= mrdemonwolf_breadcrumb_current( preg_replace( '/^.*?:\s*/', '', get_the_archive_title() ) );
 	}
+	$html .= '</nav>';
 
-	return $breadcrumb . '</nav>';
+	return $html . mrdemonwolf_breadcrumbs_schema( $crumbs );
 }
 add_shortcode( 'mrdemonwolf_breadcrumbs', 'mrdemonwolf_breadcrumbs_shortcode' );
 
@@ -393,3 +469,85 @@ add_shortcode(
 		return $buttons;
 	}
 );
+
+// ===============================
+// Theme Updates from GitHub Releases
+// ===============================
+// WordPress routes the `Update URI:` header in style.css to the filter below,
+// so the theme updates in place from Appearance > Themes. No plugin, no
+// credentials: the repository is public and the release workflow attaches
+// mrdemonwolf.zip to every tag.
+function mrdemonwolf_github_release() {
+	$release = get_site_transient( 'mrdemonwolf_latest_release' );
+	if ( false !== $release ) {
+		return $release;
+	}
+
+	$response = wp_remote_get(
+		'https://api.github.com/repos/MrDemonWolf/mrdemonwolf-wp-theme/releases/latest',
+		array(
+			'timeout' => 10,
+			'headers' => array(
+				'Accept'     => 'application/vnd.github+json',
+				'User-Agent' => 'mrdemonwolf-wp-theme',
+			),
+		)
+	);
+
+	$release = array();
+
+	if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
+		$data = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( is_array( $data ) && ! empty( $data['tag_name'] ) && empty( $data['draft'] ) && empty( $data['prerelease'] ) ) {
+			foreach ( (array) $data['assets'] as $asset ) {
+				// The built zip only, never the source tarball: that one unpacks
+				// to a versioned folder and would install as a second theme.
+				if ( isset( $asset['name'] ) && 'mrdemonwolf.zip' === $asset['name'] ) {
+					$release = array(
+						'version' => ltrim( $data['tag_name'], 'v' ),
+						'url'     => isset( $data['html_url'] ) ? $data['html_url'] : '',
+						'package' => $asset['browser_download_url'],
+					);
+					break;
+				}
+			}
+		}
+	}
+
+	// Cache misses too: a bad minute at GitHub must not mean an API call on
+	// every update check. GitHub allows 60 unauthenticated requests an hour.
+	set_site_transient( 'mrdemonwolf_latest_release', $release, 12 * HOUR_IN_SECONDS );
+
+	return $release;
+}
+
+function mrdemonwolf_check_for_update( $update, $theme_data, $theme_stylesheet ) {
+	$release = mrdemonwolf_github_release();
+
+	if ( empty( $release['version'] ) || empty( $release['package'] ) ) {
+		return $update;
+	}
+
+	$current = isset( $theme_data['Version'] ) ? $theme_data['Version'] : '';
+
+	if ( '' === $current || version_compare( $release['version'], $current, '<=' ) ) {
+		return $update;
+	}
+
+	return array(
+		'theme'   => $theme_stylesheet,
+		'version' => $release['version'],
+		'url'     => $release['url'],
+		'package' => $release['package'],
+	);
+}
+add_filter( 'update_themes_github.com', 'mrdemonwolf_check_for_update', 10, 3 );
+
+// Drop the cached release when an update finishes, so the screen stops
+// advertising the version that was just installed.
+function mrdemonwolf_clear_release_cache() {
+	delete_site_transient( 'mrdemonwolf_latest_release' );
+}
+add_action( 'upgrader_process_complete', 'mrdemonwolf_clear_release_cache' );
+add_action( 'switch_theme', 'mrdemonwolf_clear_release_cache' );

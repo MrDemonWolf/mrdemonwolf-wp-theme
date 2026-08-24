@@ -106,15 +106,23 @@ element that references them.
 
 #### Color Reference
 
-| Variable / Key                                      | Role             | Default   |
+Brand is **Brand Blues v6**; the full palette, Divi mapping, and the
+dark-mode reference table live in [BRAND.md](BRAND.md).
+
+| Variable / Key                                      | Role             | Brand Blues |
 | --------------------------------------------------- | ---------------- | --------- |
-| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#0074A5` |
-| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#091533` |
-| `--gcid-heading-color` / `header_color`             | Heading text     | `#091533` |
-| `--gcid-body-color` / `font_color`                  | Body text        | `#3B4F66` |
-| `link_color`                                        | Link color       | `#0074A5` |
-| `gcid-qn8h12q0c7`                                   | Background       | `#EEF2F7` |
-| `gcid-hhvnnvrog9`                                   | Overlay tint     | `#091533` |
+| `--gcid-primary-color` / `accent_color`             | Primary accent   | `#3AAEE3` |
+| `--gcid-secondary-color` / `secondary_accent_color` | Secondary accent | `#0A1633` |
+| `--gcid-heading-color` / `header_color`             | Heading text     | `#0A1633` |
+| `--gcid-body-color` / `font_color`                  | Body text        | `#1F2A40` |
+| `link_color`                                        | Link color       | `#0D4D8C` |
+| `gcid-qn8h12q0c7`                                   | Background       | `#E6EAF1` |
+| `gcid-hhvnnvrog9`                                   | Overlay tint     | `#0D2A56` |
+
+Each of these is also the hex fallback baked into `theme/style.css`
+(`var(--gcid-primary-color, #3aaee3)`), so a missing Divi variable renders
+on-brand. The `supplementary/` exports still ship the older teal values;
+reset them in the Divi UI after importing Theme Options.
 
 #### Method 1: WordPress Admin
 
@@ -320,8 +328,35 @@ automatically — see CI/CD below.
 
 | Workflow                    | Trigger                      | What it does                                                            |
 | --------------------------- | ---------------------------- | ----------------------------------------------------------------------- |
-| **CI** (`ci.yml`)           | Push / PR to `main` or `dev` | PHP syntax check, Nexus reference check, zip build                      |
-| **Release** (`release.yml`) | Push of a `v*` tag           | Builds `mrdemonwolf.zip` and creates a GitHub Release with the artifact |
+| **CI** (`ci.yml`)           | Push / PR to `main` or `dev` | PHP 8.1/8.3/8.4 syntax check, PHPCS (WordPress-Core), Nexus reference check, zip build + zip-root check |
+| **Release** (`release.yml`) | Push of a `v*` tag           | Verifies `style.css` Version matches the tag, builds `mrdemonwolf.zip`, creates a GitHub Release with the artifact |
+
+### Updating the live site
+
+The theme updates itself from GitHub Releases. `style.css` carries an
+`Update URI:` header, and `functions.php` answers WordPress's
+`update_themes_github.com` filter with the latest release, so the site shows a
+normal theme update in **Appearance > Themes**. No plugin, no deploy keys, no
+SFTP.
+
+To ship an update:
+
+1. Bump `Version:` in `theme/style.css`.
+2. Add the matching `## [x.y.z]` section to `CHANGELOG.md`.
+3. Tag and push:
+
+```bash
+git tag v1.1.0 && git push --tags
+```
+
+Release CI fails loudly if the header and the tag disagree, or if the changelog
+has no entry for that version. On the site, updates appear within 12 hours (the
+release check is cached in a transient) or immediately after **Dashboard >
+Updates > Check again**.
+
+Caveat: if `DISALLOW_FILE_MODS` is set (some security plugins do this),
+WordPress disables all one-click updates. Upload the release zip manually in
+that case.
 
 ## Project Structure
 
