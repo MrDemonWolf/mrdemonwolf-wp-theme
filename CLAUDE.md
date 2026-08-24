@@ -93,25 +93,23 @@ See `TODO.md` for the full step-by-step import and setup checklist.
 
 ### Brand Colors
 
-Divi CSS variables drive most colors — change them in Divi's UI (Design Variable Manager or Customizer), not in code:
+The theme ships the **Nexus vendor defaults** (teal). Every color location,
+and the procedure for changing them from the mockup, is in
+[COLORS.md](COLORS.md) — that is the single source.
 
-The brand is **Brand Blues v6**, defined in the private `MrDemonWolf/website`
-repo (`apps/website/src/styles/site.css`). Full palette, the Divi variable
-mapping, and the dark-mode reference table live in [BRAND.md](BRAND.md), which
-is the reference to use from inside this repo.
-
-| Divi variable | Role | Set to |
+| Divi variable / key | Role | Value |
 |----------|------|---------------|
-| `--gcid-primary-color` | Primary accent | `#3AAEE3` |
-| `--gcid-secondary-color` | Dark / surfaces | `#0A1633` |
-| `--gcid-heading-color` | Heading text | `#0A1633` |
-| `--gcid-body-color` | Body text | `#1F2A40` |
+| `accent_color` / `link_color` | Accent | `#1e8a8a` |
+| `secondary_accent_color` / `header_color` | Dark, headings | `#0c1e21` |
+| `font_color` | Body text | `#364e52` |
+| `gcid-xsweq3oku6` | Light background | `#ecf0f0` |
+| `gcid-qn8h12q0c7` | Background | `#d8e5e5` |
+| `gcid-hhvnnvrog9` | Dark color 2 | `#18292c` |
 
-Every `var(--gcid-*)` in `theme/style.css` carries a Brand Blues hex fallback.
-The `supplementary/` exports still carry the old teal demo palette (`#1e8a8a`,
-`#ecf0f0`, `#c9d1d1`), so reset the global colors in the Divi UI after
-importing Theme Options. Dark mode exists in the Astro reference only; the
-child theme ships no dark CSS.
+`theme/style.css` references `var(--gcid-*)` with **no fallback**, matching the
+vendor. Colors also live in `theme/assets/*.svg` fills, an `rgba(30, 138, 138,
+…)` set, a `%23ecf0f0` inside an SVG data URI, and in every `supplementary/`
+export — see COLORS.md before rebranding.
 
 ### Post Types
 

@@ -38,30 +38,40 @@ Import these in the **exact order** listed. Files are in the `supplementary/` fo
 4. **Check Service CPT** — Confirm service posts appear under the Services menu
 5. **Verify Media** — Check that imported images loaded correctly (re-upload any missing ones)
 
-## 5. Set the Brand Colors
+## 5. Colors (nothing to do unless rebranding)
 
-Brand colors are controlled by **Divi Global Colors**, not in theme files.
+The theme and the supplementary exports both ship the **Nexus vendor defaults**,
+verified color-for-color against the original vendor files. Importing the
+exports sets the Divi global colors and Customizer values to match, so the
+site is consistent out of the box.
 
-1. Go to **Divi > Theme Customizer > General Settings > Design Variable Manager**
-   (Divi 5: Visual Builder > Variable Manager > Colors).
-2. Set the global colors to Brand Blues v6:
+| Role | Value |
+|------|-------|
+| Accent (`accent_color`, `link_color`) | `#1e8a8a` |
+| Dark / headings (`secondary_accent_color`, `header_color`) | `#0c1e21` |
+| Body text (`font_color`) | `#364e52` |
+| Light background (`gcid-xsweq3oku6`) | `#ecf0f0` |
+| Background 2 (`gcid-qn8h12q0c7`) | `#d8e5e5` |
+| Dark color 2 (`gcid-hhvnnvrog9`) | `#18292c` |
 
-| Divi variable | Set to |
-|---------------|--------|
-| `--gcid-primary-color` | `#3AAEE3` |
-| `--gcid-secondary-color` | `#0A1633` |
-| `--gcid-heading-color` | `#0A1633` |
-| `--gcid-body-color` | `#1F2A40` |
-| `--gcid-qn8h12q0c7` (background) | `#E6EAF1` |
-| `--gcid-hhvnnvrog9` (dark 2) | `#0D2A56` |
+To rebrand from your mockup, work all six color locations in
+[COLORS.md](COLORS.md) — Divi global colors, Customizer keys, `style.css`
+(including an `rgba()` set and a `%23`-encoded hex), the `theme/assets/*.svg`
+fills, the `supplementary/` exports, and the database.
 
-The imported Theme Options still carry the older teal demo palette
-(`#1e8a8a`, `#ecf0f0`, `#c9d1d1`), so this step is required after importing,
-not optional. Full palette, type, and the dark-mode reference table:
-[BRAND.md](BRAND.md).
+## 5b. Media
 
-Hardcoded colors remaining in `style.css`: `#EEF2F7` (background),
-`#C8D3E0` (borders), `#5B6E8A` / `#8FA0B8` (muted text).
+Imported posts and projects keep their `www.mrdemonwolf.com` image URLs, and
+the demo pages keep their `hostingersite.com` ones, so every image loads
+without importing attachments. When you reupload images with proper alt text
+and folder structure, swap each in with:
+
+```bash
+wp search-replace "https://www.mrdemonwolf.com/wp-content/uploads/OLD.jpg" "https://your-site/wp-content/uploads/NEW.jpg" --precise
+```
+
+Project featured images are not attachments at all — each project carries the
+URL in a `_mdw_featured_image_url` meta field, so the 16 get set by hand.
 
 ## 6. Keeping the Theme Updated
 

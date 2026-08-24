@@ -83,7 +83,7 @@ data.
 * BreadcrumbList schema from the breadcrumbs shortcode, unless Rank Math emits its own.
 * Cleanup mu-plugin uses WP_Filesystem and is skipped when file modifications are disallowed.
 * Accordion handler delegated and blog-loop check moved to a MutationObserver for Divi 5.
-* Brand Blues v6 palette documented in BRAND.md; every Divi global color now has a fallback.
+* Nexus vendor palette restored and fully documented in COLORS.md.
 * Tested against WordPress 6.9, PHP 8.4, and Divi 5.
 
 = 1.0.1 =
@@ -98,7 +98,7 @@ data.
 * Magnific Popup video lightbox (bundled locally).
 * Security hardening: login error obscuring, version hiding.
 * Cleanup notice mu-plugin with Remove and Dismiss actions.
-* Brand palette: Electric Blue (#0FACED) primary, Deep Navy (#091533) secondary.
+* Vendor default palette: teal (#1e8a8a) accent, dark (#0c1e21) headings.
 * 7 SVG icons bundled in theme/assets/ — no WP Media upload required.
 * Conditional Magnific Popup loading and dynamic script versioning.
 * CI: PHP lint, Nexus-string guard, zip smoke test.
@@ -107,10 +107,9 @@ data.
 == Upgrade Notice ==
 
 = 1.1.0 =
-Requires PHP 8.1 and WordPress 6.5 or newer. After updating, reset the Divi
-global colors to the Brand Blues values in BRAND.md; the bundled Divi exports
-still carry the older demo palette. Future updates arrive through Appearance >
-Themes.
+Requires PHP 8.1 and WordPress 6.5 or newer. The theme and the bundled Divi
+exports ship the vendor default palette; see COLORS.md before rebranding.
+Future updates arrive through Appearance > Themes.
 
 = 1.0.0 =
 Initial release — no upgrade steps required.
