@@ -18,8 +18,7 @@ fi
 PATTERN='nexus|hostingersite'
 
 if grep -rniE "$PATTERN" \
-     theme/ supplementary/ tools/ .github/ ./*.md ./*.txt build.sh \
-     --exclude=branding-guard.sh 2>/dev/null; then
+     theme/ supplementary/ .github/ ./*.md ./*.txt build.sh 2>/dev/null; then
   echo "" >&2
   echo "Error: upstream vendor reference found (matches above)." >&2
   exit 1
