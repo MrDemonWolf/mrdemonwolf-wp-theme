@@ -42,19 +42,26 @@ foreach ( $data as $id => $post ) {
 
     // import_id preserves the ID, which matters: templates and pages reference
     // these layouts by number, so a reassigned ID silently breaks the link.
-    $insert = [
-        'import_id'      => $id,
-        'post_title'     => $post['post_title'] ?? '',
-        'post_name'      => $post['post_name'] ?? '',
-        'post_content'   => $post['post_content'] ?? '',
-        'post_excerpt'   => $post['post_excerpt'] ?? '',
-        'post_status'    => $post['post_status'] ?? 'publish',
-        'post_type'      => $post['post_type'] ?? 'et_pb_layout',
-        'post_date'      => $post['post_date'] ?? '',
-        'comment_status' => $post['comment_status'] ?? 'closed',
-        'ping_status'    => $post['ping_status'] ?? 'closed',
-        'menu_order'     => $post['menu_order'] ?? 0,
-    ];
+    //
+    // wp_slash is not optional. wp_insert_post runs wp_unslash over its input,
+    // and Divi layout content is JSON full of \u003c and \u0022 escapes, so
+    // passing it raw strips every backslash and the layout renders its own
+    // markup as literal text -- "u003ch4u003eSearchu003c/h4u003e" on the page.
+    $insert = wp_slash(
+        [
+            'import_id'      => $id,
+            'post_title'     => $post['post_title'] ?? '',
+            'post_name'      => $post['post_name'] ?? '',
+            'post_content'   => $post['post_content'] ?? '',
+            'post_excerpt'   => $post['post_excerpt'] ?? '',
+            'post_status'    => $post['post_status'] ?? 'publish',
+            'post_type'      => $post['post_type'] ?? 'et_pb_layout',
+            'post_date'      => $post['post_date'] ?? '',
+            'comment_status' => $post['comment_status'] ?? 'closed',
+            'ping_status'    => $post['ping_status'] ?? 'closed',
+            'menu_order'     => $post['menu_order'] ?? 0,
+        ]
+    );
 
     $new_id = wp_insert_post( $insert, true );
 
@@ -63,9 +70,10 @@ foreach ( $data as $id => $post ) {
         continue;
     }
 
+    // add_post_meta unslashes too, for the same reason.
     foreach ( (array) ( $post['post_meta'] ?? [] ) as $key => $values ) {
         foreach ( (array) $values as $value ) {
-            add_post_meta( $new_id, $key, maybe_unserialize( $value ) );
+            add_post_meta( $new_id, $key, wp_slash( maybe_unserialize( $value ) ) );
         }
     }
 

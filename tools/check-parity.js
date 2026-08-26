@@ -83,6 +83,35 @@ const count = (html, re) => (html.match(re) || []).length;
     }
   }
 
+  // Divi layout content is JSON carrying \u003c and \u0022 escapes. Anything
+  // that unslashes it on the way into the database strips the backslashes, and
+  // the layout then prints its own markup as literal text -- a sidebar heading
+  // renders as "u003ch4u003eSearchu003c/h4u003e". The page still returns 200,
+  // so only a content check catches it.
+  let leaked = 0;
+  for (const page of PAGES) {
+    const l = await grab(LOCAL + page);
+    if (!l.ok) continue;
+    const n = (l.html.match(/u003[ce]|u0022/g) || []).length;
+    if (n) {
+      console.log(`\n${page}: ${n} leaked escape sequence(s) -- layout content was unslashed on import`);
+      leaked += n;
+    }
+  }
+  if (leaked) failures++;
+  else console.log('\nno leaked escape sequences');
+
+  // A dynamic-content variable reaching the browser unresolved lands in an
+  // attribute as literal text, most visibly as an <img src>.
+  let rawVars = 0;
+  for (const page of PAGES) {
+    const l = await grab(LOCAL + page);
+    if (!l.ok) continue;
+    rawVars += [...l.html.matchAll(/<img[^>]+src="\$variable/g)].length;
+  }
+  console.log(`unresolved dynamic variables in img src: ${rawVars}`);
+  if (rawVars) failures++;
+
   // Broken images are the other silent failure: the page renders, the asset 404s.
   let checked = 0;
   const broken = [];
