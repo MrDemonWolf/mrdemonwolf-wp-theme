@@ -76,11 +76,35 @@ foreach ( glob( "$root/*", GLOB_ONLYDIR ) as $dir ) {
     $post_id = $post[0]->ID;
     $posts_matched++;
 
-    foreach ( glob( "$dir/*" ) as $file ) {
-        if ( ! is_file( $file ) || '.' === basename( $file )[0] ) {
-            continue;
-        }
+    $files = array_values(
+        array_filter(
+            glob( "$dir/*" ),
+            static function ( $f ) {
+                return is_file( $f ) && '.' !== basename( $f )[0];
+            }
+        )
+    );
 
+    // WordPress appends -scaled to large uploads, so the featured image can be
+    // named "...-post-featured-scaled.jpg". Match the marker anywhere in the
+    // stem rather than only immediately before the extension.
+    $featured_files = array_values(
+        array_filter(
+            $files,
+            static function ( $f ) {
+                return (bool) preg_match( '/-post-featured/i', basename( $f ) );
+            }
+        )
+    );
+
+    // A handful of posts predate that naming convention and carry a single
+    // image named after the article. Treat that as the featured image; with
+    // more than one file there is no safe way to guess, so leave it unset.
+    if ( ! $featured_files && 1 === count( $files ) ) {
+        $featured_files = $files;
+    }
+
+    foreach ( $files as $file ) {
         $rel = $slug . '/' . basename( $file );
         $id  = mdw_existing_attachment( $rel );
 
@@ -109,7 +133,7 @@ foreach ( glob( "$root/*", GLOB_ONLYDIR ) as $dir ) {
             $imported++;
         }
 
-        if ( preg_match( '/-post-featured\.[a-z0-9]+$/i', basename( $file ) ) ) {
+        if ( in_array( $file, $featured_files, true ) ) {
             update_post_meta( $post_id, '_thumbnail_id', $id );
             $featured++;
         }
