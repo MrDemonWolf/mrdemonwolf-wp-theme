@@ -2,12 +2,16 @@
 /**
  * Attach imported Theme Builder templates to Divi's Theme Builder container.
  *
- * A WXR import brings the et_template posts in flat, with post_parent = 0.
- * Divi expects them to be children of its et_theme_builder container post, and
- * when it finds none it quietly creates a fresh empty container instead. The
- * symptom is subtle and easy to misread: the site renders, but with no Theme
- * Builder header or footer and several body sections missing, which looks like
- * broken CSS rather than an unassigned template.
+ * Divi does not find templates by post_parent. The container post holds a
+ * repeating `_et_template` meta key listing the template post IDs, and
+ * et_theme_builder_get_theme_builder_template_ids() reads only that. A WXR
+ * import creates the template posts but never that meta, so Divi sees a
+ * container with no templates and renders the site with no Theme Builder
+ * header, footer or archive layouts.
+ *
+ * The failure is quiet and easy to misdiagnose: every page still returns 200,
+ * it just loses whole sections and the design classes that go with them, which
+ * reads as broken CSS rather than as unassigned templates.
  */
 if ( ! function_exists( 'et_theme_builder_get_theme_builder_post_id' ) ) {
     fwrite( STDERR, "Divi's Theme Builder API is unavailable; is Divi active?\n" );
@@ -25,46 +29,20 @@ $templates = get_posts(
     [
         'post_type'   => 'et_template',
         'numberposts' => -1,
-        'post_status' => 'any',
+        'post_status' => 'publish',
+        'orderby'     => 'ID',
+        'order'       => 'ASC',
     ]
 );
 
-$moved = 0;
-$relinked = 0;
+if ( ! $templates ) {
+    fwrite( STDERR, "No et_template posts found; import All Content.xml first.\n" );
+    exit( 1 );
+}
+
 $dangling = [];
 
 foreach ( $templates as $template ) {
-    if ( (int) $template->post_parent !== $container ) {
-        wp_update_post(
-            [
-                'ID'          => $template->ID,
-                'post_parent' => $container,
-            ]
-        );
-        $moved++;
-    }
-
-    // The hierarchy is container -> template -> layout, and a WXR import
-    // flattens all three levels. Reattaching only the templates gets the
-    // Theme Builder as far as recognising them while every header, body and
-    // footer layout still renders empty.
-    foreach ( [ '_et_header_layout_id', '_et_body_layout_id', '_et_footer_layout_id' ] as $key ) {
-        $layout_id = (int) get_post_meta( $template->ID, $key, true );
-        if ( ! $layout_id ) {
-            continue;
-        }
-        $layout = get_post( $layout_id );
-        if ( $layout && (int) $layout->post_parent !== (int) $template->ID ) {
-            wp_update_post(
-                [
-                    'ID'          => $layout_id,
-                    'post_parent' => $template->ID,
-                ]
-            );
-            $relinked++;
-        }
-    }
-
     // A layout id pointing at a post that no longer exists renders as a blank
     // area with no warning, so surface it rather than letting it look like CSS.
     foreach ( [ '_et_header_layout_id', '_et_body_layout_id', '_et_footer_layout_id' ] as $key ) {
@@ -75,9 +53,28 @@ foreach ( $templates as $template ) {
     }
 }
 
-printf( "  container:          %d\n", $container );
-printf( "  templates attached: %d of %d\n", $moved, count( $templates ) );
-printf( "  layouts relinked:   %d\n", $relinked );
+// Rebuild the list from scratch so re-running cannot accumulate duplicates.
+delete_post_meta( $container, '_et_template' );
+
+foreach ( $templates as $template ) {
+    add_post_meta( $container, '_et_template', $template->ID );
+}
+
+// A stale backup of the template list takes precedence over the meta.
+delete_option( 'et_tb_templates_backup_' . $container );
+
+$linked = get_post_meta( $container, '_et_template', false );
+
+printf( "  container:        %d\n", $container );
+printf( "  templates linked: %d\n", count( $linked ) );
+
+$resolved = et_theme_builder_get_theme_builder_templates( true );
+printf( "  Divi resolves:    %d\n", count( $resolved ) );
+
+if ( count( $resolved ) !== count( $templates ) ) {
+    fwrite( STDERR, "  Divi resolved fewer templates than exist.\n" );
+    exit( 1 );
+}
 
 if ( $dangling ) {
     echo "  DANGLING LAYOUT REFERENCES:\n";
