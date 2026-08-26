@@ -239,9 +239,17 @@ body #page-container #et-boc .mdw-btn-fw.et_pb_button:hover:after{
 /* Divi 4 emitted a per-module `opacity: 1` for every button with "Show Button Icon" on.
    The setting does not survive the Divi 4 -> Divi 5 block conversion and is absent from
    supplementary/, so a reimport cannot restore it: every arrow went hover-only, and
-   .mdw-btn-2 still reserves 55px of padding for an icon that never paints. Force it. */
-body #page-container #et-boc .et_pb_section .et_pb_button:after,
-body #page-container #et-boc .et-l .et_pb_button:after{
+   .mdw-btn-2 still reserves 55px of padding for an icon that never paints. Force it.
+
+   Scoped to the .mdw-btn-* classes rather than every .et_pb_button. The blunt
+   version forced an arrow onto buttons whose Divi design deliberately has none. */
+body #page-container #et-boc .et_pb_button.mdw-btn-1:after,
+body #page-container #et-boc .et_pb_button.mdw-btn-2:after,
+body #page-container #et-boc .mdw-btn-2 .et_pb_button:after,
+body #page-container #et-boc .et_pb_button.mdw-btn-3:after,
+body #page-container #et-boc .mdw-btn-3 .et_pb_button:after,
+body #page-container #et-boc .et_pb_button.mdw-btn-fw:after,
+body #page-container #et-boc .mdw-btn-fw .et_pb_button:after{
 	opacity: 1;
 }
 /* caroussel */
@@ -810,9 +818,17 @@ html body #page-container #et-boc .mdw-service:hover *{
 	opacity:1!important;
 }
 .mdw-portfolio .post-meta a{
+	display: inline-block;
+	max-width: 100%;
 	border: 1px solid var(--mdw-border);
     border-radius: 4px;
-    padding: 2px 7px 4px;
+    padding: 3px 8px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    /* .mdw-portfolio a sets overflow: hidden to clip the image hover zoom.
+       That is a no-op on an inline anchor but starts clipping these chips the
+       moment they become inline-block, so opt them back out. */
+    overflow: visible;
 }
 .mdw-portfolio .et_pb_portfolio_item{
 	display:flex;
@@ -952,17 +968,24 @@ html body #page-container #et-boc .mdw-service:hover *{
 	transform: scale(1.1);
 }
 .mdw-blog-loop span.mdw-blog-cat {
-    /* inline-block keeps the border around the whole chip: an inline span with a
-       long category name splits its box across lines mid-phrase. */
+    /* inline-block is what keeps the border around the whole chip: an inline
+       span with a long category name splits its box across lines mid-phrase.
+       It also makes white-space: nowrap unnecessary -- an inline-block wraps
+       its text inside one border box. nowrap only forced the chip to overrun
+       its container, which "Business & Entrepreneurship" (27 chars) does in a
+       narrow blog column. */
     display: inline-block;
-    white-space: nowrap;
+    max-width: 100%;
     margin-bottom: 6px;
     border-radius: 4px;
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     background-color: rgba(255, 255, 255, .15);
     border: 1px solid var(--mdw-border);
-    padding: 2px 7px 4px;
+    /* Symmetric, and tall enough for descenders. The old 2px/4px split cropped
+       cap height at the top and still clipped the tail of a "g" or "y". */
+    padding: 3px 8px;
+    line-height: 1.4;
     margin-right: 8px;
 	transition: all 0.3s ease-in-out;
 }
@@ -1063,11 +1086,15 @@ body #main-content a.previouspostslink:before {
 }
 
 a.mdw-tags {
+    /* A default-inline anchor at line-height 1em has no room for descenders,
+       so tags rendered visibly clipped. Same chip treatment as .mdw-blog-cat. */
+    display: inline-block;
+    max-width: 100%;
     background: white;
     border-radius: 4px;
-    margin: 0 4px;
-    padding: 3px 10px;
-    line-height: 1em;
+    margin: 0 4px 6px;
+    padding: 4px 10px;
+    line-height: 1.4;
     font-weight: 500;
 	transition: all 0.3s ease-in-out;
 }
