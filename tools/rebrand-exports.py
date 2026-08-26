@@ -127,10 +127,6 @@ def main():
         if n_logo:
             counts.append(f"brand assets={n_logo}")
 
-        text, n_footer = use_white_logo_in_footer(text)
-        if n_footer:
-            counts.append(f"footer logo -> white={n_footer}")
-
         if src_name == "All Content.xml":
             text, n_posts = drop_demo_posts(text)
             counts.append(f"demo posts dropped={n_posts}")
@@ -142,25 +138,13 @@ def main():
             print(f"    {c}")
 
 
-# The vendor logo and favicon are replaced outright rather than restyled -- a
-# logo is a trademark regardless of the code license, so the vendor mark cannot
-# ship here even though the theme itself can.
-BRAND_SWAPS = {
-    "logo.png": "brand/logo-text-brand.svg",
-    "favicon.png": "brand/favico-border-white.png",
-}
-
-
-def swap_brand_assets(text):
-    """Point every vendor logo/favicon reference at the MrDemonWolf assets."""
-    total = 0
-    for old, new_rel in BRAND_SWAPS.items():
-        for sep in ("/", "\\/"):
-            needle = f"media{sep}{old}"
-            total += text.count(needle)
-            text = text.replace(needle, f"media{sep}{new_rel.replace('/', sep)}")
-
-    return text, total
+# Only the navbar and footer logos become the MrDemonWolf wordmark. The vendor
+# reuses that same logo.png as the small eyebrow badge beside section headings
+# ("CHOOSE THE BEST", "GET IN TOUCH") and in several other decorative slots, so
+# a blanket swap puts a wolf wordmark in about sixty places it does not belong.
+BRAND_HEADER = "brand/logo-text-brand.svg"
+BRAND_FOOTER = "brand/logo-text-white.svg"
+VENDOR_LOGO = "logo.png"
 
 
 def _json_object_span(text, start):
@@ -191,30 +175,33 @@ def _json_object_span(text, start):
     raise ValueError("unbalanced JSON object")
 
 
-def use_white_logo_in_footer(text):
-    """The footer sits on #222222, so the dark-ink wordmark is invisible there.
-
-    Scoped to footer layouts only -- the header keeps the brand-colour variant.
-    """
-    dark, white = "logo-text-brand.svg", "logo-text-white.svg"
+def swap_brand_assets(text):
+    """Swap the logo in the header and footer layouts only."""
     total = 0
 
-    def recolour(block):
+    def swap_in(block, target):
         nonlocal total
         for sep in ("/", "\\/"):
-            n = block.count(f"brand{sep}{dark}")
+            needle = f"media{sep}{VENDOR_LOGO}"
+            n = block.count(needle)
             if n:
                 total += n
-                block = block.replace(f"brand{sep}{dark}", f"brand{sep}{white}")
+                block = block.replace(needle, f"media{sep}{target.replace('/', sep)}")
         return block
 
-    # WXR: the footer layout is its own <item>.
-    text = re.sub(r"\t<item>.*?</item>\n",
-                  lambda m: recolour(m.group(0)) if "et_footer_layout" in m.group(0) else m.group(0),
-                  text, flags=re.S)
+    def by_marker(block):
+        if "et_header_layout" in block:
+            return swap_in(block, BRAND_HEADER)
+        if "et_footer_layout" in block:
+            # Footer sits on #222222, so the dark-ink wordmark is invisible there.
+            return swap_in(block, BRAND_FOOTER)
+        return block
 
-    # Theme Builder JSON: walk each layout object and recolour the footer one.
-    # The layout id keys the object, so the marker sits inside it, not before it.
+    # WXR: header and footer layouts are each their own <item>.
+    text = re.sub(r"\t<item>.*?</item>\n", lambda m: by_marker(m.group(0)), text, flags=re.S)
+
+    # Theme Builder JSON: the layout id keys the object, so the post_type marker
+    # sits inside it rather than before it. Brace-match to find its extent.
     out, cursor = [], 0
     for m in re.finditer(r'"\d+"\s*:\s*\{', text):
         brace = m.end() - 1
@@ -225,13 +212,22 @@ def use_white_logo_in_footer(text):
         except ValueError:
             continue
         block = text[a:b]
-        if '"post_type":"et_footer_layout"' not in block.replace(" ", ""):
+        flat = block.replace(" ", "")
+        if '"post_type":"et_header_layout"' not in flat and '"post_type":"et_footer_layout"' not in flat:
             continue
         out.append(text[cursor:a])
-        out.append(recolour(block))
+        out.append(by_marker(block))
         cursor = b
     out.append(text[cursor:])
-    return "".join(out), total
+    text = "".join(out)
+
+    # The site logo option itself (Theme Options / epanel).
+    text, n = re.subn(
+        r'("divi_logo"\s*:\s*")([^"]*?)media(\\?/)logo\.png(")',
+        lambda m: f"{m.group(1)}{m.group(2)}media{m.group(3)}{BRAND_HEADER.replace('/', m.group(3))}{m.group(4)}",
+        text)
+    total += n
+    return text, total
 
 
 def drop_demo_posts(xml):
