@@ -40,10 +40,10 @@ Import these in the **exact order** listed. Files are in the `supplementary/` fo
 
 ## 5. Colors (nothing to do unless rebranding)
 
-The theme and the supplementary exports both ship the **Nexus vendor defaults**,
-verified color-for-color against the original vendor files. Importing the
-exports sets the Divi global colors and Customizer values to match, so the
-site is consistent out of the box.
+The theme and the supplementary exports ship the same teal default palette,
+verified color-for-color against each other. Importing the exports sets the
+Divi global colors and Customizer values to match, so the site is consistent
+out of the box.
 
 | Role | Value |
 |------|-------|
@@ -61,10 +61,11 @@ fills, the `supplementary/` exports, and the database.
 
 ## 5b. Media
 
-Imported posts and projects keep their `www.mrdemonwolf.com` image URLs, and
-the demo pages keep their `hostingersite.com` ones, so every image loads
-without importing attachments. When you reupload images with proper alt text
-and folder structure, swap each in with:
+Demo page media is self-hosted from this repository under
+`supplementary/media/`, so imports do not depend on any third-party site
+staying online. Imported posts and projects still carry their
+`www.mrdemonwolf.com` image URLs. When you reupload images with proper alt
+text and folder structure, swap each in with:
 
 ```bash
 wp search-replace "https://www.mrdemonwolf.com/wp-content/uploads/OLD.jpg" "https://your-site/wp-content/uploads/NEW.jpg" --precise

@@ -44,9 +44,19 @@ jobs:
           composer global require wp-coding-standards/wpcs:"^3" --no-progress --no-interaction -q
           ~/.composer/vendor/bin/phpcs --standard=WordPress-Core -n --extensions=php theme/functions.php
 
-      - name: Check for leftover Nexus references
+      - name: Versions must agree (style.css / readme.txt / CHANGELOG.md)
         run: |
-          ! grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --include="*.js" --include="*.json" --include="*.xml"
+          CSS="$(sed -n 's/^Version:[[:space:]]*//p' theme/style.css | head -1 | tr -d '\r')"
+          TXT="$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -1 | tr -d '\r')"
+          LOG="$(sed -n 's/^## \[\([0-9][0-9.]*\)\].*/\1/p' CHANGELOG.md | head -1)"
+          echo "style.css=$CSS  readme.txt=$TXT  CHANGELOG.md=$LOG"
+          if [ "$CSS" != "$TXT" ] || [ "$CSS" != "$LOG" ]; then
+            echo "Error: version mismatch across style.css, readme.txt and CHANGELOG.md." >&2
+            exit 1
+          fi
+
+      - name: Branding guard
+        run: ./tools/branding-guard.sh
 
       - name: Build theme zip
         run: ./build.sh

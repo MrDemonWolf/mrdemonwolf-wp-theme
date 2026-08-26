@@ -2,9 +2,9 @@
 Contributors: mrdemonwolf
 Tags: divi, child-theme, custom-post-type, breadcrumbs, portfolio
 Requires at least: 6.5
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.1.2
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,13 +25,15 @@ Magnific Popup video lightbox, and a suite of security hardening measures.
 * **Service Custom Post Type** — manage services with a dedicated icon
   metabox in the WordPress admin.
 * **Breadcrumbs Shortcode** — `[mrdemonwolf_breadcrumbs]` with
-  WooCommerce, project, and archive support.
+  WooCommerce, project, and archive support, and BreadcrumbList schema.
 * **Tags Shortcode** — `[mrdemonwolf_tags]` displays post/project tags inline.
 * **Social Share Shortcode** — `[mrdemonwolf_social_share]` for Facebook,
   X (Twitter), and LinkedIn.
 * **Video Popup** — Magnific Popup lightbox bundled locally; no CDN dependency.
 * **Security Hardening** — login error messages obscured, WordPress
   version hidden from the front end.
+* **Self-updating** — new versions arrive through Appearance > Themes,
+  served from GitHub Releases. No update plugin required.
 * **Cleanup Notice** — after theme deactivation a mu-plugin surfaces an
   admin notice offering one-click removal of all theme data or a safe
   dismiss that leaves data intact.
@@ -39,17 +41,24 @@ Magnific Popup video lightbox, and a suite of security hardening measures.
 == Installation ==
 
 1. Install and activate the **Divi** parent theme.
-2. Install and activate the **SVG Support** plugin (https://wordpress.org/plugins/svg-support/) for SVG upload and rendering.
+2. Install and activate the **SVG Support** plugin (https://wordpress.org/plugins/svg-support/).
+   Do this *before* importing content — several bundled assets are SVG and will
+   fail to import without it.
 3. Upload `mrdemonwolf.zip` via **Appearance → Themes → Add New → Upload Theme**.
-4. Activate the **MrDemonWolf** child theme.
-5. Go to **Divi → Theme Options** and import the Theme Options JSON.
-6. Go to **Divi → Theme Builder** and import the Theme Builder JSON (ensure "Import Presets" is checked).
-7. Go to **Appearance → Customize** and import the Customizer Settings JSON.
-8. Go to **Divi → Divi Library** and import the Divi Library JSON (ensure "Import Presets" is checked).
-9. Go to **Tools → Import → WordPress** and import the `All Content.xml` file.
-10. Go to **Settings → Reading** and set your Homepage and Posts page.
-11. Go to **Appearance → Menus** and assign the Primary Menu.
-12. (Optional) Go to **Plugins → Add New**, then search for and install **WP-PageNavi** for cleaner pagination.
+4. Activate the **MrDemonWolf** child theme. Activate it *before* importing
+   content; it registers the Service post type.
+5. Set **Settings → Permalinks** to your final structure before importing.
+6. Import the five files from the repository's `supplementary/` folder, in this
+   exact order. Wrong order leaves broken references:
+   1. **Divi → Theme Options** — Theme Options JSON
+   2. **Divi → Divi Library** — Theme Builder Layouts JSON ("Import Presets" checked)
+   3. **Divi → Theme Builder** — Theme Builder Templates JSON ("Import Presets" checked)
+   4. **Appearance → Customize** — Customizer Settings JSON
+   5. **Tools → Import → WordPress** — `All Content.xml`, with
+      "Download and import file attachments" ticked
+7. Go to **Settings → Reading** and set your Homepage and Posts page.
+8. Go to **Appearance → Menus** and assign the Primary Menu.
+9. (Optional) Install **WP-PageNavi** for cleaner pagination.
 
 == Frequently Asked Questions ==
 
@@ -64,6 +73,11 @@ Add `[mrdemonwolf_breadcrumbs]`, `[mrdemonwolf_tags]`, or
 `[mrdemonwolf_social_share]` to any page, post, or Divi module that
 accepts shortcodes.
 
+= How do I change the colors? =
+
+The palette lives in six places, only some of which are in this repository.
+See COLORS.md for the full list and the order to change them in.
+
 = What happens to my data if I switch themes? =
 
 When the theme is deactivated WordPress writes a lightweight mu-plugin
@@ -77,47 +91,28 @@ data.
 
 == Changelog ==
 
-= 1.1.2 =
-* Button icons are visible again instead of only on hover (Divi 5 dropped the per-module setting).
-
-= 1.1.1 =
-* Child stylesheet now cache-busts on theme updates (was pinned to Divi's version).
-* Service archive stays at /services/ under a /blog/ permalink structure.
-* Blog category chips no longer split their border across lines.
-
-= 1.1.0 =
-* One-click updates from GitHub Releases (Update URI header, no plugin needed).
-* Build zip now contains a mrdemonwolf/ root folder, required for in-place updates.
-* BreadcrumbList schema from the breadcrumbs shortcode, unless Rank Math emits its own.
-* Cleanup mu-plugin uses WP_Filesystem and is skipped when file modifications are disallowed.
-* Accordion handler delegated and blog-loop check moved to a MutationObserver for Divi 5.
-* Nexus vendor palette restored and fully documented in COLORS.md.
-* Tested against WordPress 6.9, PHP 8.4, and Divi 5.
-
-= 1.0.1 =
-* Translations load correctly; migrate.sh is idempotent.
-* Parent stylesheet and script.js cache-bust correctly.
-* Delegated video popup binding and post-AJAX blog-loop check.
-
 = 1.0.0 =
 * Initial public release.
-* Service custom post type with icon metabox.
+* Service custom post type with icon metabox, served from `/services/`.
 * Breadcrumbs, tags, and social share shortcodes.
-* Magnific Popup video lightbox (bundled locally).
-* Security hardening: login error obscuring, version hiding.
-* Cleanup notice mu-plugin with Remove and Dismiss actions.
-* Vendor default palette: teal (#1e8a8a) accent, dark (#0c1e21) headings.
-* 7 SVG icons bundled in theme/assets/ — no WP Media upload required.
-* Conditional Magnific Popup loading and dynamic script versioning.
-* CI: PHP lint, Nexus-string guard, zip smoke test.
+* BreadcrumbList schema from the breadcrumbs shortcode, unless an SEO plugin emits its own.
+* Magnific Popup video lightbox, bundled locally — no CDN dependency.
+* Security hardening: login error obscuring, generator version hiding.
+* Cleanup notice mu-plugin with Remove and Dismiss actions, using WP_Filesystem
+  and skipped when file modifications are disallowed.
+* One-click updates from GitHub Releases via the Update URI header.
+* Child stylesheet cache-busts on every theme update.
+* Accordion handler delegated; blog-loop check runs on a MutationObserver for Divi 5.
+* 7 SVG icons bundled in theme/assets/ — no Media Library upload required.
+* Divi Theme Builder exports shipped in `supplementary/`, with all demo media
+  self-hosted rather than hotlinked.
+* CI: PHP lint on 8.1/8.3/8.4, WordPress-Core phpcs, branding guard,
+  version-sync check, zip smoke test.
 * Release pipeline: GitHub Release on `v*` tag push.
+* Tested against WordPress 7.1, PHP 8.4, and Divi 5.
 
 == Upgrade Notice ==
 
-= 1.1.0 =
-Requires PHP 8.1 and WordPress 6.5 or newer. The theme and the bundled Divi
-exports ship the vendor default palette; see COLORS.md before rebranding.
-Future updates arrive through Appearance > Themes.
-
 = 1.0.0 =
-Initial release — no upgrade steps required.
+Initial release — no upgrade steps required. Requires PHP 8.1 and
+WordPress 6.5 or newer, plus the Divi parent theme.

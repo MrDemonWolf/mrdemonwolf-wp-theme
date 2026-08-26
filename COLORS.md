@@ -1,8 +1,8 @@
 # Colors: where they live and how to change them
 
-The theme ships the **Nexus vendor defaults** (teal). Nothing here is a
-MrDemonWolf brand palette — it is the demo baseline, kept intact so a rebrand
-from the mockup is a deliberate, one-pass job.
+The theme ships a teal default palette. Nothing here is the MrDemonWolf brand
+palette — it is the baseline the layouts were designed against, kept intact so
+a rebrand from the mockup is a deliberate, one-pass job.
 
 A color lives in **six** places. A rebrand that misses one looks half-done,
 which is exactly how the last drift happened.

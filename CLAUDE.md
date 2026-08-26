@@ -12,8 +12,11 @@ A WordPress **Divi child theme** for MrDemonWolf, Inc. The repo contains only th
 # Validate PHP syntax
 php -l theme/functions.php
 
-# Check for leftover Nexus references (must return 0 matches for CI to pass)
-grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --include="*.js" --include="*.json" --include="*.xml"
+# Branding guard (must exit 0 for CI to pass)
+./tools/branding-guard.sh
+
+# Rebuild supplementary/ from the pristine vendor exports in tmp/
+python3 tools/rebrand-exports.py && python3 tools/test_rebrand.py
 
 # Build installable zip
 ./build.sh
@@ -21,13 +24,9 @@ grep -ri "nexus" theme/ supplementary/ --include="*.php" --include="*.css" --inc
 # Output goes to build/mrdemonwolf.zip
 # Note: the zip contains only the installable theme files; supplementary/ Divi
 # export files are distributed separately and must be imported manually.
-
-# Migrate from Nexus (WP-CLI required, run from WordPress root)
-./migrate.sh --dry-run   # preview
-./migrate.sh             # apply
 ```
 
-CI runs on push/PR to `main` or `dev`: PHP lint → Nexus check → zip build. Tagged `v*` pushes trigger a release that attaches the zip.
+CI runs on push/PR to `main` or `dev`: PHP lint → update-check self test → phpcs → version-sync → branding guard → zip build. Tagged `v*` pushes trigger a release that attaches the zip.
 
 ## Architecture
 
@@ -93,7 +92,7 @@ See `TODO.md` for the full step-by-step import and setup checklist.
 
 ### Brand Colors
 
-The theme ships the **Nexus vendor defaults** (teal). Every color location,
+The theme ships a teal default palette. Every color location,
 and the procedure for changing them from the mockup, is in
 [COLORS.md](COLORS.md) — that is the single source.
 
