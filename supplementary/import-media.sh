@@ -86,3 +86,9 @@ while IFS= read -r -d '' file; do
 done < <(find "$MEDIA" -type f ! -name '.*' -print0)
 
 echo "imported $imported, reused $reused, rewrote $swapped reference(s)"
+
+# WordPress imports every SVG with 0x0 metadata (it cannot read SVG
+# dimensions), and Divi then stamps width="0" and a "0w" srcset on any image
+# module resolving to one -- the footer logo collapsed to nothing exactly this
+# way. Backfill real dimensions from each SVG's viewBox.
+$WP eval-file "$(cd "$(dirname "$0")" && pwd)/fix-svg-dimensions.php"

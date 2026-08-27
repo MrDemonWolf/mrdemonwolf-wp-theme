@@ -797,6 +797,16 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	max-width: 100%;
 }
 
+/* Footer variant of the same failure: Divi's own `img[src*=".svg"]{width:auto}`
+   rule collapses the size-less wordmark to 0x0 inside the module's flex wrap,
+   so the footer logo rendered invisible. The wrap is already capped by the
+   export's maxWidth:150px; give the image a real width against it. The only
+   SVG in the footer is the logo, so the suffix selector is safe. */
+[class*="_tb_footer"] .et_pb_image .et_pb_image_wrap img[src$=".svg"]{
+	width: 100%;
+	height: auto;
+}
+
 /** SERVICES **/
 .mdw-service{
 	transition: all 0.3s ease-in-out !important;
