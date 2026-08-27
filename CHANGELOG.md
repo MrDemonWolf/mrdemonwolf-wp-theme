@@ -5,136 +5,71 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.2] - 2026-08-24
+## [1.0.0] - 2026-08-25
 
-### Fixed
-
-- Button icons were invisible until hover, on 21 of the 23 buttons on the home
-  page. Divi 4 emitted a per-module `opacity: 1` for every button with "Show
-  Button Icon" enabled; that setting does not survive the Divi 4 to Divi 5 block
-  conversion and is absent from the `supplementary/` exports, so reimporting
-  cannot restore it. `.mdw-btn-2` still reserved 55px of right padding for an
-  arrow that never painted, leaving a dead gap beside the label. The stylesheet
-  now sets `opacity: 1` on `.et_pb_button:after` inside the builder, matching how
-  the vendor design renders.
-
-## [1.1.1] - 2026-08-24
-
-### Fixed
-
-- The child stylesheet was enqueued with the **parent** theme's version, so its
-  URL never changed when this theme updated and browsers kept serving a stale
-  copy. It now carries the child theme version and cache-busts on every release.
-- The `service` archive moved to `/blog/services/` under a
-  `/blog/%postname%/` permalink structure, letting a page with the same slug
-  shadow it. The CPT now registers `with_front => false`, so the archive stays
-  at `/services/` and its Theme Builder template applies.
-- The built theme shipped no version history: `CHANGELOG.md` and `readme.txt`
-  live at the repo root, so anyone with only the installed theme had no way to
-  see what changed. `build.sh` now copies both into the zip, and CI fails if
-  they are missing.
-- Category chips in the blog loop split their border across lines when a
-  category name wrapped: the chip is an inline element, so "Content &
-  Marketing" rendered as two broken boxes. It is now `inline-block` and does
-  not wrap internally, which holds for any category name length.
-
-## [1.1.0] - 2026-08-23
-
-### Added
-
-- One-click theme updates from GitHub Releases: an `Update URI:` header in
-  `style.css` plus an `update_themes_github.com` filter in `functions.php`.
-  No plugin and no server credentials; the release check is cached for 12
-  hours, is cleared by "Check again", and fails closed when GitHub is
-  unreachable.
-- `BreadcrumbList` JSON-LD from `[mrdemonwolf_breadcrumbs]`, suppressed when
-  Rank Math's own breadcrumbs are enabled and filterable via
-  `mrdemonwolf_breadcrumbs_schema`.
-- `COLORS.md`: every place a color lives — Divi global colors, Customizer
-  keys, `style.css` literals including an `rgba()` set and a `%23`-encoded hex,
-  the `theme/assets/*.svg` fills, the `supplementary/` exports, and the
-  database — with the procedure for rebranding.
-- `tests/update-check.php`, an assert-based self-check for the update filter.
-- CI runs `php -l` on PHP 8.1, 8.3, and 8.4, runs the self-check, and asserts
-  the built zip unpacks to a single `mrdemonwolf/` folder. Release CI verifies
-  the `style.css` version matches the tag.
-
-### Fixed
-
-- `build.sh` produced a zip with no root folder, which WordPress rejects when
-  updating a theme in place. The archive now contains `mrdemonwolf/`.
-- The cleanup mu-plugin is written through `WP_Filesystem` and skipped when
-  `DISALLOW_FILE_MODS` is set or `mu-plugins` is not writable, instead of
-  calling `file_put_contents()` on a hardened install. It also records
-  completion in an option, so an install that cannot unlink the file no longer
-  shows the notice forever.
-- The accordion handler is delegated, so it survives Divi re-rendering a
-  module, and the blog-loop featured-image check runs from a
-  `MutationObserver` rather than jQuery's `ajaxComplete`, which never fires
-  for Divi 5 module scripts.
-
-### Changed
-
-- Theme headers: added `Text Domain`, `Requires at least: 6.5`,
-  `Tested up to: 6.9`, `Requires PHP: 8.1`, `License`, `Theme URI`, and
-  `Update URI`. `readme.txt` updated to match.
-- The palette is the **Nexus vendor default** throughout, verified
-  color-for-color against the original vendor files: `style.css`, the bundled
-  SVG fills, and all four Divi exports. `var(--gcid-*)` carries no hex
-  fallback, matching the vendor, so Divi remains the single runtime source.
-- Breadcrumbs are assembled as data once and rendered to both markup and
-  schema; the `mrdemonwolf_breadcrumb_link`/`_current`/`_primary_term_link`
-  helpers were replaced by `mrdemonwolf_breadcrumb_trail()` and
-  `mrdemonwolf_primary_term_crumb()`.
-
-## [1.0.1] - 2026-06-11
-
-### Fixed
-
-- `migrate.sh` no longer crashes with an arithmetic error when zero `nexus_*`
-  options remain (made re-runs actually idempotent); option names are now
-  SQL-escaped before the rename query.
-- Translations can now load: `load_child_theme_textdomain()` is registered on
-  `after_setup_theme`, and the breadcrumbs "Home" default is translatable.
-- Social share shortcode returns empty outside the loop instead of emitting
-  share links with blank URLs.
-- Accordion close handler no longer clears Divi's animation lock on no-op
-  clicks.
-- Release workflow fails loudly when `CHANGELOG.md` has no entry for the
-  tagged version instead of publishing an empty release body.
-
-### Changed
-
-- Parent (Divi) stylesheet is enqueued with the parent theme version and
-  `script.js` with its file modification time, so both cache-bust correctly.
-- Video popup uses delegated Magnific Popup binding and the blog-loop
-  no-featured-image check re-runs after AJAX pagination, so both keep working
-  on dynamically loaded content.
-- CI and the release workflow build the zip via `./build.sh` (single source of
-  truth, artifact now at `build/mrdemonwolf.zip`).
-
-## [1.0.0] - 2026-04-17
-
-Initial public release with security hardening and code optimisation.
+First public release of the theme as a self-contained product. Earlier tags
+(1.0.0 through 1.1.2) were incremental work on a layout that has since been
+rebuilt, and were withdrawn rather than carried forward.
 
 ### Features
 
-- `service` custom post type with icon metabox.
-- Breadcrumbs, tags, and social share shortcodes.
-- Magnific Popup video lightbox (bundled locally, v1.1.0).
-- Security hardening: login error obscuring, version hiding, ABSPATH guard.
-- Cleanup notice mu-plugin with Clean Up and Dismiss actions.
-- 8 SVG icons bundled in `theme/assets/`.
+- **Service custom post type** with an icon metabox, served from `/services/`
+  with `with_front => false` so it survives a `/blog/%postname%/` permalink
+  structure.
+- **Three shortcodes** — `[mrdemonwolf_breadcrumbs]`, `[mrdemonwolf_tags]`,
+  `[mrdemonwolf_social_share]`. Breadcrumbs handle WooCommerce, the Divi
+  `project` post type, pages, categories and archives, and emit
+  BreadcrumbList JSON-LD unless an SEO plugin already does.
+- **Magnific Popup 1.1.0 bundled locally** for the video lightbox. No CDN
+  dependency and no third-party request at runtime.
+- **Self-updating from GitHub Releases** through the `Update URI` header. The
+  updater requires a non-draft, non-prerelease release carrying an asset named
+  `mrdemonwolf.zip`, and caches the lookup for 12 hours.
+- **Security hardening** — login errors made generic, the WordPress generator
+  version removed from the front end, and year/month upload folders disabled on
+  theme activation.
+- **Cleanup notice** — deactivating the theme writes a temporary mu-plugin that
+  offers one-click removal of all theme data, or a dismiss that leaves it intact.
+  It writes through `WP_Filesystem`, is skipped entirely when
+  `DISALLOW_FILE_MODS` is set, and deletes itself afterwards.
+- **Divi Theme Builder exports** in `supplementary/` — theme options, builder
+  layouts, builder templates, customizer settings, and site content. All demo
+  media is self-hosted from this repository rather than hotlinked to a
+  third-party host, so imports do not depend on an external site staying up.
+- **7 SVG icons** bundled in `theme/assets/`, referenced from CSS pseudo-elements.
+  No Media Library upload required.
 
-### Required Plugins
+### Notes
 
-- Divi Theme
-- SVG Support
+- The header logo module is constrained to hug its wordmark. The brand SVG
+  carries only a `viewBox`, so it has no intrinsic size and the module absorbed
+  the header's spare width — squeezing the menu until the search icon overlapped
+  "Contact" and the call-to-action wrapped onto two lines.
+- The footer newsletter ships a placeholder Brevo account name. Divi hides the
+  entire signup form when that name is empty, so a blank value rendered the
+  heading with no email field beneath it. See TODO.md for connecting a real
+  account.
+- No vendor artwork is redistributed. The upstream wordmark PNG and its
+  attachment record are stripped from the exports, and the branding guard now
+  checks image hashes as well as text — a logo file contains none of the strings
+  a text scan looks for.
+- Layout modules no longer reference the upstream logo's attachment ID. It was
+  never re-registered for our own assets, and after a content import that ID
+  belongs to an unrelated post.
+- The child stylesheet cache-busts on the **child** theme version. Divi enqueues
+  it with the parent's version by default, which meant browsers served a stale
+  copy after every update.
+- The accordion handler is delegated and the blog-loop featured-image check runs
+  on a `MutationObserver`, because Divi 5 renders modules after page load and a
+  one-shot binding misses them.
+- Category and tag chips are constrained so long term names neither overflow
+  their container nor clip their descenders.
+- The palette is the theme's default teal. Every place a color lives — including
+  the ones that do not grep cleanly — is documented in COLORS.md.
 
-### Code Quality
+### Requirements
 
-- WordPress-Core coding standards enforced via phpcs (CI).
-- CSS custom properties `--mdw-bg` / `--mdw-border` for neutral palette.
-- Breadcrumb helpers extracted to eliminate duplicated escaping logic.
-- Service metabox JS extracted to `assets/admin-service-metabox.js` and localised via `wp_localize_script`.
-- `file_put_contents()` write errors logged via `error_log()`.
+- WordPress 6.5 or newer, tested to 7.1
+- PHP 8.1 or newer, tested to 8.4
+- The Divi parent theme, tested against Divi 5
+- The SVG Support plugin, required before importing `supplementary/`

@@ -5,8 +5,7 @@
 A custom WordPress child theme built on the Divi Theme
 Builder by MrDemonWolf, Inc. It includes pre-built page
 layouts, a "Service" custom post type, breadcrumbs,
-social sharing, and a migration path for sites previously
-running the Nexus Divi child theme.
+social sharing, and a video lightbox.
 
 Your WordPress site, your brand.
 
@@ -32,9 +31,8 @@ Your WordPress site, your brand.
 - **Pre-built Layouts** - Supplementary Divi Builder JSON
   and XML exports for Theme Builder, Library, Theme
   Options, and Customizer settings.
-- **Migration Script** - WP-CLI script to migrate an
-  existing Nexus-based site to MrDemonWolf with dry-run
-  support.
+- **Self-updating** - New versions arrive through
+  Appearance > Themes, served from GitHub Releases.
 
 ## Getting Started
 
@@ -72,11 +70,10 @@ The `supplementary/` directory contains pre-built Divi configuration exports. **
    - Go to **Divi > Theme Builder > Portability > Import** and upload `MrDemonWolf Divi Theme Builder Layouts.json`. Check **"Override Default Website Template"** and **"Import Presets"** before importing.
    - Then import `MrDemonWolf Divi Theme Builder Templates.json` the same way. This assigns header, footer, and page templates.
 3. **Customizer Settings** - Go to **Appearance > Customize > Export & Import > Import** and upload `MrDemonWolf Divi Theme Customizer Settings.json`. This applies color palette, typography, and spacing overrides.
-4. **Divi Library** - *This file is not included in the current release. Skip this step.*
-5. **All Content** - Go to **Tools > Import > WordPress** and upload `All Content.xml`. This creates posts, pages, media, and custom post types that the layouts reference. When prompted, check "Download and import file attachments."
-6. **Reading Settings** - Go to **Settings > Reading**. Under "Your homepage displays," select **A static page**, set **Homepage** to "Home" and **Posts page** to "Blog." Click **Save Changes**.
-7. **Menu Assignment** - Go to **Appearance > Menus**. Select the "Main Menu" and assign it to the **Primary Menu** display location. Click **Save Menu**.
-8. **WP PageNavi Plugin (Optional)** - Go to **Plugins > Add New** and search for `pagenavi`. Install and activate the **WP-PageNavi** plugin if you want cleaner pagination on your blog and archives.
+4. **All Content** - Go to **Tools > Import > WordPress** and upload `All Content.xml`. This creates posts, pages, media, and custom post types that the layouts reference. When prompted, check "Download and import file attachments."
+5. **Reading Settings** - Go to **Settings > Reading**. Under "Your homepage displays," select **A static page**, set **Homepage** to "Home" and **Posts page** to "Blog." Click **Save Changes**.
+6. **Menu Assignment** - Go to **Appearance > Menus**. Select the "Main Menu" and assign it to the **Primary Menu** display location. Click **Save Menu**.
+7. **WP PageNavi Plugin (Optional)** - Go to **Plugins > Add New** and search for `pagenavi`. Install and activate the **WP-PageNavi** plugin if you want cleaner pagination on your blog and archives.
 
 ### Troubleshooting Import
 
@@ -106,7 +103,7 @@ element that references them.
 
 #### Color Reference
 
-These are the **Nexus vendor defaults**. Every color location and the
+These are the theme's default palette values. Every color location and the
 rebranding procedure: [COLORS.md](COLORS.md).
 
 | Variable / Key                                      | Role             | Value     |
@@ -188,9 +185,8 @@ When rebranding, update the hardcoded values in `theme/style.css`:
 
 #### Rebranding to Your Own Palette
 
-The theme and the `supplementary/` exports ship the vendor
-palette, verified color-for-color against the original
-files. Only class names were renamed (`nexus-` to `mdw-`).
+The theme and the `supplementary/` exports ship the same
+palette, verified color-for-color against each other.
 Use the table below when rebranding: replace the right
 column with your values, then work every location listed in
 [COLORS.md](COLORS.md).
@@ -209,7 +205,7 @@ column with your values, then work every location listed in
 **WP-CLI commands** to replace in the database:
 
 ```bash
-# Replace old Nexus colors in wp_options and wp_posts
+# Replace the default palette in wp_options and wp_posts
 wp search-replace "#1e8a8a" "#youraccent" --precise
 wp search-replace "#0c1e21" "#yourdark" --precise
 wp search-replace "#18292c" "#yourdark2" --precise
@@ -226,48 +222,6 @@ After running these commands:
 - In `theme/style.css`, update hardcoded values like
   `#ecf0f0`, `rgba(30, 138, 138, ...)` etc. manually in
   code (these are not stored in the database).
-
-### Migrating from Nexus
-
-If you are switching from the Nexus Divi Child Theme,
-run the included migration script or execute the
-commands manually. Requires
-[WP-CLI](https://wp-cli.org/).
-
-> **WARNING:** This will overwrite existing Nexus theme
-> data in your database. **Back up your database before
-> running any of these commands.** Run at your own risk.
-
-#### Option A: Run the script
-
-```bash
-# Preview changes (no writes)
-./migrate.sh --dry-run
-
-# Apply the migration
-./migrate.sh
-```
-
-#### Option B: Run the commands manually
-
-```bash
-# 1. Shortcodes
-wp search-replace "[Nexus_breadcrumbs" "[mrdemonwolf_breadcrumbs" --precise
-wp search-replace "[nexus_tags" "[mrdemonwolf_tags" --precise
-wp search-replace "[nexus_social_share" "[mrdemonwolf_social_share" --precise
-
-# 2. CSS classes (Divi builder data)
-wp search-replace "nexus-" "mdw-" --precise
-
-# 3. Post meta keys
-wp db query "UPDATE $(wp db prefix)postmeta SET meta_key = '_mrdemonwolf_service_image' WHERE meta_key = '_nexus_service_image';"
-
-# 4. Options table
-wp db query "UPDATE $(wp db prefix)options SET option_name = REPLACE(option_name, 'nexus_', 'mrdemonwolf_') WHERE option_name LIKE 'nexus\_%';"
-```
-
-All commands are idempotent and safe to run multiple
-times.
 
 ## Tech Stack
 
@@ -313,8 +267,12 @@ ln -s /path/to/mrdemonwolf-wp-theme/theme /path/to/wordpress/wp-content/themes/m
 To create an installable zip from the repo:
 
 ```bash
-cd theme && zip -r ../mrdemonwolf.zip . -x "*.DS_Store" && cd ..
+./build.sh
 ```
+
+The zip must unpack to a single `mrdemonwolf/` folder or WordPress
+rejects it on update, which is exactly what `build.sh` guarantees and
+CI asserts. Do not zip `theme/` by hand.
 
 Tagged releases (`v*`) also build and attach the zip
 automatically — see CI/CD below.
@@ -334,7 +292,7 @@ automatically — see CI/CD below.
 
 | Workflow                    | Trigger                      | What it does                                                            |
 | --------------------------- | ---------------------------- | ----------------------------------------------------------------------- |
-| **CI** (`ci.yml`)           | Push / PR to `main` or `dev` | PHP 8.1/8.3/8.4 syntax check, PHPCS (WordPress-Core), Nexus reference check, zip build + zip-root check |
+| **CI** (`ci.yml`)           | Push / PR to `main` or `dev` | PHP 8.1/8.3/8.4 syntax check, update-check self test, PHPCS (WordPress-Core), version-sync check, branding guard, zip build + zip-root check |
 | **Release** (`release.yml`) | Push of a `v*` tag           | Verifies `style.css` Version matches the tag, builds `mrdemonwolf.zip`, creates a GitHub Release with the artifact |
 
 ### Updating the live site
@@ -394,9 +352,14 @@ mrdemonwolf-wp-theme/
 │   ├── MrDemonWolf Divi Theme Builder Templates.json
 │   ├── MrDemonWolf Divi Theme Customizer Settings.json
 │   └── MrDemonWolf Divi Theme Options.json
+├── tools/                     # Export rebrand + media extraction scripts
+├── build.sh                   # Builds build/mrdemonwolf.zip
+├── CHANGELOG.md               # Keep a Changelog format
+├── readme.txt                 # WordPress-style readme, shipped in the zip
 ├── CLAUDE.md                  # Claude Code repository guidance
-├── DESIGN.md                  # Brand and WP Admin reference
-└── migrate.sh                 # WP-CLI migration script
+├── COLORS.md                  # Every place a color lives
+├── TODO.md                    # Import and setup checklist
+└── LICENSE                    # GPL v2
 ```
 
 ## License
