@@ -5,7 +5,7 @@ Description: A custom Divi child theme by MrDemonWolf, Inc.
 Author: MrDemonWolf, Inc.
 Author URI: https://www.mrdemonwolf.com/
 Template: Divi
-Version: 1.0.0
+Version: 1.0.1
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -786,14 +786,16 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 
    width:max-content makes the module hug; the explicit width gives it something
    to hug, since max-content of a size-less SVG resolves to 0. 180px is the
-   wordmark at the export's max-height:39px (2333/505.8 * 39). The selector
-   matches Divi's own `[src$=".svg"]{width:auto}` specificity and wins on order. */
+   wordmark at the export's max-height:39px (2333/505.8 * 39). Divi's own `img[src*=".svg"]{width:auto}` ships in an inline style block
+   that follows this sheet, so it wins any specificity tie on order -- hence
+   the !important and the explicit pixel widths, which also break the circular
+   shrink-to-fit between the image and its wrap. */
 .mdw-header .et_pb_image{
 	width: max-content;
 }
 .mdw-header .et_pb_image .et_pb_image_wrap img{
-	width: 180px;
-	height: auto;
+	width: 180px !important;
+	height: auto !important;
 	max-width: 100%;
 }
 
@@ -803,8 +805,9 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
    export's maxWidth:150px; give the image a real width against it. The only
    SVG in the footer is the logo, so the suffix selector is safe. */
 [class*="_tb_footer"] .et_pb_image .et_pb_image_wrap img[src$=".svg"]{
-	width: 100%;
-	height: auto;
+	width: 150px !important;
+	height: auto !important;
+	max-width: 100%;
 }
 
 /** SERVICES **/
