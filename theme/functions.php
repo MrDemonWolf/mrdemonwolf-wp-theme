@@ -242,7 +242,7 @@ function mrdemonwolf_service_admin_assets( $hook ) {
 		'mrdemonwolf-service-metabox',
 		get_stylesheet_directory_uri() . '/assets/admin-service-metabox.js',
 		array( 'jquery' ),
-		'1.0.0',
+		(string) filemtime( get_stylesheet_directory() . '/assets/admin-service-metabox.js' ),
 		true
 	);
 	wp_localize_script(
