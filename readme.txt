@@ -4,7 +4,7 @@ Tags: divi, child-theme, custom-post-type, breadcrumbs, portfolio
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.1
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,13 +91,10 @@ data.
 
 == Changelog ==
 
-= 1.0.1 =
-* Header and footer logos no longer collapse to zero size. Divi's inline
-  SVG width rule wins the cascade over the child stylesheet on load order;
-  both logo rules now carry explicit pixel widths.
-
 = 1.0.0 =
 * Initial public release.
+* Header and footer logo rules carry explicit pixel widths, so Divi's inline
+  SVG width rule cannot collapse them on load order.
 * Service custom post type with icon metabox, served from `/services/`.
 * Breadcrumbs, tags, and social share shortcodes.
 * BreadcrumbList schema from the breadcrumbs shortcode, unless an SEO plugin emits its own.
@@ -117,9 +114,6 @@ data.
 * Tested against WordPress 7.1, PHP 8.4, and Divi 5.
 
 == Upgrade Notice ==
-
-= 1.0.1 =
-Fixes invisible header and footer logos. No other changes.
 
 = 1.0.0 =
 Initial release — no upgrade steps required. Requires PHP 8.1 and

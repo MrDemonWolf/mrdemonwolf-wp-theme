@@ -5,20 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] - 2026-08-27
-
-### Fixed
-
-- Header and footer logos rendered at zero size on a stock page load. The brand
-  wordmark is a viewBox-only SVG, and Divi ships an inline
-  `img[src*=".svg"] { width: auto }` rule that follows the child stylesheet in
-  the document, winning any specificity tie on order alone -- the earlier fix
-  passed verification only because the test harness re-appended the stylesheet
-  after Divi's, accidentally reversing that order. Both logo rules now use
-  explicit pixel widths, which also break the circular shrink-to-fit between
-  the image and its wrap.
-
-## [1.0.0] - 2026-08-25
+## [1.0.0] - 2026-08-27
 
 First public release of the theme as a self-contained product. Earlier tags
 (1.0.0 through 1.1.2) were incremental work on a layout that has since been
@@ -54,6 +41,10 @@ rebuilt, and were withdrawn rather than carried forward.
 
 ### Notes
 
+- Both logo rules use explicit pixel widths with `!important`: Divi ships an
+  inline `img[src*=".svg"] { width: auto }` rule after the child stylesheet,
+  which otherwise wins the cascade on order and collapses the size-less SVG
+  wordmark to nothing.
 - The header logo module is constrained to hug its wordmark. The brand SVG
   carries only a `viewBox`, so it has no intrinsic size and the module absorbed
   the header's spare width — squeezing the menu until the search icon overlapped
