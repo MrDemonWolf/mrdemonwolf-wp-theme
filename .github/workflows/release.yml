@@ -23,8 +23,41 @@ jobs:
             exit 1
           fi
 
+      # A tag can be pushed from any commit, including one that never went
+      # through a PR, so the release re-runs the CI gates rather than trusting
+      # that they ever ran. Publishing an unlinted zip is the expensive
+      # mistake; a minute of duplicate checking is the cheap insurance.
+      - name: PHP syntax check
+        run: |
+          find theme supplementary tools tests -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Update-check self test
+        run: php tests/update-check.php
+
+      - name: Branding guard
+        run: ./tools/branding-guard.sh
+
+      - name: Versions must agree (style.css / readme.txt / CHANGELOG.md)
+        run: |
+          CSS="$(sed -n 's/^Version:[[:space:]]*//p' theme/style.css | head -1 | tr -d '\r')"
+          TXT="$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -1 | tr -d '\r')"
+          LOG="$(sed -n 's/^## \[\([0-9][0-9.]*\)\].*/\1/p' CHANGELOG.md | head -1)"
+          echo "style.css=$CSS  readme.txt=$TXT  CHANGELOG.md=$LOG"
+          if [ "$CSS" != "$TXT" ] || [ "$CSS" != "$LOG" ]; then
+            echo "Error: version mismatch across style.css, readme.txt and CHANGELOG.md." >&2
+            exit 1
+          fi
+
       - name: Build theme zip
         run: ./build.sh
+
+      - name: Zip must unpack to a single mrdemonwolf/ folder
+        run: |
+          ROOTS="$(unzip -Z1 build/mrdemonwolf.zip | cut -d/ -f1 | sort -u)"
+          if [ "$ROOTS" != "mrdemonwolf" ]; then
+            echo "Error: zip root is '$ROOTS', expected 'mrdemonwolf' (WordPress rejects other layouts on update)." >&2
+            exit 1
+          fi
 
       - name: Extract changelog for this version
         run: |

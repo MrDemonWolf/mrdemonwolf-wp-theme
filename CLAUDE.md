@@ -46,14 +46,19 @@ mrdemonwolf-wp-theme/
 │   ├── screenshot.jpg         # Theme screenshot
 │   ├── script.js              # Frontend JavaScript
 │   └── style.css              # Theme stylesheet
-├── supplementary/             # Divi Builder import files
+├── supplementary/             # Divi Builder import files + install tooling
 │   ├── All Content.xml
 │   ├── MrDemonWolf Divi Theme Builder Layouts.json
 │   ├── MrDemonWolf Divi Theme Builder Templates.json
 │   ├── MrDemonWolf Divi Theme Customizer Settings.json
-│   └── MrDemonWolf Divi Theme Options.json
+│   ├── MrDemonWolf Divi Theme Options.json
+│   ├── media/                 # Self-hosted demo assets (86 files)
+│   ├── install.sh             # Clean install from a wiped database
+│   ├── import-media.sh        # Media importer (runs fix-svg-dimensions.php)
+│   └── apply-divi-*.php, attach-theme-builder.php, fix-svg-dimensions.php
+├── tools/                     # Rebrand transform, tests, guards, parity check
+├── tests/                     # update-check self test
 ├── build.sh                   # Build script
-├── migrate.sh                 # WP-CLI migration script
 ├── TODO.md                    # Import & setup checklist
 └── CLAUDE.md                  # This file
 ```

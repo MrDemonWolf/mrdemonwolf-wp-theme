@@ -27,7 +27,11 @@ jobs:
           coverage: none
 
       - name: PHP syntax check
-        run: php -l theme/functions.php
+        run: |
+          # Every PHP file that ships or runs against a site, not just the
+          # theme's -- the install scripts execute via wp eval-file and a parse
+          # error there fails silently halfway through a rebuild.
+          find theme supplementary tools tests -name '*.php' -print0 | xargs -0 -n1 php -l
 
       - name: Update-check self test
         run: php tests/update-check.php
