@@ -37,6 +37,12 @@ Import these in the **exact order** listed. Files are in the `supplementary/` fo
 3. **Assign Menu** — Appearance > Menus > assign "Navigation" to Primary Menu location
 4. **Check Service CPT** — Confirm service posts appear under the Services menu
 5. **Verify Media** — Check that imported images loaded correctly (re-upload any missing ones)
+6. **Connect the newsletter** — Divi > Theme Options > API > Email Account, add a
+   Brevo (Sendinblue) account named `MrDemonWolf`. The footer signup module ships
+   with that name as a placeholder so the form renders; until a real account is
+   connected the fields display but submissions will not reach a list. Renaming
+   the account to something else means updating the module to match, because
+   Divi hides the entire form when the name does not resolve.
 
 ## 5. Colors (nothing to do unless rebranding)
 

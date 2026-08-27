@@ -19,6 +19,7 @@ into a nonsense slug and orphans the custom_css and wp_global_styles items.
 Never rename a `gcid-*` id. They are opaque keys referenced ~950 times across
 four files; only their `label` and `color` fields are safe to touch.
 """
+import base64
 import os
 import re
 import sys
@@ -56,9 +57,14 @@ STEPS = [
     #    content. Also appears as a <wp:meta_key> row on the 6 service items.
     (r"_nexus_service_image", "_mrdemonwolf_service_image", re.I, "service image meta"),
 
-    # 7. Dead vendor Brevo/Sendinblue list. Blank the account, do not rename it.
-    (r'("account"\s*:\s*)"nexus\|2"', r'\1""', re.I, "sendinblue optin"),
-    (r'(\\"account\\"\s*:\s*)\\"nexus\|2\\"', r'\1\\"\\"', re.I, "sendinblue optin (escaped)"),
+    # 7. Dead vendor Brevo/Sendinblue list. Rename it -- do NOT blank it.
+    #    Divi's signup module gates the whole form on a non-empty account name:
+    #    with "" it renders the heading and no <input>, so the footer advertises
+    #    a newsletter with nothing to type into. The name is inert until someone
+    #    connects a real Brevo account under Divi > Theme Options > API, so a
+    #    placeholder is safe and keeps the vendor's layout intact.
+    (r'("account"\s*:\s*)"nexus\|2"', r'\1"MrDemonWolf|1"', re.I, "sendinblue optin"),
+    (r'(\\"account\\"\s*:\s*)\\"nexus\|2\\"', r'\1\\"MrDemonWolf|1\\"', re.I, "sendinblue optin (escaped)"),
 
     # 8. Contact address in the demo contact module.
     (r"info@nexus\.com", "hello@mrdemonwolf.com", re.I, "contact email"),
@@ -127,6 +133,14 @@ def main():
         if n_logo:
             counts.append(f"brand assets={n_logo}")
 
+        text, n_enc = reencode_brand_previews(text)
+        if n_enc:
+            counts.append(f"brand previews re-encoded={n_enc}")
+
+        text, n_vlogo = drop_vendor_logo(text)
+        if n_vlogo:
+            counts.append(f"vendor logo.png refs dropped={n_vlogo}")
+
         if src_name == "All Content.xml":
             text, n_posts = drop_demo_posts(text)
             counts.append(f"demo posts dropped={n_posts}")
@@ -187,6 +201,17 @@ def swap_brand_assets(text):
             if n:
                 total += n
                 block = block.replace(needle, f"media{sep}{target.replace('/', sep)}")
+
+        # The module still carries the vendor PNG's attachment id, 13. Neither
+        # brand SVG is registered as an attachment, and once real content is
+        # imported id 13 belongs to an unrelated blog post -- so Divi resolves
+        # the logo against foreign metadata (544x153) or nothing at all. Blank
+        # it; `src` alone is what we want it to honour.
+        for quoted in ('"id":"13"', '\\"id\\":\\"13\\"'):
+            n = block.count(quoted)
+            if n:
+                total += n
+                block = block.replace(quoted, quoted.replace("13", ""))
         return block
 
     def by_marker(block):
@@ -226,6 +251,78 @@ def swap_brand_assets(text):
         r'("divi_logo"\s*:\s*")([^"]*?)media(\\?/)logo\.png(")',
         lambda m: f"{m.group(1)}{m.group(2)}media{m.group(3)}{BRAND_HEADER.replace('/', m.group(3))}{m.group(4)}",
         text)
+    total += n
+    return text, total
+
+
+def reencode_brand_previews(text):
+    """Replace the base64 preview Divi ships for each brand logo.
+
+    Divi's portability payload carries an `images` map of url -> {encoded, id}.
+    swap_brand_assets rewrites the key and `url` to our wordmark, but `encoded`
+    stays the vendor's 544x153 Nexus PNG and `id` stays attachment 13. If the
+    importer ever sideloads from `encoded`, it writes PNG bytes to a `.svg`
+    filename and the navbar shows the vendor logo with no error anywhere.
+
+    Substituting the real SVG bytes is correct whether or not Divi reads the
+    field, which is why this is preferred over deleting the entry: removing a
+    member from a 5 MB single-line JSON map risks leaving `{,` behind.
+    """
+    cache = {}
+
+    def encoded_for(name):
+        if name not in cache:
+            path = os.path.join(DST, "media", "brand", name)
+            with open(path, "rb") as fh:
+                cache[name] = base64.b64encode(fh.read()).decode("ascii")
+        return cache[name]
+
+    pattern = re.compile(
+        r'("[^"]*brand(?:\\?/)(logo-text-[a-z]+\.svg)"\s*:\s*\{)([^{}]*)(\})'
+    )
+
+    def fix(m):
+        body = re.sub(r'"encoded"\s*:\s*"[^"]*"',
+                      lambda _: '"encoded":"' + encoded_for(m.group(2)) + '"',
+                      m.group(3))
+        # Same stale attachment id as the module carries, in integer form here.
+        body = re.sub(r'"id"\s*:\s*13\b', '"id":0', body)
+        return m.group(1) + body + m.group(4)
+
+    return pattern.subn(fix, text)
+
+
+def drop_vendor_logo(text):
+    """Remove every trace of the vendor's own logo.png.
+
+    It is unmodified Nexus wordmark artwork. Once the navbar and footer point at
+    our SVGs nothing renders it, but two orphans keep it alive: the Divi Theme
+    Options portability payload (`images` map, still carrying the base64 PNG)
+    and its WXR attachment record. Both are dropped here so the binary can leave
+    the repository -- we have no licence to redistribute it.
+
+    branding-guard.sh cannot catch this on its own: the guard greps text, and a
+    PNG's bytes contain no vendor string.
+    """
+    total = 0
+
+    # WXR: the whole <item> for the attachment.
+    def drop_item(m):
+        nonlocal total
+        if re.search(r"media/logo\.png", m.group(0)):
+            total += 1
+            return ""
+        return m.group(0)
+
+    text = re.sub(r"\t<item>.*?</item>\n", drop_item, text, flags=re.S)
+
+    # Theme Options: the entry in the portability `images` map. The value object
+    # is flat, so a non-nested brace match is exact.
+    text, n = re.subn(
+        r',?\s*"[^"]*media(?:\\?/)logo\.png"\s*:\s*\{[^{}]*\}',
+        "",
+        text,
+    )
     total += n
     return text, total
 

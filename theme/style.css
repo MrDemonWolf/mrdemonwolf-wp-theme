@@ -775,6 +775,28 @@ button.et_pb_group_carousel_dot.et_pb_group_carousel_dot_active {
 	}
 }
 
+/* The header logo module stretched to 471px against the vendor's 139px, which
+   squeezed the menu until the search icon overlapped "Contact" and the
+   "Let's Talk" button wrapped to two lines.
+
+   Cause: the brand wordmark is an SVG carrying only a viewBox, no width or
+   height, so it has no intrinsic size. The module never gets a content width to
+   hug and instead absorbs the row's leftover space. The vendor's 544x153 PNG
+   has intrinsic dimensions, so its module hugged at 139px.
+
+   width:max-content makes the module hug; the explicit width gives it something
+   to hug, since max-content of a size-less SVG resolves to 0. 180px is the
+   wordmark at the export's max-height:39px (2333/505.8 * 39). The selector
+   matches Divi's own `[src$=".svg"]{width:auto}` specificity and wins on order. */
+.mdw-header .et_pb_image{
+	width: max-content;
+}
+.mdw-header .et_pb_image .et_pb_image_wrap img{
+	width: 180px;
+	height: auto;
+	max-width: 100%;
+}
+
 /** SERVICES **/
 .mdw-service{
 	transition: all 0.3s ease-in-out !important;

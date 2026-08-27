@@ -76,6 +76,27 @@ const count = (html, re) => (html.match(re) || []).length;
     );
     if (missing.length) failures++;
 
+    // A module can render its heading and silently drop its interactive guts.
+    // The footer signup did exactly that: Divi gates the whole form on a
+    // non-empty provider account name, and blanking the vendor's left a
+    // "Subscribe to Our Newsletter." heading above nothing at all. Section,
+    // row and image counts all matched, so nothing above caught it.
+    // The vendor demo runs a `gcid-*` colour-picker widget that is not part of
+    // the theme -- 4 inputs and 4 buttons of live tooling. Exclude it, or this
+    // check fails on every page for a difference we deliberately do not ship.
+    const controls = (html, tag) =>
+      (html.match(new RegExp(`<${tag}\\b[^>]*>`, 'gi')) || [])
+        .filter((t) => !/gcid-/.test(t) && !/type=["']color["']/.test(t)).length;
+
+    for (const tag of ['form', 'input', 'button']) {
+      const vn = controls(v.html, tag);
+      const ln = controls(l.html, tag);
+      if (vn !== ln) {
+        console.log(`${' '.repeat(16)} ${tag} count ${vn} vendor vs ${ln} local`);
+        failures++;
+      }
+    }
+
     const stale = count(l.html, /nexus/gi);
     if (stale) {
       console.log(`${''.padEnd(16)} !! ${stale} upstream reference(s) still in the local HTML`);

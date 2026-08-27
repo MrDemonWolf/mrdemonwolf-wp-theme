@@ -24,4 +24,26 @@ if grep -rniE "$PATTERN" \
   exit 1
 fi
 
+# The text scan above is blind to images: a PNG of the vendor wordmark contains
+# no vendor string, so `supplementary/media/logo.png` shipped undetected until
+# it was removed by hand. Vendor demo photography is fine to redistribute and is
+# deliberately kept, so this is a denylist of specific artwork rather than a
+# blanket rule. Add a hash here whenever vendor branding is removed.
+VENDOR_ART_SHA256='
+9831d005647163210c4087d9451638d204b71ee2fff3b72fa41617f75f05550b  Nexus wordmark (was supplementary/media/logo.png)
+'
+
+if [ -d supplementary/media ]; then
+  while read -r banned label; do
+    [ -z "$banned" ] && continue
+    while IFS= read -r f; do
+      if [ "$(shasum -a 256 "$f" | cut -d' ' -f1)" = "$banned" ]; then
+        echo "Error: vendor artwork is back: $f" >&2
+        echo "       matches $label" >&2
+        exit 1
+      fi
+    done < <(find supplementary/media -type f)
+  done <<< "$VENDOR_ART_SHA256"
+fi
+
 echo "Branding guard: clean."

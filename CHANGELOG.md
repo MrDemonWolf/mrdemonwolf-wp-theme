@@ -41,6 +41,21 @@ rebuilt, and were withdrawn rather than carried forward.
 
 ### Notes
 
+- The header logo module is constrained to hug its wordmark. The brand SVG
+  carries only a `viewBox`, so it has no intrinsic size and the module absorbed
+  the header's spare width — squeezing the menu until the search icon overlapped
+  "Contact" and the call-to-action wrapped onto two lines.
+- The footer newsletter ships a placeholder Brevo account name. Divi hides the
+  entire signup form when that name is empty, so a blank value rendered the
+  heading with no email field beneath it. See TODO.md for connecting a real
+  account.
+- No vendor artwork is redistributed. The upstream wordmark PNG and its
+  attachment record are stripped from the exports, and the branding guard now
+  checks image hashes as well as text — a logo file contains none of the strings
+  a text scan looks for.
+- Layout modules no longer reference the upstream logo's attachment ID. It was
+  never re-registered for our own assets, and after a content import that ID
+  belongs to an unrelated post.
 - The child stylesheet cache-busts on the **child** theme version. Divi enqueues
   it with the parent's version by default, which meant browsers served a stale
   copy after every update.

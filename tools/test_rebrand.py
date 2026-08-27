@@ -131,12 +131,26 @@ def main():
     s_t, o_t = types(src_xml), types(out_xml)
     check(o_t.count("post") == 0, "all vendor demo posts dropped",
           f"{o_t.count('post')} remain")
-    for t in ("page", "project", "service", "attachment", "nav_menu_item"):
+    # The vendor's own logo.png attachment record is dropped with the binary --
+    # it is Nexus artwork we have no licence to redistribute, and once the
+    # navbar and footer point at our SVGs nothing references it. Every other
+    # item type carries over untouched.
+    dropped_attachments = 1
+    for t in ("page", "project", "service", "nav_menu_item"):
         check(s_t.count(t) == o_t.count(t), f"{t} count preserved ({s_t.count(t)})",
               f"src={s_t.count(t)} out={o_t.count(t)}")
-    check(len(o_t) == len(s_t) - s_t.count("post"),
-          f"item count is {len(s_t)} - {s_t.count('post')} posts = {len(s_t) - s_t.count('post')}",
+    check(o_t.count("attachment") == s_t.count("attachment") - dropped_attachments,
+          f"attachment count is {s_t.count('attachment')} - {dropped_attachments} vendor logo "
+          f"= {s_t.count('attachment') - dropped_attachments}",
+          f"got {o_t.count('attachment')}")
+    expected = len(s_t) - s_t.count("post") - dropped_attachments
+    check(len(o_t) == expected,
+          f"item count is {len(s_t)} - {s_t.count('post')} posts - {dropped_attachments} "
+          f"vendor logo = {expected}",
           f"got {len(o_t)}")
+    check("media/logo.png" not in out_xml and not os.path.exists(
+              os.path.join(DST, "media", "logo.png")),
+          "vendor logo.png is gone from the exports and from disk")
 
     print()
     if failures:
