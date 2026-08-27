@@ -157,7 +157,7 @@ def main():
 # ("CHOOSE THE BEST", "GET IN TOUCH") and in several other decorative slots, so
 # a blanket swap puts a wolf wordmark in about sixty places it does not belong.
 BRAND_HEADER = "brand/logo-text-brand.svg"
-BRAND_FOOTER = "brand/logo-text-white.svg"
+BRAND_FOOTER = "brand/logo-text-brand.svg"
 VENDOR_LOGO = "logo.png"
 
 
@@ -218,7 +218,10 @@ def swap_brand_assets(text):
         if "et_header_layout" in block:
             return swap_in(block, BRAND_HEADER)
         if "et_footer_layout" in block:
-            # Footer sits on #222222, so the dark-ink wordmark is invisible there.
+            # The footer sits on the light palette background, same as the
+            # header, so it takes the same dark-ink wordmark. (An earlier
+            # revision assumed a #222222 footer and shipped the white variant,
+            # which washed out against the actual background.)
             return swap_in(block, BRAND_FOOTER)
         return block
 
